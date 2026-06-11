@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadley AI — Acquisitions, Accelerated</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --cream: #F7F3EC;
+            --white: #FDFCFA;
+            --stone-light: #E8E1D6;
+            --stone: #C4B9A8;
+            --stone-dark: #8C7E6E;
+            --sage-light: #B8CCA8;
+            --sage: #8FA67A;
+            --sage-dark: #607A4A;
+            --navy: #2B3D5C;
+            --navy-mid: #3A5070;
+            --navy-light: #4D6888;
+            --text: #1A1916;
+            --text-secondary: #6B6560;
+            --border: rgba(196, 185, 168, 0.25);
+        }
+
+        html { font-size: 16px; scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--white);
+            color: var(--text);
+            font-weight: 300;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 48px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(253, 252, 250, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            color: var(--text);
+            text-decoration: none;
+        }
+        .logo-dot { color: var(--sage); }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .nav-link {
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: var(--text); }
+
+        .nav-cta {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--navy);
+            text-decoration: none;
+            padding: 9px 24px;
+            border: 1px solid rgba(43, 61, 92, 0.35);
+            transition: all 0.25s ease;
+        }
+        .nav-cta:hover {
+            background: var(--navy);
+            color: var(--white);
+            border-color: var(--navy);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            padding: 140px 48px 120px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-illustration {
+            position: absolute;
+            top: 0; right: 0;
+            width: 58%;
+            height: 100%;
+            pointer-events: none;
+            object-fit: cover;
+            object-position: center center;
+            mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, rgba(0,0,0,0.85) 40%, black 100%);
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, rgba(0,0,0,0.85) 40%, black 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 780px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--sage-dark);
+            margin-bottom: 40px;
+        }
+        .eyebrow-line {
+            width: 32px;
+            height: 1px;
+            background: var(--sage);
+            flex-shrink: 0;
+        }
+
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(56px, 7.5vw, 108px);
+            font-weight: 300;
+            line-height: 1.0;
+            letter-spacing: -0.025em;
+            color: var(--text);
+            margin-bottom: 36px;
+        }
+        .hero h1 em {
+            font-style: italic;
+            color: var(--navy);
+        }
+
+        .hero-body {
+            font-size: 17px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            max-width: 460px;
+            line-height: 1.78;
+            margin-bottom: 56px;
+        }
+
+        .cta-row {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .btn-primary {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--white);
+            background: var(--navy);
+            text-decoration: none;
+            padding: 15px 44px;
+            display: inline-block;
+            transition: background 0.25s ease;
+        }
+        .btn-primary:hover { background: var(--navy-mid); }
+
+        .btn-text {
+            font-size: 13px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-text svg { transition: transform 0.2s; }
+        .btn-text:hover svg { transform: translateX(4px); }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 48px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0.35;
+        }
+        .scroll-indicator span {
+            font-size: 9px;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--stone-dark);
+        }
+        .scroll-track {
+            width: 1px;
+            height: 44px;
+            background: rgba(196,185,168,0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        .scroll-track::after {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--navy);
+            animation: scrollDown 2s ease-in-out infinite;
+        }
+        @keyframes scrollDown {
+            0%   { top: -100%; }
+            100% { top: 100%; }
+        }
+
+        /* ── SECTION UTILITIES ── */
+        .section-divider {
+            margin: 0 48px;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .section-label {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: var(--stone-dark);
+        }
+
+        /* ── MANIFESTO ── */
+        .manifesto {
+            padding: 120px 48px;
+        }
+        .manifesto-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+        .manifesto-inner .section-label { padding-top: 10px; }
+
+        .manifesto-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(28px, 3.2vw, 46px);
+            font-weight: 300;
+            line-height: 1.4;
+            color: var(--text);
+            letter-spacing: -0.015em;
+        }
+        .manifesto-quote em {
+            font-style: italic;
+            color: var(--navy);
+        }
+
+        /* ── PROCESS ── */
+        .process {
+            padding: 0 48px 120px;
+        }
+        .process-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+        }
+        .process-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(32px, 3.5vw, 52px);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+        .process-count {
+            font-size: 10px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--stone-dark);
+            padding-bottom: 6px;
+        }
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+        .process-item {
+            padding: 64px 48px 60px;
+            border-right: 1px solid var(--border);
+        }
+        .process-item:last-child { border-right: none; }
+
+        .process-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 80px;
+            font-weight: 300;
+            color: var(--stone-light);
+            line-height: 1;
+            margin-bottom: 40px;
+            display: block;
+            letter-spacing: -0.04em;
+        }
+        .process-icon {
+            width: 36px;
+            height: 36px;
+            margin-bottom: 24px;
+        }
+        .process-item h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 14px;
+            letter-spacing: -0.01em;
+        }
+        .process-item p {
+            font-size: 14px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.85;
+        }
+        .process-tag {
+            display: inline-block;
+            margin-top: 28px;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--sage-dark);
+            padding: 5px 12px;
+            background: rgba(96, 122, 74, 0.08);
+            border: 1px solid rgba(96, 122, 74, 0.15);
+        }
+
+        /* ── SPLIT SECTION ── */
+        .split-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 600px;
+            margin-bottom: 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .split-illustration {
+            position: relative;
+            overflow: hidden;
+            min-height: 520px;
+            background: var(--cream);
+        }
+
+        .split-content {
+            padding: 88px 72px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-left: 1px solid var(--border);
+        }
+        .split-content .section-label { margin-bottom: 32px; }
+        .split-content h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(30px, 3vw, 50px);
+            font-weight: 300;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+        }
+        .split-content h2 em {
+            font-style: italic;
+            color: var(--navy);
+        }
+        .split-content p {
+            font-size: 15px;
+            font-weight: 300;
+            color: var(--text-secondary);
+            line-height: 1.82;
+            max-width: 380px;
+            margin-bottom: 52px;
+        }
+        .stats-row {
+            display: flex;
+            gap: 48px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border);
+        }
+        .stat-n {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 52px;
+            font-weight: 300;
+            color: var(--navy);
+            line-height: 1;
+            letter-spacing: -0.03em;
+        }
+        .stat-l {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--stone-dark);
+            margin-top: 8px;
+        }
+
+        /* ── TESTIMONIAL ── */
+        .testimonial {
+            padding: 120px 48px;
+            text-align: center;
+            position: relative;
+        }
+        .testimonial-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 640px;
+            height: 420px;
+            pointer-events: none;
+            opacity: 0.45;
+        }
+        .testimonial blockquote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(22px, 2.8vw, 38px);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--text);
+            line-height: 1.52;
+            max-width: 780px;
+            margin: 0 auto 32px;
+            letter-spacing: -0.01em;
+            position: relative;
+            z-index: 2;
+        }
+        .testimonial cite {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--stone-dark);
+            font-style: normal;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            margin: 80px 48px 100px;
+            background: var(--navy);
+            padding: 96px 80px;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 80px;
+        }
+        .cta-bg {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+        .cta-content { position: relative; z-index: 2; }
+        .cta-eyebrow {
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            color: rgba(143, 166, 122, 0.75);
+            margin-bottom: 20px;
+        }
+        .cta-section h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(32px, 4vw, 60px);
+            font-weight: 300;
+            color: var(--cream);
+            line-height: 1.08;
+            letter-spacing: -0.025em;
+            margin-bottom: 16px;
+        }
+        .cta-section h2 em {
+            font-style: italic;
+            color: var(--sage-light);
+        }
+        .cta-section > .cta-content p {
+            font-size: 15px;
+            font-weight: 300;
+            color: rgba(247, 243, 236, 0.5);
+        }
+        .cta-actions {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            min-width: 220px;
+        }
+        .btn-cream {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--navy);
+            background: var(--cream);
+            text-decoration: none;
+            padding: 16px 36px;
+            text-align: center;
+            transition: background 0.2s;
+        }
+        .btn-cream:hover { background: #EDE7DA; }
+        .btn-ghost {
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(247, 243, 236, 0.5);
+            text-decoration: none;
+            padding: 16px 36px;
+            text-align: center;
+            border: 1px solid rgba(247, 243, 236, 0.18);
+            transition: all 0.2s;
+        }
+        .btn-ghost:hover {
+            color: rgba(247, 243, 236, 0.85);
+            border-color: rgba(247, 243, 236, 0.35);
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            padding: 48px 48px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        .footer-logo-dot { color: var(--sage); }
+        .footer-nav { display: flex; gap: 32px; }
+        .footer-link {
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--stone-dark);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-link:hover { color: var(--text); }
+        .footer-copy {
+            font-size: 12px;
+            color: var(--stone);
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav { padding: 0 24px; }
+            .nav-link { display: none; }
+            .hero { padding: 120px 24px 100px; }
+            .hero-illustration { opacity: 0.5; width: 90%; }
+            .section-divider { margin: 0 24px; }
+            .manifesto { padding: 80px 24px; }
+            .manifesto-inner { grid-template-columns: 1fr; gap: 20px; }
+            .process { padding: 0 24px 80px; }
+            .process-grid { grid-template-columns: 1fr; }
+            .process-item { border-right: none; border-bottom: 1px solid var(--border); }
+            .process-item:last-child { border-bottom: none; }
+            .split-section { grid-template-columns: 1fr; }
+            .split-illustration { min-height: 320px; }
+            .split-content { padding: 56px 24px; border-left: none; border-top: 1px solid var(--border); }
+            .stats-row { gap: 32px; }
+            .testimonial { padding: 80px 24px; }
+            .cta-section { margin: 40px 24px 80px; padding: 64px 40px; grid-template-columns: 1fr; gap: 40px; }
+            footer { padding: 40px 24px; flex-direction: column; gap: 24px; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+    <a href="#" class="logo">Hadley AI</a>
+</nav>
+
+
+<!-- ── HERO ── -->
+<section class="hero">
+
+    <img class="hero-illustration" src="landscape.png" alt="" aria-hidden="true">
+
+    <div class="hero-content">
+
+        <h1>
+            Acquire faster<br>
+            than you can <em>build.</em>
+        </h1>
+
+        <p class="hero-body">
+            Your AI is transforming a legacy industry. Your M&A process should work the same way.
+        </p>
+
+        <div class="cta-row">
+            <a href="#" class="btn-primary">Learn More</a>
+        </div>
+    </div>
+
+    <div class="scroll-indicator" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="scroll-track"></div>
+    </div>
+</section>
+
+
+<!-- ── TESTIMONIAL ── -->
+<div class="section-divider"></div>
+<section class="testimonial">
+
+    <svg class="testimonial-bg" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+            <filter id="tWc" x="-30%" y="-30%" width="160%" height="160%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.019" numOctaves="3" seed="8" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="38" xChannelSelector="R" yChannelSelector="G" result="d"/>
+                <feGaussianBlur in="d" stdDeviation="13"/>
+            </filter>
+        </defs>
+        <ellipse cx="320" cy="210" rx="290" ry="190" fill="#8FA67A" opacity="0.11" filter="url(#tWc)"/>
+        <ellipse cx="230" cy="190" rx="210" ry="150" fill="#C4B9A8" opacity="0.14" filter="url(#tWc)"/>
+        <ellipse cx="400" cy="220" rx="190" ry="140" fill="#2B3D5C" opacity="0.05" filter="url(#tWc)"/>
+    </svg>
+
+    <blockquote>
+        "We bought two companies we found through Hadley."
+    </blockquote>
+    <cite>— CEO, Series A Startup</cite>
+
+</section>
+
+
+
+
+<!-- ── PROCESS ── -->
+<div class="section-divider"></div>
+<section class="process">
+    <div class="process-grid">
+
+        <div class="process-item">
+            <span class="process-num">01</span>
+            <h3>Find Businesses</h3>
+            <p>Hadley has a map of the market and gives you the companies worth talking to.</p>
+            <span class="process-tag">Target Discovery</span>
+        </div>
+
+        <div class="process-item">
+            <span class="process-num">02</span>
+            <h3>Run Due Diligence</h3>
+            <p>Hadley cleans up seller data and runs due diligence faster than anyone else.</p>
+            <span class="process-tag">Due Diligence</span>
+        </div>
+
+        <div class="process-item">
+            <span class="process-num">03</span>
+            <h3>Close Deals</h3>
+            <p>Hadley closes the deal and gets you the best price.</p>
+            <span class="process-tag">Deal Execution</span>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ── SPLIT: ILLUSTRATION + STATS ── -->
+<section class="split-section">
+
+    <div class="split-illustration" aria-hidden="true">
+        <img src="landscape-2.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center center;">
+    </div>
+
+    <div class="split-content">
+        <span class="section-label">Why Hadley</span>
+
+        <h2>
+            Find the right companies.<br>
+            Move before they're<br>
+            <em>off the market.</em>
+        </h2>
+
+        <p>
+            Most deals come and go without you knowing. By the time they reach you, they're gone. Hadley finds the right ones first and gets you ready to move.
+        </p>
+
+        <div class="stats-row">
+            <div>
+                <div class="stat-n">10×</div>
+                <div class="stat-l">Faster sourcing</div>
+            </div>
+            <div>
+                <div class="stat-n">72h</div>
+                <div class="stat-l">To full diligence</div>
+            </div>
+            <div>
+                <div class="stat-n">3×</div>
+                <div class="stat-l">More deals closed</div>
+            </div>
+        </div>
+    </div>
+
+</section>
+<div class="section-divider"></div>
+
+
+
+
+<!-- ── FOOTER ── -->
+<footer>
+    <div class="footer-logo">Hadley AI</div>
+    <span class="footer-copy">© 2026 Hadley AI</span>
+</footer>
+
+</body>
+</html>
