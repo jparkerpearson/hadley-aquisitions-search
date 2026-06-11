@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadley AI — Acquisitions, Accelerated</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
@@ -577,26 +578,66 @@
             color: var(--stone);
         }
 
-        /* ── RESPONSIVE ── */
+        /* ── RESPONSIVE: TABLET ── */
         @media (max-width: 900px) {
-            nav { padding: 0 24px; }
-            .nav-link { display: none; }
-            .hero { padding: 120px 24px 100px; }
-            .hero-illustration { opacity: 0.5; width: 90%; }
+            nav { padding: 0 24px; height: 64px; }
             .section-divider { margin: 0 24px; }
-            .manifesto { padding: 80px 24px; }
-            .manifesto-inner { grid-template-columns: 1fr; gap: 20px; }
+            .hero { padding: 110px 24px 80px; }
+            .hero-illustration { opacity: 0.4; width: 80%; }
             .process { padding: 0 24px 80px; }
             .process-grid { grid-template-columns: 1fr; }
-            .process-item { border-right: none; border-bottom: 1px solid var(--border); }
+            .process-item { padding: 48px 32px; border-right: none; border-bottom: 1px solid var(--border); }
             .process-item:last-child { border-bottom: none; }
             .split-section { grid-template-columns: 1fr; }
-            .split-illustration { min-height: 320px; }
-            .split-content { padding: 56px 24px; border-left: none; border-top: 1px solid var(--border); }
+            .split-illustration { min-height: 340px; }
+            .split-content { padding: 56px 32px; border-left: none; border-top: 1px solid var(--border); }
             .stats-row { gap: 32px; }
             .testimonial { padding: 80px 24px; }
-            .cta-section { margin: 40px 24px 80px; padding: 64px 40px; grid-template-columns: 1fr; gap: 40px; }
-            footer { padding: 40px 24px; flex-direction: column; gap: 24px; text-align: center; }
+            footer { padding: 40px 24px; flex-direction: column; gap: 16px; text-align: center; }
+        }
+
+        /* ── RESPONSIVE: MOBILE ── */
+        @media (max-width: 600px) {
+            nav { padding: 0 20px; height: 60px; }
+            .section-divider { margin: 0 20px; }
+
+            /* Hero: image banner on top, text below */
+            .hero {
+                min-height: auto;
+                padding: 0;
+                flex-direction: column;
+                justify-content: flex-start;
+            }
+            .hero-illustration {
+                position: relative;
+                top: auto; right: auto;
+                width: 100%;
+                height: 300px;
+                flex-shrink: 0;
+                mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+            }
+            .hero-content {
+                padding: 36px 20px 72px;
+                max-width: none;
+            }
+            .hero-body { font-size: 16px; margin-bottom: 40px; }
+            .scroll-indicator { display: none; }
+
+            .process { padding: 0 20px 60px; }
+            .process-item { padding: 40px 20px; }
+            .process-num { font-size: 60px; margin-bottom: 20px; }
+
+            .split-illustration { min-height: 260px; }
+            .split-content { padding: 44px 20px 56px; }
+            .split-content p { max-width: none; margin-bottom: 36px; }
+            .stats-row { gap: 20px; padding-top: 28px; flex-wrap: wrap; }
+            .stat-n { font-size: 40px; }
+
+            .testimonial { padding: 60px 20px; }
+            .testimonial-bg { width: 100%; max-width: 360px; }
+
+            footer { padding: 32px 20px; gap: 12px; }
         }
     </style>
 </head>
