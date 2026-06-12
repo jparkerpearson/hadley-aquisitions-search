@@ -426,46 +426,6 @@
             margin-top: 8px;
         }
 
-        /* ── TESTIMONIAL ── */
-        .testimonial {
-            padding: 120px 48px;
-            text-align: center;
-            position: relative;
-        }
-        .testimonial-bg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 640px;
-            height: 420px;
-            pointer-events: none;
-            opacity: 0.45;
-        }
-        .testimonial blockquote {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(22px, 2.8vw, 38px);
-            font-weight: 300;
-            font-style: italic;
-            color: var(--text);
-            line-height: 1.52;
-            max-width: 780px;
-            margin: 0 auto 32px;
-            letter-spacing: -0.01em;
-            position: relative;
-            z-index: 2;
-        }
-        .testimonial cite {
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--stone-dark);
-            font-style: normal;
-            position: relative;
-            z-index: 2;
-        }
-
         /* ── CTA ── */
         .cta-section {
             margin: 80px 48px 100px;
@@ -592,7 +552,6 @@
             .split-illustration { min-height: 340px; }
             .split-content { padding: 56px 32px; border-left: none; border-top: 1px solid var(--border); }
             .stats-row { gap: 32px; }
-            .testimonial { padding: 80px 24px; }
             footer { padding: 40px 24px; flex-direction: column; gap: 16px; text-align: center; }
         }
 
@@ -634,9 +593,6 @@
             .stats-row { gap: 20px; padding-top: 28px; flex-wrap: wrap; }
             .stat-n { font-size: 40px; }
 
-            .testimonial { padding: 60px 20px; }
-            .testimonial-bg { width: 100%; max-width: 360px; }
-
             footer { padding: 32px 20px; gap: 12px; }
         }
     </style>
@@ -675,34 +631,6 @@
         <div class="scroll-track"></div>
     </div>
 </section>
-
-
-<!-- ── TESTIMONIAL ── -->
-<div class="section-divider"></div>
-<section class="testimonial">
-
-    <svg class="testimonial-bg" viewBox="0 0 640 420" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-            <filter id="tWc" x="-30%" y="-30%" width="160%" height="160%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.019" numOctaves="3" seed="8" result="n"/>
-                <feDisplacementMap in="SourceGraphic" in2="n" scale="38" xChannelSelector="R" yChannelSelector="G" result="d"/>
-                <feGaussianBlur in="d" stdDeviation="13"/>
-            </filter>
-        </defs>
-        <ellipse cx="320" cy="210" rx="290" ry="190" fill="#8FA67A" opacity="0.11" filter="url(#tWc)"/>
-        <ellipse cx="230" cy="190" rx="210" ry="150" fill="#C4B9A8" opacity="0.14" filter="url(#tWc)"/>
-        <ellipse cx="400" cy="220" rx="190" ry="140" fill="#2B3D5C" opacity="0.05" filter="url(#tWc)"/>
-    </svg>
-
-    <blockquote>
-        "We bought two companies we found through Hadley."
-    </blockquote>
-    <cite>— CEO, Series A Startup</cite>
-
-</section>
-
-
-
 
 <!-- ── PROCESS ── -->
 <div class="section-divider"></div>
