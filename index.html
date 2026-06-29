@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadley AI — Acquisitions, Accelerated</title>
+    <title>Hadley AI — Computational Reasoning for Acquisitions</title>
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
 
         :root {
             --cream: #F7F3EC;
-            --white: #FDFCFA;
+            --white: #faf7f5;
             --stone-light: #E8E1D6;
             --stone: #C4B9A8;
             --stone-dark: #8C7E6E;
@@ -44,14 +44,14 @@
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 100;
-            padding: 0 48px;
-            height: 72px;
+            padding: 0 44px 0 64px;
+            height: 78px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(253, 252, 250, 0.88);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(250, 247, 245, 0.92);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid var(--border);
         }
 
@@ -63,18 +63,17 @@
             color: var(--text);
             text-decoration: none;
         }
-        .logo-dot { color: var(--sage); }
 
         .nav-right {
             display: flex;
             align-items: center;
-            gap: 40px;
+            gap: 38px;
         }
 
         .nav-link {
             font-size: 12px;
-            font-weight: 400;
-            letter-spacing: 0.08em;
+            font-weight: 500;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             color: var(--text-secondary);
             text-decoration: none;
@@ -85,75 +84,65 @@
         .nav-cta {
             font-size: 12px;
             font-weight: 500;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
-            color: var(--navy);
+            color: var(--white);
             text-decoration: none;
-            padding: 9px 24px;
-            border: 1px solid rgba(43, 61, 92, 0.35);
+            padding: 14px 24px;
+            border: 1px solid rgba(43, 61, 92, 0.16);
+            border-radius: 14px;
+            background: var(--navy);
             transition: all 0.25s ease;
         }
         .nav-cta:hover {
-            background: var(--navy);
-            color: var(--white);
-            border-color: var(--navy);
+            background: var(--navy-mid);
+            border-color: var(--navy-mid);
         }
 
         /* ── HERO ── */
         .hero {
             min-height: 100vh;
-            padding: 140px 48px 120px;
+            padding: 126px 64px 88px;
             position: relative;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: minmax(400px, 0.9fr) minmax(520px, 1fr);
+            align-items: center;
+            column-gap: 0;
         }
 
         .hero-illustration {
-            position: absolute;
-            top: 0; right: 0;
-            width: 58%;
-            height: 100%;
+            position: relative;
+            grid-column: 2;
+            grid-row: 1;
+            width: min(100%, 920px);
+            justify-self: end;
+            align-self: center;
             pointer-events: none;
-            object-fit: cover;
+            object-fit: contain;
             object-position: center center;
-            mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, rgba(0,0,0,0.85) 40%, black 100%);
-            -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 18%, rgba(0,0,0,0.85) 40%, black 100%);
+            filter: saturate(0.92);
+            transform: translateX(-240px);
         }
 
         .hero-content {
+            grid-column: 1;
+            grid-row: 1;
             position: relative;
             z-index: 2;
-            max-width: 780px;
-        }
-
-        .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 14px;
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--sage-dark);
-            margin-bottom: 40px;
-        }
-        .eyebrow-line {
-            width: 32px;
-            height: 1px;
-            background: var(--sage);
-            flex-shrink: 0;
+            max-width: 640px;
+            align-self: center;
         }
 
         .hero h1 {
             font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(56px, 7.5vw, 108px);
+            font-size: clamp(60px, 5.9vw, 92px);
             font-weight: 300;
-            line-height: 1.0;
-            letter-spacing: -0.025em;
+            line-height: 0.96;
+            letter-spacing: -0.035em;
             color: var(--text);
-            margin-bottom: 36px;
+            max-width: 7ch;
+            margin-bottom: 28px;
         }
         .hero h1 em {
             font-style: italic;
@@ -161,12 +150,12 @@
         }
 
         .hero-body {
-            font-size: 17px;
-            font-weight: 300;
+            font-size: 18px;
+            font-weight: 400;
             color: var(--text-secondary);
-            max-width: 460px;
-            line-height: 1.78;
-            margin-bottom: 56px;
+            max-width: 500px;
+            line-height: 1.6;
+            margin-bottom: 40px;
         }
 
         .cta-row {
@@ -178,13 +167,14 @@
         .btn-primary {
             font-size: 12px;
             font-weight: 500;
-            letter-spacing: 0.1em;
+            letter-spacing: 0.12em;
             text-transform: uppercase;
             color: var(--white);
             background: var(--navy);
             text-decoration: none;
-            padding: 15px 44px;
+            padding: 15px 24px;
             display: inline-block;
+            border-radius: 999px;
             transition: background 0.25s ease;
         }
         .btn-primary:hover { background: var(--navy-mid); }
@@ -539,11 +529,31 @@
         }
 
         /* ── RESPONSIVE: TABLET ── */
-        @media (max-width: 900px) {
-            nav { padding: 0 24px; height: 64px; }
+        @media (max-width: 780px) {
+            nav { padding: 0 24px; height: 68px; }
+            .logo { font-size: 28px; }
+            .nav-right { gap: 24px; }
+            .nav-link { font-size: 12px; letter-spacing: 0.1em; }
+            .nav-cta { font-size: 12px; padding: 14px 20px; }
             .section-divider { margin: 0 24px; }
-            .hero { padding: 110px 24px 80px; }
-            .hero-illustration { opacity: 0.4; width: 80%; }
+            .hero {
+                padding: 104px 24px 80px;
+                grid-template-columns: 1fr;
+                row-gap: 32px;
+            }
+            .hero-illustration {
+                grid-column: 1;
+                grid-row: auto;
+                width: min(100%, 760px);
+                justify-self: center;
+                order: -1;
+            }
+            .hero-content {
+                grid-column: 1;
+                grid-row: auto;
+            }
+            .hero h1 { max-width: 8ch; }
+            .hero-body { font-size: 18px; max-width: 480px; }
             .process { padding: 0 24px 80px; }
             .process-grid { grid-template-columns: 1fr; }
             .process-item { padding: 48px 32px; border-right: none; border-bottom: 1px solid var(--border); }
@@ -557,30 +567,43 @@
 
         /* ── RESPONSIVE: MOBILE ── */
         @media (max-width: 600px) {
-            nav { padding: 0 20px; height: 60px; }
+            nav {
+                padding: 0 20px;
+                height: 68px;
+            }
+            .logo { font-size: 22px; }
+            .nav-right { display: none; }
             .section-divider { margin: 0 20px; }
 
-            /* Hero: image banner on top, text below */
             .hero {
                 min-height: auto;
-                padding: 0;
-                flex-direction: column;
-                justify-content: flex-start;
+                padding: 92px 20px 56px;
+                grid-template-columns: 1fr;
+                row-gap: 24px;
             }
             .hero-illustration {
                 position: relative;
-                top: auto; right: auto;
+                grid-column: 1;
+                grid-row: auto;
                 width: 100%;
-                height: 300px;
-                flex-shrink: 0;
-                mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
-                -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+                height: auto;
+                order: -1;
             }
             .hero-content {
-                padding: 36px 20px 72px;
+                grid-column: 1;
+                grid-row: auto;
                 max-width: none;
             }
-            .hero-body { font-size: 16px; margin-bottom: 40px; }
+            .hero h1 {
+                font-size: clamp(54px, 16vw, 74px);
+                max-width: 8ch;
+                margin-bottom: 28px;
+            }
+            .hero-body {
+                font-size: 16px;
+                max-width: 360px;
+                margin-bottom: 32px;
+            }
             .scroll-indicator { display: none; }
 
             .process { padding: 0 20px 60px; }
@@ -608,17 +631,16 @@
 <!-- ── HERO ── -->
 <section class="hero">
 
-    <img class="hero-illustration" src="landscape.png" alt="" aria-hidden="true">
+    <img class="hero-illustration" src="network-graph.png" alt="" aria-hidden="true">
 
     <div class="hero-content">
 
         <h1>
-            Acquire faster<br>
-            than you can <em>build.</em>
+            Computational reasoning <span style="white-space:nowrap">for <em>acquisitions.</em></span>
         </h1>
 
         <p class="hero-body">
-            Your AI is transforming a legacy industry. Your M&A process should work the same way.
+            A distributed reasoning system trained on the world's private markets
         </p>
 
         <div class="cta-row">
@@ -639,20 +661,20 @@
 
         <div class="process-item">
             <span class="process-num">01</span>
-            <h3>Find Businesses</h3>
-            <p>Hadley has a map of the market and gives you the companies worth talking to.</p>
+            <h3>Map the Market</h3>
+            <p>Hadley structures the private market and surfaces the targets worth your attention.</p>
         </div>
 
         <div class="process-item">
             <span class="process-num">02</span>
-            <h3>Run Due Diligence</h3>
-            <p>Hadley cleans up seller data and runs due diligence faster than anyone else.</p>
+            <h3>Analyze the Deal</h3>
+            <p>Agents process seller data, model the business, and flag what matters.</p>
         </div>
 
         <div class="process-item">
             <span class="process-num">03</span>
-            <h3>Close Deals</h3>
-            <p>Hadley closes the deal and gets you the best price.</p>
+            <h3>Decide with Conviction</h3>
+            <p>Clear reasoning based on thousands of private market acquisitions so you move fast and price right.</p>
         </div>
 
     </div>
@@ -663,26 +685,26 @@
 <section class="split-section">
 
     <div class="split-illustration" aria-hidden="true">
-        <img src="landscape-2.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center center;">
+        <img src="math.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center center;">
     </div>
 
     <div class="split-content">
-        <span class="section-label">Why Hadley</span>
+        <span class="section-label">The Platform</span>
 
         <h2>
-            Find the right companies.<br>
-            Move before they're<br>
-            <em>off the market.</em>
+            A synthetic judgment<br>
+            layer for every<br>
+            <em>M&amp;A decision.</em>
         </h2>
 
         <p>
-            Most deals come and go without you knowing. By the time they reach you, they're gone. Hadley finds the right ones first and gets you ready to move.
+            Structured data and purpose-built agents for smarter acquisition decisions at every stage of the deal.
         </p>
 
         <div class="stats-row">
             <div>
                 <div class="stat-n">10×</div>
-                <div class="stat-l">Faster sourcing</div>
+                <div class="stat-l">More market coverage</div>
             </div>
             <div>
                 <div class="stat-n">72h</div>
