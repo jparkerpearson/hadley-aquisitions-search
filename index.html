@@ -111,18 +111,67 @@
             column-gap: 0;
         }
 
-        .hero-illustration {
-            position: relative;
+        .hero-graph-wrapper {
             grid-column: 2;
             grid-row: 1;
             width: min(100%, 920px);
             justify-self: end;
             align-self: center;
+            position: relative;
+            transform: translateX(-160px);
             pointer-events: none;
-            object-fit: contain;
-            object-position: center center;
+        }
+        .hero-illustration {
+            width: 100%;
+            height: auto;
+            display: block;
             filter: saturate(0.92);
-            transform: translateX(-240px);
+        }
+        .hot-zone {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: auto;
+        }
+        .hz-glow {
+            position: absolute;
+            inset: -14%;
+            border-radius: 50%;
+            opacity: 0.18;
+            transition: opacity 0.3s ease;
+            background: radial-gradient(ellipse at center, rgba(43, 61, 92, 0.09) 30%, transparent 72%);
+            border: 1px solid rgba(77, 104, 136, 0.22);
+            box-shadow: 0 0 24px rgba(43, 61, 92, 0.06);
+            pointer-events: none;
+            transform-origin: center center;
+        }
+        .hot-zone:hover .hz-glow {
+            opacity: 1;
+            background: radial-gradient(ellipse at center, rgba(43, 61, 92, 0.15) 30%, transparent 72%);
+            border-color: rgba(77, 104, 136, 0.45);
+            box-shadow: 0 0 36px rgba(43, 61, 92, 0.12);
+        }
+        .hz-label {
+            position: absolute;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--navy);
+            background: rgba(250, 247, 245, 0.93);
+            border: 1px solid rgba(43, 61, 92, 0.15);
+            padding: 4px 10px;
+            border-radius: 3px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.22s ease, transform 0.22s ease;
+            pointer-events: none;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .hot-zone:hover .hz-label {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .hero-content {
@@ -225,6 +274,7 @@
             background: var(--navy);
             animation: scrollDown 2s ease-in-out infinite;
         }
+
         @keyframes scrollDown {
             0%   { top: -100%; }
             100% { top: 100%; }
@@ -541,12 +591,13 @@
                 grid-template-columns: 1fr;
                 row-gap: 32px;
             }
-            .hero-illustration {
+            .hero-graph-wrapper {
                 grid-column: 1;
                 grid-row: auto;
                 width: min(100%, 760px);
                 justify-self: center;
                 order: -1;
+                transform: none;
             }
             .hero-content {
                 grid-column: 1;
@@ -581,13 +632,12 @@
                 grid-template-columns: 1fr;
                 row-gap: 24px;
             }
-            .hero-illustration {
-                position: relative;
+            .hero-graph-wrapper {
                 grid-column: 1;
                 grid-row: auto;
                 width: 100%;
-                height: auto;
                 order: -1;
+                transform: none;
             }
             .hero-content {
                 grid-column: 1;
@@ -631,7 +681,39 @@
 <!-- ── HERO ── -->
 <section class="hero">
 
-    <img class="hero-illustration" src="network-graph.png" alt="" aria-hidden="true">
+    <div class="hero-graph-wrapper" aria-hidden="true">
+        <img class="hero-illustration" src="network-graph.png" alt="">
+
+        <!-- upper-left → tilt toward lower-right center: CCW -->
+        <div class="hot-zone" style="top:10%;left:27%;width:11%;height:26%">
+            <div class="hz-glow" style="transform:rotate(-25deg)"></div>
+            <span class="hz-label" style="top:28%;left:115%">Bayesian Inference</span>
+        </div>
+
+        <!-- upper-right → tilt toward lower-left center: CW -->
+        <div class="hot-zone" style="top:6%;left:64%;width:11%;height:26%">
+            <div class="hz-glow" style="transform:rotate(25deg)"></div>
+            <span class="hz-label" style="top:108%;left:-20%">Belief Propagation</span>
+        </div>
+
+        <!-- center → minimal tilt -->
+        <div class="hot-zone" style="top:42%;left:40%;width:12%;height:26%">
+            <div class="hz-glow" style="transform:rotate(5deg)"></div>
+            <span class="hz-label" style="bottom:108%;right:0">Graph Optimization</span>
+        </div>
+
+        <!-- lower-left → tilt toward upper-right center: CW -->
+        <div class="hot-zone" style="top:68%;left:7%;width:11%;height:26%">
+            <div class="hz-glow" style="transform:rotate(25deg)"></div>
+            <span class="hz-label" style="top:15%;left:115%">Distributed Reasoning</span>
+        </div>
+
+        <!-- lower-right → tilt toward upper-left center: CCW -->
+        <div class="hot-zone" style="top:56%;left:64%;width:11%;height:26%">
+            <div class="hz-glow" style="transform:rotate(-25deg)"></div>
+            <span class="hz-label" style="bottom:108%;right:-10%">Probabilistic Inference</span>
+        </div>
+    </div>
 
     <div class="hero-content">
 
