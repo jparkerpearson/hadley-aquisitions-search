@@ -137,7 +137,7 @@
             inset: -14%;
             border-radius: 50%;
             opacity: 0.18;
-            transition: opacity 0.3s ease;
+            transition: opacity 1.4s ease;
             background: radial-gradient(ellipse at center, rgba(165, 127, 89, 0.09) 30%, transparent 72%);
             border: 1px solid rgba(165, 127, 89, 0.22);
             box-shadow: 0 0 24px rgba(165, 127, 89, 0.06);
@@ -177,14 +177,22 @@
             white-space: nowrap;
             opacity: 0;
             transform: translateY(5px);
-            transition: opacity 0.22s ease, transform 0.22s ease;
+            transition: opacity 1.2s ease, transform 1.2s ease;
             pointer-events: none;
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
         }
-        .hot-zone:hover .hz-label {
+        .hot-zone:hover .hz-label,
+        .hot-zone.is-active .hz-label {
             opacity: 1;
             transform: translateY(0);
+        }
+        .hot-zone.is-active .hz-glow {
+            opacity: 1;
+            background: radial-gradient(ellipse at center, rgba(165, 127, 89, 0.15) 30%, transparent 72%);
+            border-color: rgba(165, 127, 89, 0.45);
+            box-shadow: 0 0 36px rgba(165, 127, 89, 0.12);
+            animation: hz-pulse 2.2s ease-in-out infinite;
         }
 
         .hero-content {
@@ -890,6 +898,48 @@
 
 
 
+
+<script>
+    const zones = Array.from(document.querySelectorAll('.hot-zone'));
+    let current = 0;
+    let timer = null;
+    let fadeTimer = null;
+    let hoverCount = 0;
+
+    function activateZone(i) {
+        zones.forEach(z => z.classList.remove('is-active'));
+        clearTimeout(fadeTimer);
+        fadeTimer = setTimeout(() => zones[i].classList.add('is-active'), 700);
+    }
+
+    function startCycle() {
+        activateZone(current);
+        timer = setInterval(() => {
+            current = (current + 1) % zones.length;
+            activateZone(current);
+        }, 6000);
+    }
+
+    function stopCycle() {
+        clearInterval(timer);
+        clearTimeout(fadeTimer);
+        timer = null;
+        zones.forEach(z => z.classList.remove('is-active'));
+    }
+
+    startCycle();
+
+    zones.forEach(z => {
+        z.addEventListener('mouseenter', () => {
+            hoverCount++;
+            if (hoverCount === 1) stopCycle();
+        });
+        z.addEventListener('mouseleave', () => {
+            hoverCount--;
+            if (hoverCount === 0) startCycle();
+        });
+    });
+</script>
 
 <!-- ── FOOTER ── -->
 <footer>
