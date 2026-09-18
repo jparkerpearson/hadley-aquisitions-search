@@ -200,6 +200,7 @@
         }
         .btn-primary:hover { background: var(--navy-mid); }
 
+
         .role-body h2 {
             font-family: 'Cormorant Garamond', serif;
             font-size: clamp(36px, 3.6vw, 54px);
@@ -209,6 +210,22 @@
             margin-bottom: 28px;
         }
         .role-body h2 em { font-style: italic; color: var(--navy); }
+        .btn-copy {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            margin-left: 6px;
+            padding: 6px;
+            background: none;
+            border: none;
+            border-radius: 999px;
+            color: var(--stone-dark);
+            cursor: pointer;
+            transition: color 0.2s ease, background 0.2s ease;
+        }
+        .btn-copy:hover { color: var(--navy); background: var(--stone-light); }
+        .btn-copy.copied { color: var(--sage-dark); }
         .role-body h3 {
             font-size: 10px;
             font-weight: 500;
@@ -446,7 +463,7 @@
     </aside>
 
     <div class="role-body">
-        <h2>Head of <em>Origination</em></h2>
+        <h2>Head of <em>Origination</em> <button type="button" class="btn-copy" data-copy-link aria-label="Copy link to this role" title="Copy link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button></h2>
         <h3>The work</h3>
         <ul>
             <li>Handle what isn't automated: owner conversations, broker and intermediary relationships, and judgment calls the data can't make.</li>
@@ -477,7 +494,7 @@
     </aside>
 
     <div class="role-body">
-        <h2>Founding <em>Applied AI</em> Engineer</h2>
+        <h2>Founding <em>Applied AI</em> Engineer <button type="button" class="btn-copy" data-copy-link aria-label="Copy link to this role" title="Copy link"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></button></h2>
         <h3>The work</h3>
         <ul>
             <li>Improve our SOTA research agents.</li>
@@ -627,6 +644,25 @@
             success.hidden = true;
             status.textContent = '';
             dialog.showModal();
+        });
+    });
+
+    document.querySelectorAll('[data-copy-link]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const url = new URL(location.href);
+            url.hash = btn.closest('.role').id;
+            try {
+                await navigator.clipboard.writeText(url.href);
+                btn.title = 'Copied';
+                btn.classList.add('copied');
+            } catch {
+                btn.title = 'Copy failed';
+            }
+            clearTimeout(btn._t);
+            btn._t = setTimeout(() => {
+                btn.title = 'Copy link';
+                btn.classList.remove('copied');
+            }, 2000);
         });
     });
 
