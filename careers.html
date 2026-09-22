@@ -650,6 +650,14 @@
         });
     });
 
+    // Old role anchors that were renamed; keep previously shared links working.
+    const LEGACY_ANCHORS = { 'head-of-origination': 'origination-lead' };
+    const legacyTarget = LEGACY_ANCHORS[location.hash.slice(1)];
+    if (legacyTarget) {
+        history.replaceState(null, '', '#' + legacyTarget);
+        document.getElementById(legacyTarget)?.scrollIntoView();
+    }
+
     document.querySelectorAll('[data-copy-link]').forEach(btn => {
         btn.addEventListener('click', async () => {
             const url = new URL(location.href);
