@@ -10,7 +10,7 @@ const COLLECTION = process.env.FIRESTORE_COLLECTION || "job_application_submissi
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "https://gethadley.com,https://www.gethadley.com")
   .split(",").map((o) => o.trim()).filter(Boolean);
 
-const ROLES = ["Head of Origination", "Founding Applied AI Engineer"];
+const ROLES = ["Origination Lead", "Founding Applied AI Engineer"];
 const MAX_WHY_WORDS = 200;
 const MAX_BODY_BYTES = 20_000;
 
