@@ -133,8 +133,8 @@ try {
   }
   await width(1280);
   await navigate("/");
-  assert.equal(await evaluate("document.querySelector('h1').textContent"), "Hadley AI");
-  assert.equal(await evaluate("document.querySelector('.hero-positioning').textContent"), "the next generation of buyside M&A sourcing for best-in-class enterprises, private equity funds and AI roll-ups");
+  assert.equal(await evaluate("document.querySelector('h1').textContent"), "The next generation of buyside M&A sourcing is here");
+  assert.equal(await evaluate("document.querySelector('.hero-positioning')"), null);
   assert.ok(await evaluate("document.querySelector('[data-hadley-audio]').hidden"));
   for (const id of ["offerings", "voicemail-heading"]) {
     await evaluate(`document.getElementById(${JSON.stringify(id)}).scrollIntoView()`);
