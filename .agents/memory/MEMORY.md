@@ -1,2 +1,3 @@
 - [Hadley positioning](hadley-positioning.md) — User-defined deal-sourcing positioning, three offerings, and supplied brand references.
 - [Video preview compatibility](video-preview-compatibility.md) — Screenshot capture and workspace Chromium can differ in MP4 decoding support.
+- [App Storage SDK quirks](app-storage-sdk-quirks.md) — Download responses can differ from the SDK's documented types; validate them explicitly.

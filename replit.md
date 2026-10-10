@@ -28,7 +28,7 @@
 - The hero uses an original generated 1080p silent mountain flyover, optimized to about seven seconds with noticeable forward travel over the ridge. `assets/mountain-poster.webp` is its real still-image fallback.
 - `assets/site.js` loads the video only when motion is allowed and the hero is visible. It supports pause/play, reduced motion, data saving, page visibility, and playback failure.
 - `/media/mountain-hero.mp4` and its WebM alternative expose only the two corresponding `hadley/mountain-hero` objects from App Storage, with byte-range support. WebM is used when MP4 decoding is unavailable. No general bucket browsing or upload endpoint is exposed.
-- **Storage setup is required before publishing:** create a bucket via **All tools → App Storage → Create new bucket**, then run `npm run upload:mountain`. The command uploads and verifies the optimized file. Restart Preview afterward.
+- Both optimized video formats are uploaded and verified in this project's App Storage bucket. For a fresh project or replacement clip, create/select its bucket via **All tools → App Storage**, then run `npm run upload:mountain` and restart Preview.
 - Preview may use the local generated file while no bucket is configured. That path prints a warning and is only for development; `/generated-artifacts/` is excluded from Git and deployment.
 - On a new hosting environment outside Replit, provide the video through that host's media storage and update the hero's `data-video-src`; Replit App Storage authentication is Replit-specific.
 

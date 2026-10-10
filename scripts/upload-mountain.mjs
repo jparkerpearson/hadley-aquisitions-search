@@ -14,10 +14,15 @@ try {
     if (!result.ok) throw new Error("Upload failed.");
     const stored = await client.downloadAsBytes(object);
     if (!stored.ok) throw new Error("Upload verification failed.");
-    if (digest(stored.value) !== digest(await readFile(source))) throw new Error("Stored file does not match the original.");
+    // SDK 1.0 returns the GCS download tuple, although its documentation says Buffer.
+    const bytes = Buffer.isBuffer(stored.value) ? stored.value
+      : Array.isArray(stored.value) && stored.value.length === 1 && Buffer.isBuffer(stored.value[0])
+        ? stored.value[0] : null;
+    if (!bytes) throw new Error("Unrecognized storage download response.");
+    if (digest(bytes) !== digest(await readFile(source))) throw new Error("Stored file does not match the original.");
   }
   console.log("Mountain video saved and verified in App Storage. Restart Website preview to use the stored copy.");
 } catch {
-  console.error("Could not save the video. Create a bucket in All tools → App Storage, then run npm run upload:mountain.");
+  console.error("Could not save or verify the video. Check the App Storage bucket configuration, then run npm run upload:mountain.");
   process.exitCode = 1;
 }
