@@ -4,35 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Careers — Hadley AI</title>
-    <meta name="description" content="Join Hadley AI. We're building computational reasoning for acquisitions.">
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <meta name="description" content="Join Hadley AI and help build the future of deal sourcing through proprietary data, outreach technology, and buy-side experience.">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --cream: #F7F3EC;
-            --white: #faf7f5;
-            --stone-light: #E8E1D6;
-            --stone: #C4B9A8;
-            --stone-dark: #8C7E6E;
-            --sage-light: #B8CCA8;
-            --sage: #8FA67A;
-            --sage-dark: #607A4A;
-            --navy: #2B3D5C;
-            --navy-mid: #3A5070;
-            --navy-light: #4D6888;
-            --text: #1A1916;
-            --text-secondary: #6B6560;
-            --border: rgba(196, 185, 168, 0.25);
+            --cream: #FAFBFD;
+            --white: #FAFBFD;
+            --stone-light: #E6EBF3;
+            --stone: #AAB2BD;
+            --stone-dark: #5A7FBF;
+            --sage-light: #84B6F4;
+            --sage: #1E4B9B;
+            --sage-dark: #0F2D64;
+            --navy: #0F2D64;
+            --navy-mid: #1E4B9B;
+            --navy-light: #5A7FBF;
+            --text: #2B2F36;
+            --text-secondary: #596474;
+            --border: rgba(15, 45, 100, 0.15);
         }
 
         html { font-size: 16px; scroll-behavior: smooth; scroll-padding-top: 96px; }
 
         body {
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             background: var(--white);
             color: var(--text);
             font-weight: 300;
@@ -57,7 +54,7 @@
         }
 
         .logo {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 22px;
             font-weight: 500;
             letter-spacing: 0.01em;
@@ -98,7 +95,7 @@
         }
         .careers-hero .section-label { display: block; margin-bottom: 16px; }
         .careers-hero h1 {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: clamp(38px, 3.8vw, 58px);
             font-weight: 300;
             line-height: 1.05;
@@ -145,7 +142,7 @@
             color: var(--text);
         }
         .role-row-title {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: clamp(26px, 2.6vw, 36px);
             font-weight: 400;
             letter-spacing: -0.01em;
@@ -202,7 +199,7 @@
 
 
         .role-body h2 {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: clamp(36px, 3.6vw, 54px);
             font-weight: 300;
             line-height: 1.1;
@@ -269,10 +266,10 @@
             border-radius: 18px;
             background: var(--white);
             color: var(--text);
-            box-shadow: 0 30px 80px rgba(26, 25, 22, 0.18);
+            box-shadow: 0 30px 80px rgba(15, 45, 100, 0.18);
         }
         .apply-dialog::backdrop {
-            background: rgba(26, 25, 22, 0.35);
+            background: rgba(11, 31, 59, 0.35);
             backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
         }
@@ -293,7 +290,7 @@
         .apply-close:hover { background: var(--stone-light); color: var(--text); }
         .apply-inner .section-label { display: block; margin-bottom: 10px; }
         .apply-title {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 34px;
             font-weight: 400;
             line-height: 1.1;
@@ -316,9 +313,9 @@
             color: var(--text-secondary);
         }
         .field input, .field textarea {
-            font: 400 15px/1.5 'Inter', system-ui, sans-serif;
+            font: 400 15px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
             color: var(--text);
-            background: #fff;
+            background: #FAFBFD;
             border: 1px solid var(--stone-light);
             border-radius: 10px;
             padding: 11px 14px;
@@ -362,7 +359,7 @@
             align-items: center;
         }
         .footer-logo {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
             font-size: 20px;
             font-weight: 500;
             color: var(--text);
@@ -407,14 +404,18 @@
             footer { padding: 32px 20px; gap: 12px; }
         }
     </style>
+    <link rel="stylesheet" href="assets/site.css">
+    <script src="assets/site.js" defer></script>
 </head>
-<body>
+<body class="careers-page">
 
 <!-- ── NAV ── -->
-<nav>
-    <a href="./" class="logo">Hadley AI</a>
+<nav aria-label="Main navigation">
+    <a href="./" class="logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI"></a>
     <div class="nav-right">
+        <a href="./#offerings" class="nav-link">What we do</a>
         <a href="careers.html" class="nav-link" aria-current="page">Careers</a>
+        <a href="mailto:parker@gethadley.com" class="nav-cta">Talk with us</a>
     </div>
 </nav>
 
@@ -422,10 +423,10 @@
 <!-- ── HERO ── -->
 <header class="careers-hero">
     <span class="section-label">Careers</span>
-    <h1>Build the <em>reasoning layer</em> for capital allocation.</h1>
+    <h1>Build the <em>future of deal sourcing.</em></h1>
     <p>
-        Hadley builds models to reason and source acquisitions. We're hiring A+
-        people who are motivated by hard problems and high expectations.
+        We bring proprietary data, outreach technology, and buy-side experience
+        to the search for the right acquisition. Join the team building what comes next.
     </p>
 </header>
 
@@ -517,7 +518,7 @@
 
 <!-- ── FOOTER ── -->
 <footer>
-    <a href="./" class="footer-logo">Hadley AI</a>
+    <a href="./" class="footer-logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI"></a>
     <div class="footer-nav">
         <a href="./" class="footer-link">Home</a>
         <a href="careers.html" class="footer-link">Careers</a>

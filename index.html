@@ -3,955 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadley AI — Computational Reasoning for Acquisitions</title>
-    <link rel="icon" type="image/png" href="favicon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        :root {
-            --cream: #F7F3EC;
-            --white: #faf7f5;
-            --stone-light: #E8E1D6;
-            --stone: #C4B9A8;
-            --stone-dark: #8C7E6E;
-            --sage-light: #B8CCA8;
-            --sage: #8FA67A;
-            --sage-dark: #607A4A;
-            --navy: #2B3D5C;
-            --navy-mid: #3A5070;
-            --navy-light: #4D6888;
-            --text: #1A1916;
-            --text-secondary: #6B6560;
-            --border: rgba(196, 185, 168, 0.25);
-        }
-
-        html { font-size: 16px; scroll-behavior: smooth; }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--white);
-            color: var(--text);
-            font-weight: 300;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* ── NAV ── */
-        nav {
-            position: fixed;
-            top: 0; left: 0; right: 0;
-            z-index: 100;
-            padding: 0 44px 0 64px;
-            height: 78px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(250, 247, 245, 0.92);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 22px;
-            font-weight: 500;
-            letter-spacing: 0.01em;
-            color: var(--text);
-            text-decoration: none;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 38px;
-        }
-
-        .nav-link {
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .nav-link:hover { color: var(--text); }
-
-        .nav-cta {
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--white);
-            text-decoration: none;
-            padding: 14px 24px;
-            border: 1px solid rgba(43, 61, 92, 0.16);
-            border-radius: 14px;
-            background: var(--navy);
-            transition: all 0.25s ease;
-        }
-        .nav-cta:hover {
-            background: var(--navy-mid);
-            border-color: var(--navy-mid);
-        }
-
-        /* ── HERO ── */
-        .hero {
-            min-height: 100vh;
-            padding: 126px 64px 88px;
-            position: relative;
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: minmax(400px, 0.9fr) minmax(520px, 1fr);
-            align-items: center;
-            column-gap: 0;
-        }
-
-        .hero-graph-wrapper {
-            grid-column: 2;
-            grid-row: 1;
-            width: min(100%, 920px);
-            justify-self: end;
-            align-self: center;
-            position: relative;
-            transform: translateX(-145px);
-            pointer-events: none;
-        }
-        .hero-illustration {
-            width: 100%;
-            height: auto;
-            display: block;
-            filter: saturate(0.92);
-        }
-        .hot-zone {
-            position: absolute;
-            border-radius: 50%;
-            pointer-events: auto;
-        }
-        .hz-glow {
-            position: absolute;
-            inset: -14%;
-            border-radius: 50%;
-            opacity: 0.18;
-            transition: opacity 1.4s ease;
-            background: radial-gradient(ellipse at center, rgba(165, 127, 89, 0.09) 30%, transparent 72%);
-            border: 1px solid rgba(165, 127, 89, 0.22);
-            box-shadow: 0 0 24px rgba(165, 127, 89, 0.06);
-            pointer-events: none;
-            transform-origin: center center;
-        }
-        .hot-zone:hover .hz-glow {
-            opacity: 1;
-            background: radial-gradient(ellipse at center, rgba(165, 127, 89, 0.15) 30%, transparent 72%);
-            border-color: rgba(165, 127, 89, 0.45);
-            box-shadow: 0 0 36px rgba(165, 127, 89, 0.12);
-            animation: hz-pulse 2.2s ease-in-out infinite;
-        }
-        @keyframes hz-pulse {
-            0%, 100% {
-                box-shadow: 0 0 36px rgba(165, 127, 89, 0.14);
-                border-color: rgba(165, 127, 89, 0.45);
-                opacity: 1;
-            }
-            50% {
-                box-shadow: 0 0 72px rgba(165, 127, 89, 0.38), 0 0 0 8px rgba(165, 127, 89, 0.12);
-                border-color: rgba(165, 127, 89, 0.85);
-                opacity: 0.88;
-            }
-        }
-        .hz-label {
-            position: absolute;
-            font-size: 9px;
-            font-weight: 500;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--navy);
-            background: rgba(250, 247, 245, 0.93);
-            border: 1px solid rgba(43, 61, 92, 0.15);
-            padding: 4px 10px;
-            border-radius: 3px;
-            white-space: nowrap;
-            opacity: 0;
-            transform: translateY(5px);
-            transition: opacity 1.2s ease, transform 1.2s ease;
-            pointer-events: none;
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-        }
-        .hot-zone:hover .hz-label,
-        .hot-zone.is-active .hz-label {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        .hot-zone.is-active .hz-glow {
-            opacity: 1;
-            background: radial-gradient(ellipse at center, rgba(165, 127, 89, 0.15) 30%, transparent 72%);
-            border-color: rgba(165, 127, 89, 0.45);
-            box-shadow: 0 0 36px rgba(165, 127, 89, 0.12);
-            animation: hz-pulse 2.2s ease-in-out infinite;
-        }
-
-        .hero-content {
-            grid-column: 1;
-            grid-row: 1;
-            position: relative;
-            z-index: 2;
-            max-width: 640px;
-            align-self: center;
-        }
-
-        .hero h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(60px, 5.9vw, 92px);
-            font-weight: 300;
-            line-height: 0.96;
-            letter-spacing: -0.035em;
-            color: var(--text);
-            max-width: 7ch;
-            margin-bottom: 28px;
-        }
-        .hero h1 em {
-            font-style: italic;
-            color: var(--navy);
-        }
-
-        .hero-body {
-            font-size: 18px;
-            font-weight: 400;
-            color: var(--text-secondary);
-            max-width: 500px;
-            line-height: 1.6;
-            margin-bottom: 40px;
-        }
-
-        .cta-row {
-            display: flex;
-            align-items: center;
-            gap: 32px;
-        }
-
-        .btn-primary {
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--white);
-            background: var(--navy);
-            text-decoration: none;
-            padding: 15px 24px;
-            display: inline-block;
-            border-radius: 999px;
-            transition: background 0.25s ease;
-        }
-        .btn-primary:hover { background: var(--navy-mid); }
-
-        .btn-text {
-            font-size: 13px;
-            font-weight: 300;
-            color: var(--text-secondary);
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-text svg { transition: transform 0.2s; }
-        .btn-text:hover svg { transform: translateX(4px); }
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 48px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            opacity: 0.35;
-        }
-        .scroll-indicator span {
-            font-size: 9px;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--stone-dark);
-        }
-        .scroll-track {
-            width: 1px;
-            height: 44px;
-            background: rgba(196,185,168,0.4);
-            position: relative;
-            overflow: hidden;
-        }
-        .scroll-track::after {
-            content: '';
-            position: absolute;
-            top: -100%;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--navy);
-            animation: scrollDown 2s ease-in-out infinite;
-        }
-
-        @keyframes scrollDown {
-            0%   { top: -100%; }
-            100% { top: 100%; }
-        }
-
-        /* ── SECTION UTILITIES ── */
-        .section-divider {
-            margin: 0 48px;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .section-label {
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--stone-dark);
-        }
-
-        /* ── MANIFESTO ── */
-        .manifesto {
-            padding: 120px 48px;
-        }
-        .manifesto-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 80px;
-            align-items: start;
-        }
-        .manifesto-inner .section-label { padding-top: 10px; }
-
-        .manifesto-quote {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(28px, 3.2vw, 46px);
-            font-weight: 300;
-            line-height: 1.4;
-            color: var(--text);
-            letter-spacing: -0.015em;
-        }
-        .manifesto-quote em {
-            font-style: italic;
-            color: var(--navy);
-        }
-
-        /* ── PROCESS ── */
-        .process {
-            padding: 0 48px 120px;
-        }
-        .process-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            padding-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-        }
-        .process-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(32px, 3.5vw, 52px);
-            font-weight: 300;
-            letter-spacing: -0.02em;
-            line-height: 1.15;
-        }
-        .process-count {
-            font-size: 10px;
-            letter-spacing: 0.18em;
-            text-transform: uppercase;
-            color: var(--stone-dark);
-            padding-bottom: 6px;
-        }
-        .process-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-        }
-        .process-item {
-            padding: 64px 48px 60px;
-            border-right: 1px solid var(--border);
-        }
-        .process-item:last-child { border-right: none; }
-
-        .process-num {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 80px;
-            font-weight: 300;
-            color: var(--stone-light);
-            line-height: 1;
-            margin-bottom: 40px;
-            display: block;
-            letter-spacing: -0.04em;
-        }
-        .process-icon {
-            width: 36px;
-            height: 36px;
-            margin-bottom: 24px;
-        }
-        .process-item h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 400;
-            color: var(--text);
-            margin-bottom: 14px;
-            letter-spacing: -0.01em;
-        }
-        .process-item p {
-            font-size: 14px;
-            font-weight: 300;
-            color: var(--text-secondary);
-            line-height: 1.85;
-        }
-        .process-tag {
-            display: inline-block;
-            margin-top: 28px;
-            font-size: 9px;
-            font-weight: 500;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: var(--sage-dark);
-            padding: 5px 12px;
-            background: rgba(96, 122, 74, 0.08);
-            border: 1px solid rgba(96, 122, 74, 0.15);
-        }
-
-        /* ── SPLIT SECTION ── */
-        .split-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            min-height: 600px;
-            margin-bottom: 0;
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-        .split-illustration {
-            position: relative;
-            overflow: hidden;
-            min-height: 520px;
-            background: var(--cream);
-        }
-
-        .split-content {
-            padding: 88px 72px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-left: 1px solid var(--border);
-        }
-        .split-content .section-label { margin-bottom: 32px; }
-        .split-content h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(30px, 3vw, 50px);
-            font-weight: 300;
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 24px;
-        }
-        .split-content h2 em {
-            font-style: italic;
-            color: var(--navy);
-        }
-        .split-content p {
-            font-size: 15px;
-            font-weight: 300;
-            color: var(--text-secondary);
-            line-height: 1.82;
-            max-width: 380px;
-            margin-bottom: 52px;
-        }
-        .stats-row {
-            display: flex;
-            gap: 48px;
-            padding-top: 40px;
-            border-top: 1px solid var(--border);
-        }
-        .stat-n {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 52px;
-            font-weight: 300;
-            color: var(--navy);
-            line-height: 1;
-            letter-spacing: -0.03em;
-        }
-        .stat-l {
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.14em;
-            text-transform: uppercase;
-            color: var(--stone-dark);
-            margin-top: 8px;
-        }
-
-        /* ── CTA ── */
-        .cta-section {
-            margin: 80px 48px 100px;
-            background: var(--navy);
-            padding: 96px 80px;
-            position: relative;
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            align-items: center;
-            gap: 80px;
-        }
-        .cta-bg {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
-        .cta-content { position: relative; z-index: 2; }
-        .cta-eyebrow {
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: rgba(143, 166, 122, 0.75);
-            margin-bottom: 20px;
-        }
-        .cta-section h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(32px, 4vw, 60px);
-            font-weight: 300;
-            color: var(--cream);
-            line-height: 1.08;
-            letter-spacing: -0.025em;
-            margin-bottom: 16px;
-        }
-        .cta-section h2 em {
-            font-style: italic;
-            color: var(--sage-light);
-        }
-        .cta-section > .cta-content p {
-            font-size: 15px;
-            font-weight: 300;
-            color: rgba(247, 243, 236, 0.5);
-        }
-        .cta-actions {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            min-width: 220px;
-        }
-        .btn-cream {
-            font-size: 12px;
-            font-weight: 500;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: var(--navy);
-            background: var(--cream);
-            text-decoration: none;
-            padding: 16px 36px;
-            text-align: center;
-            transition: background 0.2s;
-        }
-        .btn-cream:hover { background: #EDE7DA; }
-        .btn-ghost {
-            font-size: 12px;
-            font-weight: 400;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            color: rgba(247, 243, 236, 0.5);
-            text-decoration: none;
-            padding: 16px 36px;
-            text-align: center;
-            border: 1px solid rgba(247, 243, 236, 0.18);
-            transition: all 0.2s;
-        }
-        .btn-ghost:hover {
-            color: rgba(247, 243, 236, 0.85);
-            border-color: rgba(247, 243, 236, 0.35);
-        }
-
-        /* ── FOOTER ── */
-        footer {
-            padding: 48px 48px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .footer-logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 20px;
-            font-weight: 500;
-            color: var(--text);
-        }
-        .footer-logo-dot { color: var(--sage); }
-        .footer-nav { display: flex; gap: 32px; }
-        .footer-link {
-            font-size: 11px;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: var(--stone-dark);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        .footer-link:hover { color: var(--text); }
-        .footer-copy {
-            font-size: 12px;
-            color: var(--stone);
-        }
-
-        /* ── RESPONSIVE: TABLET ── */
-        @media (max-width: 780px) {
-            nav { padding: 0 24px; height: 68px; }
-            .logo { font-size: 28px; }
-            .nav-right { gap: 24px; }
-            .nav-link { font-size: 12px; letter-spacing: 0.1em; }
-            .nav-cta { font-size: 12px; padding: 14px 20px; }
-            .section-divider { margin: 0 24px; }
-            .hero {
-                padding: 104px 24px 80px;
-                grid-template-columns: 1fr;
-                row-gap: 32px;
-            }
-            .hero-graph-wrapper {
-                grid-column: 1;
-                grid-row: auto;
-                width: min(100%, 760px);
-                justify-self: center;
-                order: -1;
-                transform: none;
-            }
-            .hero-content {
-                grid-column: 1;
-                grid-row: auto;
-            }
-            .hero h1 { max-width: 8ch; }
-            .hero-body { font-size: 18px; max-width: 480px; }
-            .process { padding: 0 24px 80px; }
-            .process-grid { grid-template-columns: 1fr; }
-            .process-item { padding: 48px 32px; border-right: none; border-bottom: 1px solid var(--border); }
-            .process-item:last-child { border-bottom: none; }
-            .split-section { grid-template-columns: 1fr; }
-            .split-illustration { min-height: 340px; }
-            .split-content { padding: 56px 32px; border-left: none; border-top: 1px solid var(--border); }
-            .stats-row { gap: 32px; }
-            footer { padding: 40px 24px; flex-direction: column; gap: 16px; text-align: center; }
-        }
-
-        /* ── RESPONSIVE: MOBILE ── */
-        @media (max-width: 600px) {
-            nav {
-                padding: 0 20px;
-                height: 68px;
-            }
-            .logo { font-size: 22px; }
-            .nav-right { display: none; }
-            .section-divider { margin: 0 20px; }
-
-            .hero {
-                min-height: auto;
-                padding: 92px 20px 56px;
-                grid-template-columns: 1fr;
-                row-gap: 24px;
-            }
-            .hero-graph-wrapper {
-                grid-column: 1;
-                grid-row: auto;
-                width: 100%;
-                order: -1;
-                transform: none;
-            }
-            .hero-content {
-                grid-column: 1;
-                grid-row: auto;
-                max-width: none;
-            }
-            .hero h1 {
-                font-size: clamp(54px, 16vw, 74px);
-                max-width: 8ch;
-                margin-bottom: 28px;
-            }
-            .hero-body {
-                font-size: 16px;
-                max-width: 360px;
-                margin-bottom: 32px;
-            }
-            .scroll-indicator { display: none; }
-
-            .process { padding: 0 20px 60px; }
-            .process-item { padding: 40px 20px; }
-            .process-num { font-size: 60px; margin-bottom: 20px; }
-
-            .split-illustration { min-height: 260px; }
-            .split-content { padding: 44px 20px 56px; }
-            .split-content p { max-width: none; margin-bottom: 36px; }
-            .stats-row { gap: 20px; padding-top: 28px; flex-wrap: wrap; }
-            .stat-n { font-size: 40px; }
-
-            footer { padding: 32px 20px; gap: 12px; }
-        }
-
-        .hz-dot {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            background: #a57f59;
-            opacity: 0.65;
-            pointer-events: none;
-            transition: opacity 0.4s ease;
-        }
-        .hz-dot::before,
-        .hz-dot::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 1.5px solid rgba(165, 127, 89, 0.5);
-            animation: dot-ring 2.4s ease-out infinite;
-        }
-        .hz-dot::after {
-            animation-delay: 0.9s;
-        }
-        @keyframes dot-ring {
-            0%   { transform: scale(1);   opacity: 0.65; }
-            100% { transform: scale(5);   opacity: 0; }
-        }
-        .hero-graph-wrapper:has(.hot-zone:hover) .hz-dot {
-            opacity: 0;
-        }
-    </style>
+    <title>Hadley AI — The future of deal sourcing</title>
+    <meta name="description" content="Hadley AI helps investors and strategic buyers find, prioritize, and engage the right acquisition opportunities.">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="assets/site.css">
+    <script src="assets/site.js" defer></script>
 </head>
 <body>
-
-<!-- ── NAV ── -->
-<nav>
-    <a href="#" class="logo">Hadley AI</a>
+<a class="skip-link" href="#main">Skip to content</a>
+<nav aria-label="Main navigation">
+    <a href="./" class="logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI"></a>
     <div class="nav-right">
+        <a href="#offerings" class="nav-link">What we do</a>
         <a href="careers.html" class="nav-link">Careers</a>
+        <a href="mailto:parker@gethadley.com" class="nav-cta">Talk with us</a>
     </div>
 </nav>
 
-
-<!-- ── HERO ── -->
-<section class="hero">
-
-    <div class="hero-graph-wrapper" aria-hidden="true">
-        <img class="hero-illustration" src="network-graph.png" alt="">
-
-        <!-- upper-left → tilt toward lower-right center: CCW -->
-        <div class="hot-zone" style="top:10%;left:27%;width:11%;height:26%">
-            <div class="hz-glow" style="transform:rotate(-25deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:28%;left:115%">Bayesian Inference</span>
-        </div>
-
-        <!-- upper-middle → slight CW tilt toward center below -->
-        <div class="hot-zone" style="top:5%;left:44%;width:11%;height:26%">
-            <div class="hz-glow" style="transform:rotate(8deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:108%;left:50%;transform:translateX(-50%)">Message Passing</span>
-        </div>
-
-        <!-- upper-right → tilt toward lower-left center: CW -->
-        <div class="hot-zone" style="top:6%;left:64%;width:11%;height:26%">
-            <div class="hz-glow" style="transform:rotate(25deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:108%;left:-20%">Belief Propagation</span>
-        </div>
-
-        <!-- right-middle horizontal → CCW tilt toward upper-left center -->
-        <div class="hot-zone" style="top:31%;left:61%;width:20%;height:9%">
-            <div class="hz-glow" style="transform:rotate(-15deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:115%;left:50%;transform:translateX(-50%)">Information Geometry</span>
-        </div>
-
-        <!-- left of GO → CW tilt toward upper-right center -->
-        <div class="hot-zone" style="top:42%;left:26%;width:11%;height:26%">
-            <div class="hz-glow" style="transform:rotate(20deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:28%;right:115%">Entropy Minimization</span>
-        </div>
-
-        <!-- center → minimal tilt -->
-        <div class="hot-zone" style="top:42%;left:40%;width:12%;height:26%">
-            <div class="hz-glow" style="transform:rotate(5deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="bottom:108%;right:0">Graph Optimization</span>
-        </div>
-
-        <!-- under info geometry, right of latent structure → CCW tilt toward upper-left center -->
-        <div class="hot-zone" style="top:43%;left:74%;width:11%;height:26%">
-            <div class="hz-glow" style="transform:rotate(-20deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:28%;left:115%">Monte Carlo</span>
-        </div>
-
-        <!-- right of GO → CCW tilt toward upper-left center -->
-        <div class="hot-zone" style="top:40%;left:55%;width:11%;height:26%">
-            <div class="hz-glow" style="transform:rotate(-20deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:28%;left:115%">Latent Structure</span>
-        </div>
-
-        <!-- below GO → slight CW tilt toward upper-right center -->
-        <div class="hot-zone" style="top:70%;left:39%;width:12%;height:26%">
-            <div class="hz-glow" style="transform:rotate(8deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="top:28%;left:115%">Variational Inference</span>
-        </div>
-
-<!-- lower-right → tilt toward upper-left center: CCW -->
-        <div class="hot-zone" style="top:56%;left:64%;width:11%;height:26%">
-            <div class="hz-glow" style="transform:rotate(-25deg)"></div>
-            <div class="hz-dot" aria-hidden="true"></div>
-            <span class="hz-label" style="bottom:108%;right:-10%">Probabilistic Inference</span>
-        </div>
-    </div>
-
-    <div class="hero-content">
-
-        <h1>
-            Computational reasoning <span style="white-space:nowrap">for <em>acquisitions.</em></span>
-        </h1>
-
-        <p class="hero-body">
-            A distributed reasoning system trained on the world's private markets
-        </p>
-
-        <div class="cta-row">
-            <a href="mailto:parker@gethadley.com" class="btn-primary">Learn More</a>
-        </div>
-    </div>
-
-    <div class="scroll-indicator" aria-hidden="true">
-        <span>Scroll</span>
-        <div class="scroll-track"></div>
-    </div>
-</section>
-
-<!-- ── PROCESS ── -->
-<div class="section-divider"></div>
-<section class="process">
-    <div class="process-grid">
-
-        <div class="process-item">
-            <span class="process-num">01</span>
-            <h3>Map the Market</h3>
-            <p>Hadley structures the private market and surfaces the targets worth your attention.</p>
-        </div>
-
-        <div class="process-item">
-            <span class="process-num">02</span>
-            <h3>Analyze the Deal</h3>
-            <p>Agents process seller data, model the business, and flag what matters.</p>
-        </div>
-
-        <div class="process-item">
-            <span class="process-num">03</span>
-            <h3>Decide with Conviction</h3>
-            <p>Clear reasoning based on thousands of private market acquisitions so you move fast and price right.</p>
-        </div>
-
-    </div>
-</section>
-
-
-<!-- ── SPLIT: ILLUSTRATION + STATS ── -->
-<section class="split-section">
-
-    <div class="split-illustration" aria-hidden="true">
-        <img src="math.png" alt="" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center center;">
-    </div>
-
-    <div class="split-content">
-        <span class="section-label">The Platform</span>
-
-        <h2>
-            A synthetic judgment<br>
-            layer for every<br>
-            <em>M&amp;A decision.</em>
-        </h2>
-
-        <p>
-            Models built specifically to reason about private-market deals.
-        </p>
-
-        <div class="stats-row">
-            <div>
-                <div class="stat-n">200M+</div>
-                <div class="stat-l">Firmographic data points indexed</div>
-            </div>
-            <div>
-                <div class="stat-n">10<sup style="font-size:0.55em;vertical-align:super;">6</sup></div>
-                <div class="stat-l">Deal permutations simulated per cycle</div>
-            </div>
-            <div>
-                <div class="stat-n">σ &lt; 0.5</div>
-                <div class="stat-l">Valuation error vs. realized multiples</div>
+<main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-content">
+            <span class="hero-eyebrow">Deal sourcing · Buy-side advisory</span>
+            <h1 id="hero-title">Hadley AI <em>— the future of deal sourcing.</em></h1>
+            <p class="hero-body">A thoughtful sourcing partner for investors and strategic buyers—bringing proprietary data, focused outreach, and human judgment to the search for the right deal.</p>
+            <div class="cta-row">
+                <a href="mailto:parker@gethadley.com" class="btn-primary">Start a conversation</a>
+                <a href="#offerings" class="btn-text">Explore our approach</a>
             </div>
         </div>
-    </div>
+        <a class="scroll-indicator" href="#offerings" aria-label="Scroll to explore Hadley's services">
+            <span>Explore</span><span class="scroll-track" aria-hidden="true"></span>
+        </a>
+    </section>
 
-</section>
-<div class="section-divider"></div>
+    <section class="intro-band" aria-label="Our approach">
+        <span class="section-kicker">A better starting point</span>
+        <p>Good deal sourcing is more than a list of names. It is the work of seeing a market clearly, finding the right-fit businesses, and creating a credible path to a conversation.</p>
+    </section>
 
+    <section class="offerings" id="offerings" aria-labelledby="offerings-title">
+        <div class="offerings-head">
+            <span class="section-kicker">How Hadley works</span>
+            <h2 class="section-heading" id="offerings-title">One partner.<br>Three ways forward.</h2>
+            <p>We combine experienced buy-side support with technology built to make the search more deliberate and more complete.</p>
+        </div>
+        <div class="offer-grid">
+            <article class="offer-card">
+                <div>
+                    <span class="offer-index">01 / BUY-SIDE BROKERAGE</span>
+                    <h3>Full-service support from mandate to meaningful conversation.</h3>
+                    <p>We work alongside investors and strategic buyers to define the mandate, identify relevant companies, and manage thoughtful owner outreach. The work stays grounded in your strategy and your team’s priorities.</p>
+                </div>
+                <div class="offer-art" aria-hidden="true"></div>
+            </article>
+            <div class="offer-stack">
+                <article class="offer-card technology-card">
+                    <span class="offer-index">02 / OUTREACH TECHNOLOGY</span>
+                    <h3>Cutting-edge technology for more thoughtful reach.</h3>
+                    <p>Access cutting-edge outreach technology that coordinates relevant, multi-channel sequences—consistent in execution, with a personal context.</p>
+                    <ul class="channel-list" aria-label="Available outreach channels">
+                        <li>Email</li><li>Voicemail</li><li>LinkedIn</li><li>Facebook</li><li>Mail</li><li>Handwritten letters</li>
+                    </ul>
+                </article>
+                <article class="offer-card">
+                    <span class="offer-index">03 / MARKET MAPPING</span>
+                    <h3>Clarity across targets and experts.</h3>
+                    <p>Build a structured view of a market, surface potential acquisition targets, and identify the operators and experts who can help you understand it.</p>
+                </article>
+            </div>
+        </div>
+    </section>
 
+    <section class="visual-story" aria-labelledby="market-title">
+        <div class="visual-head">
+            <div>
+                <span class="section-kicker">From data to direction</span>
+                <h2 class="section-heading" id="market-title">A market view<br>you can work from.</h2>
+            </div>
+            <p>Hadley organizes fragmented information into a practical sourcing workflow: map the landscape, prioritize fit, then engage with purpose.</p>
+        </div>
+        <div class="visual-pair">
+            <figure class="visual-frame market-figure">
+                <img src="assets/market-map.webp" alt="Illustrative United States opportunity map used to explore target markets." width="366" height="326">
+                <figcaption class="visual-caption"><span>Market mapping</span><span>Illustrative interface</span></figcaption>
+            </figure>
+            <div class="visual-aside">
+                <span class="section-kicker">A sourcing workflow</span>
+                <h3>Put a broad market into focus.</h3>
+                <p>Build the dataset. Map opportunities across a market. Prioritize the best-fit targets. Then sequence thoughtful outreach across multiple channels.</p>
+            </div>
+        </div>
+        <p class="illustrative-note">Product visuals are illustrative. Company names, counts, and interface details shown in flyer imagery are not verified client, performance, or market claims.</p>
+    </section>
 
+    <section class="method" aria-labelledby="method-title">
+        <div class="method-top">
+            <div>
+                <span class="section-kicker">A considered process</span>
+                <h2 class="section-heading" id="method-title">From proprietary data<br>to proprietary deal flow.</h2>
+            </div>
+            <p class="method-note">The work is designed to help deal teams spend more time on the opportunities that fit—and less time searching without a map.</p>
+        </div>
+        <div class="method-steps">
+            <article class="method-step"><b>01 / BUILD</b><h3>Build the dataset</h3><p>Bring fragmented public, proprietary, and research-driven sources into a structured target universe.</p></article>
+            <article class="method-step"><b>02 / MAP</b><h3>Map the market</h3><p>Explore opportunities across geographies, subsectors, and priority markets.</p></article>
+            <article class="method-step"><b>03 / PRIORITIZE</b><h3>Focus the search</h3><p>Organize targets around mandate fit and give the team a clearer place to begin.</p></article>
+            <article class="method-step"><b>04 / ENGAGE</b><h3>Start a conversation</h3><p>Coordinate relevant outreach across channels, with judgment and context at every step.</p></article>
+        </div>
+    </section>
 
-<script>
-    const zones = Array.from(document.querySelectorAll('.hot-zone'));
-    let current = 0;
-    let timer = null;
-    let fadeTimer = null;
-    let hoverCount = 0;
+    <section class="audio-section" aria-labelledby="voicemail-heading">
+        <div class="audio-card">
+            <div>
+                <span class="section-kicker">A closer listen</span>
+                <h2 id="voicemail-heading">Listen to Hadley AI voicemails</h2>
+                <p>Hear how outreach can sound: considered, clear, and respectful of the person on the other end.</p>
+            </div>
+            <div class="audio-player">
+                <audio data-hadley-audio controls preload="metadata" hidden aria-label="Hadley AI voicemail sample"></audio>
+                <p class="audio-status" data-audio-status role="status" aria-live="polite">No voicemail recording is available yet. Playback will appear here when a real clip is supplied.</p>
+            </div>
+        </div>
+    </section>
 
-    function activateZone(i) {
-        zones.forEach(z => z.classList.remove('is-active'));
-        clearTimeout(fadeTimer);
-        fadeTimer = setTimeout(() => zones[i].classList.add('is-active'), 700);
-    }
+    <section class="closing-cta" aria-labelledby="closing-title">
+        <div>
+            <span class="section-kicker">For investors and strategic buyers</span>
+            <h2 id="closing-title">Make the next search a more deliberate one.</h2>
+            <p>Tell us what you are looking to acquire and where the search stands.</p>
+        </div>
+        <div class="closing-actions">
+            <a href="mailto:parker@gethadley.com" class="btn-primary">Contact Hadley</a>
+            <img src="assets/hadley-logo-white.webp" alt="Hadley AI" width="620" height="166">
+        </div>
+    </section>
+</main>
 
-    function startCycle() {
-        activateZone(current);
-        timer = setInterval(() => {
-            current = (current + 1) % zones.length;
-            activateZone(current);
-        }, 6000);
-    }
-
-    function stopCycle() {
-        clearInterval(timer);
-        clearTimeout(fadeTimer);
-        timer = null;
-        zones.forEach(z => z.classList.remove('is-active'));
-    }
-
-    startCycle();
-
-    zones.forEach(z => {
-        z.addEventListener('mouseenter', () => {
-            hoverCount++;
-            if (hoverCount === 1) stopCycle();
-        });
-        z.addEventListener('mouseleave', () => {
-            hoverCount--;
-            if (hoverCount === 0) startCycle();
-        });
-    });
-</script>
-
-<!-- ── FOOTER ── -->
 <footer>
-    <div class="footer-logo">Hadley AI</div>
+    <a href="./" class="footer-logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI" width="620" height="166"></a>
     <div class="footer-nav">
         <a href="careers.html" class="footer-link">Careers</a>
+        <a href="mailto:parker@gethadley.com" class="footer-link">Contact</a>
     </div>
     <span class="footer-copy">© 2026 Hadley AI</span>
 </footer>
-
 </body>
 </html>
