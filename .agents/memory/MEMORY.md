@@ -1,0 +1,1 @@
+- [Hadley positioning](hadley-positioning.md) — User-defined deal-sourcing positioning, three offerings, and supplied brand references.
