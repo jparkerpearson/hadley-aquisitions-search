@@ -14,3 +14,9 @@ Use 48 North for its vibe, loading animations, and varied cards—not as a requi
 **Why:** The user explicitly clarified the design reference after the first plan interpreted it as a color direction.
 
 **How to apply:** Preserve Hadley's distinct color identity and prioritize deliberate layout variation and polished motion over a generic repeated-card template.
+
+The user supplied blue and white-on-blue Hadley logos and a Hadley brand style guide as the branding authority, replacing the earlier black serif logo direction.
+
+**Why:** The user explicitly said "Use these for branding" with the new assets.
+
+**How to apply:** Follow the supplied guide for colors and typography and use the new logo variants. Do not revert to the earlier logo or infer colors from 48 North.
