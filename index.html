@@ -9,13 +9,24 @@
     <link rel="stylesheet" href="assets/site.css">
     <script src="assets/site.js" defer></script>
 </head>
-<body class="services-only">
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<nav aria-label="Main navigation">
+    <a href="./" class="logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI"></a>
+    <div class="nav-right">
+        <a href="careers.html" class="nav-link">Careers</a>
+        <a href="mailto:parker@gethadley.com" class="nav-cta">Contact</a>
+    </div>
+</nav>
+
 <main id="main">
-    <header class="homepage-header">
-        <h1>Hadley AI - Buyside sourcing for best-in-class PE platforms &amp; AI rollups</h1>
-    </header>
-    <section class="services" id="offerings" aria-labelledby="services-title">
-        <h2 id="services-title">How Hadley works</h2>
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-content">
+            <h1 id="hero-title">Hadley AI <em>— the future of deal sourcing.</em></h1>
+        </div>
+    </section>
+
+    <section class="services" id="offerings" aria-label="Hadley services">
         <article class="offer-card service-brokerage">
             <h2>Buy-side brokerage</h2>
             <p>Full-service buy-side sourcing and owner outreach.</p>
@@ -30,6 +41,23 @@
         </article>
     </section>
 
+    <section class="audio-section" aria-labelledby="voicemail-heading">
+        <div class="audio-card">
+            <h2 id="voicemail-heading">Listen to Hadley AI voicemails</h2>
+            <div class="audio-player">
+                <audio data-hadley-audio controls preload="metadata" hidden aria-label="Hadley AI voicemail sample"></audio>
+                <p class="audio-status" data-audio-status role="status" aria-live="polite">Voicemail sample coming soon.</p>
+            </div>
+        </div>
+    </section>
 </main>
+
+<footer>
+    <a href="./" class="footer-logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI" width="620" height="166"></a>
+    <div class="footer-nav">
+        <a href="careers.html" class="footer-link">Careers</a>
+    </div>
+    <span class="footer-copy">© 2026 Hadley AI</span>
+</footer>
 </body>
 </html>
