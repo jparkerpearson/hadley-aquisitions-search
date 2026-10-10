@@ -186,7 +186,7 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
-  assert.ok(await evaluate("getComputedStyle(document.querySelector('.intro-band')).opacity === '1'"), "content readable without JavaScript");
+  assert.ok(await evaluate("getComputedStyle(document.querySelector('.offer-card')).opacity === '1'"), "content readable without JavaScript");
   assert.equal(exceptions.length, 0, "no runtime exceptions");
   console.log("PASS desktop/mobile, branding, motion fallbacks, real audio seeking/error states, and mocked careers dialogs/submissions");
 } finally {

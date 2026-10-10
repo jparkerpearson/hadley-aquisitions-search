@@ -4,7 +4,7 @@ const HADLEY_VOICEMAIL_SOURCE = "";
 document.documentElement.classList.add("js-ready");
 
 const revealItems = document.querySelectorAll(
-  ".intro-band, .offerings-head, .offer-card, .visual-head, .visual-frame, .method-top, .method-step, .audio-card, .closing-cta, .careers-hero, .role-row, .role"
+  ".offer-card, .audio-card, .careers-hero, .role-row, .role"
 );
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const observer = new IntersectionObserver((entries, instance) => {
@@ -33,11 +33,11 @@ if (audio && audioStatus) {
     audioStatus.textContent = "A Hadley voicemail recording is available. Use the playback controls to listen.";
     audio.addEventListener("error", () => {
       audio.hidden = true;
-      audioStatus.textContent = "The recording could not be loaded. Please try again later.";
+      audioStatus.textContent = "The voicemail sample could not be loaded. Please check the configured audio file.";
       audioStatus.dataset.state = "error";
     });
   } else {
     audio.hidden = true;
-    audioStatus.textContent = "No voicemail recording is available yet. Playback will appear here when a real clip is supplied.";
+    audioStatus.textContent = "Voicemail sample coming soon.";
   }
 }

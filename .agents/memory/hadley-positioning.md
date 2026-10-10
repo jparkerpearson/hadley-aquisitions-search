@@ -20,3 +20,9 @@ The user supplied blue and white-on-blue Hadley logos and a Hadley brand style g
 **Why:** The user explicitly said "Use these for branding" with the new assets.
 
 **How to apply:** Follow the supplied guide for colors and typography and use the new logo variants. Do not revert to the earlier logo or infer colors from 48 North.
+
+Keep this website's copy very minimal. The user said there was "way too much random text, eyebrows, etc etc" and asked to "simplify this way down."
+
+**Why:** The user rejected the text-heavy first redesign.
+
+**How to apply:** Avoid decorative eyebrow labels, repeated explanations, and extra marketing sections. Use direct service names and short descriptions rather than adding copy to fill space.
