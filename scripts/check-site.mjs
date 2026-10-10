@@ -133,7 +133,8 @@ try {
   }
   await width(1280);
   await navigate("/");
-  assert.equal(await evaluate("document.querySelector('h1').textContent"), "How Hadley works");
+  assert.equal(await evaluate("document.querySelector('h1').textContent"), "Hadley AI - Buyside sourcing for best-in-class PE platforms & AI rollups");
+  assert.equal(await evaluate("document.querySelector('#services-title').textContent"), "How Hadley works");
   assert.equal(await evaluate("document.querySelectorAll('main section').length"), 1, "only requested section remains");
   assert.equal(await evaluate("document.querySelectorAll('.offer-card').length"), 3);
   assert.equal(await evaluate("document.querySelectorAll('nav, footer, .hero, audio').length"), 0, "all other homepage content removed");

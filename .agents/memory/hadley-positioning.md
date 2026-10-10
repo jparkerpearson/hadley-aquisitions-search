@@ -31,4 +31,4 @@ The user subsequently requested: "Let's delete everything except the 'how hadley
 
 **Why:** The user wants the homepage stripped down to that section alone.
 
-**How to apply:** Do not restore the hero, navigation, footer, voicemail section, or other homepage sections unless requested. Keep the three offerings as the homepage's sole content.
+**How to apply:** Do not restore the hero, navigation, footer, voicemail section, or other homepage sections unless requested. Keep the three offerings and the subsequently requested header, with the user's corrected wording: "Hadley AI - Buyside sourcing for best-in-class PE platforms & AI rollups".
