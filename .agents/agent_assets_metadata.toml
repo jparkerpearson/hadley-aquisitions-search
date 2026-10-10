@@ -1,0 +1,16 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "fbtkFMxj90Fxz0b7zDtN8"
+uri = "file://generated-artifacts/mountain-hero.mp4"
+type = "video"
+title = "Hadley mountain background — 1080p"
+description = "Original eight-second alpine video, optimized for silent website playback."
+logical_id = "107a6df3-322c-4286-886d-42a5d01f48e5"
+content_hash = "sha256:cf91355cb59d5a5a67a731e97b92c10d5a2878baa52a251fbb98d4e1c2a45d3f"
+size = 4993922
+mtime_ms = 1791660940341
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/107a6df3-322c-4286-886d-42a5d01f48e5/8c9201cb-3f63-4ba1-8e07-929b88dfc3d6"
+storage_version_token = "1791660946389769"
+content_type = "video/mp4"

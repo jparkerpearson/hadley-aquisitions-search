@@ -21,9 +21,12 @@
 
 <main id="main">
     <section class="hero" aria-labelledby="hero-title">
+        <video class="hero-video" data-video-src="/media/mountain-hero.mp4?clip=forward" data-webm-src="/media/mountain-hero.webm?clip=forward" poster="assets/mountain-poster.webp" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+        <div class="hero-video-status" data-video-status role="status" aria-live="polite" hidden></div>
         <div class="hero-content">
             <h1 id="hero-title">The next generation of buyside M&amp;A sourcing is here</h1>
         </div>
+        <button class="hero-video-toggle" type="button" data-video-toggle aria-label="Pause background video" hidden>Pause</button>
     </section>
 
     <section class="services" id="offerings" aria-label="Hadley services">

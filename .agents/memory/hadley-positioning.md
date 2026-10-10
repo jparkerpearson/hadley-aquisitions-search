@@ -26,3 +26,9 @@ Keep this website's copy very minimal. The user said there was "way too much ran
 **Why:** The user rejected the text-heavy first redesign.
 
 **How to apply:** Avoid decorative eyebrow labels, repeated explanations, and extra marketing sections. Use direct service names and short descriptions rather than adding copy to fill space.
+
+The user wants a mountain video behind the hero headline, referencing summitpartners.com, and selected 1080p quality for the original generated widescreen clip. They want more pace and forward motion over the mountain, not a nearly stationary view.
+
+**Why:** The user explicitly requested this visual treatment and selected the quality.
+
+**How to apply:** Keep the hero's mountain-video treatment without reintroducing marketing filler; preserve the Hadley brand palette and readable headline.

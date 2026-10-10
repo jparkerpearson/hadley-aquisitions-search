@@ -3,6 +3,7 @@ import { createReadStream } from "node:fs";
 import { realpath, stat } from "node:fs/promises";
 import { dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { getMountainVideo } from "./mountain-media.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const types = {
@@ -17,6 +18,8 @@ const types = {
   ".wav": "audio/wav",
   ".ogg": "audio/ogg",
   ".m4a": "audio/mp4",
+  ".mp4": "video/mp4",
+  ".webm": "video/webm",
 };
 
 createServer(async (req, res) => {
@@ -35,14 +38,15 @@ createServer(async (req, res) => {
     // Root pages/images and public assets only; never source or configuration.
     const rootFile = /^[a-zA-Z0-9_-]+\.(html|png)$/.test(filename);
     const publicAsset = /^assets\/[a-zA-Z0-9_-]+\.(png|webp|jpg|svg|css|js|mp3|wav|ogg|m4a)$/.test(filename);
-    if ((!rootFile && !publicAsset) || !types[extension]) {
+    const publicMountain = filename === "media/mountain-hero.mp4" || filename === "media/mountain-hero.webm";
+    if ((!rootFile && !publicAsset && !publicMountain) || !types[extension]) {
       res.writeHead(404);
       res.end("Not found");
       return;
     }
-    const file = await realpath(resolve(root, filename));
+    const file = publicMountain ? await getMountainVideo(extension.slice(1)) : await realpath(resolve(root, filename));
     const allowedRoot = publicAsset ? resolve(root, "assets") + sep : root + sep;
-    if (!file.startsWith(allowedRoot)) {
+    if (!publicMountain && !file.startsWith(allowedRoot)) {
       res.writeHead(404);
       res.end("Not found");
       return;
@@ -61,7 +65,7 @@ createServer(async (req, res) => {
       "Content-Length": info.size,
       "Accept-Ranges": "bytes",
     };
-    // Native audio players use byte ranges to seek without reloading a clip.
+    // Native media players use byte ranges to seek without reloading a clip.
     if (req.headers.range && req.method === "GET") {
       const match = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range);
       const suffix = match && !match[1] && match[2];

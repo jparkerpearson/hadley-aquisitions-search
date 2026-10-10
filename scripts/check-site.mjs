@@ -41,6 +41,12 @@ try {
   assert.match(range.headers.get("content-range"), /^bytes 44-143\//);
   assert.equal((await fetch(base + "/" + fixture, { headers: { Range: "bytes=999999-" } })).status, 416);
   assert.equal((await fetch(base + "/", { method: "POST" })).status, 405);
+  const videoRange = await fetch(base + "/media/mountain-hero.mp4", { headers: { Range: "bytes=0-1023" } });
+  assert.equal(videoRange.status, 206);
+  assert.equal(videoRange.headers.get("content-type"), "video/mp4");
+  assert.equal((await videoRange.arrayBuffer()).byteLength, 1024);
+  assert.equal((await fetch(base + "/generated-artifacts/mountain-original.mp4")).status, 404);
+  assert.equal((await fetch(base + "/media/other.mp4")).status, 404);
   const original = execFileSync("git", ["show", "HEAD:careers.html"], { encoding: "utf8" });
   const current = await readFile("careers.html", "utf8");
   const appScript = (html) => html.match(/<script>\s*const APPLY_ENDPOINT[\s\S]*?<\/script>/)?.[0];
@@ -133,6 +139,29 @@ try {
   }
   await width(1280);
   await navigate("/");
+  // Confirm actual decoding and advancing playback, not merely a video-shaped image.
+  for (let retry = 0; retry < 30; retry++) {
+    if (await evaluate("document.querySelector('.hero-video').readyState >= 3 && !document.querySelector('.hero-video').paused")) break;
+    await pause(200);
+  }
+  assert.ok(await evaluate("document.querySelector('.hero-video').readyState >= 3 && !document.querySelector('.hero-video').paused"), "mountain video decodes and autoplays");
+  const startingTime = await evaluate("document.querySelector('.hero-video').currentTime");
+  await pause(300);
+  assert.notEqual(await evaluate("document.querySelector('.hero-video').currentTime"), startingTime, "video frames advance");
+  assert.ok(await evaluate("document.querySelector('.hero-video').muted && document.querySelector('.hero-video').loop && document.querySelector('.hero-video').playsInline"), "silent inline loop");
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero h1')).color"), "rgb(250, 251, 253)");
+  await evaluate("document.querySelector('[data-video-toggle]').click()");
+  assert.ok(await evaluate("document.querySelector('.hero-video').paused"), "pause control works");
+  await evaluate("document.querySelector('[data-video-toggle]').click()");
+  await pause(200);
+  assert.equal(await evaluate("document.querySelector('.hero-video').paused"), false, "play control resumes");
+  await evaluate("document.body.insertAdjacentHTML('beforeend','<div data-test-spacer style=\"height:1000px\"></div>'); document.querySelector('footer').scrollIntoView({behavior:'instant'})");
+  await pause(300);
+  assert.equal(await evaluate("document.querySelector('.hero-video').paused"), true, "offscreen video pauses");
+  await evaluate("scrollTo({top:0,behavior:'instant'})");
+  await pause(300);
+  assert.equal(await evaluate("document.querySelector('.hero-video').paused"), false, "visible video resumes");
+  await evaluate("document.querySelector('[data-test-spacer]').remove()");
   assert.equal(await evaluate("document.querySelector('h1').textContent"), "The next generation of buyside M&A sourcing is here");
   assert.equal(await evaluate("document.querySelector('.hero-positioning')"), null);
   assert.ok(await evaluate("document.querySelector('[data-hadley-audio]').hidden"));
@@ -184,10 +213,13 @@ try {
 
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await navigate("/");
+  assert.equal(await evaluate("document.querySelector('.hero-video').hasAttribute('src')"), false, "reduced motion does not fetch video");
+  assert.ok(await evaluate("document.querySelector('[data-video-toggle]').hidden"), "no pointless pause control for static poster");
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
   assert.ok(await evaluate("getComputedStyle(document.querySelector('.offer-card')).opacity === '1'"), "content readable without JavaScript");
+  assert.equal(await evaluate("document.querySelector('.hero-video').hasAttribute('src')"), false, "no-JS uses poster only");
   assert.equal(exceptions.length, 0, "no runtime exceptions");
   console.log("PASS desktop/mobile, branding, motion fallbacks, real audio seeking/error states, and mocked careers dialogs/submissions");
 } finally {

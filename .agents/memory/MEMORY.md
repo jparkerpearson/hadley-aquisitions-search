@@ -1,1 +1,2 @@
 - [Hadley positioning](hadley-positioning.md) — User-defined deal-sourcing positioning, three offerings, and supplied brand references.
+- [Video preview compatibility](video-preview-compatibility.md) — Screenshot capture and workspace Chromium can differ in MP4 decoding support.

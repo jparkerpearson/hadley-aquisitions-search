@@ -1,0 +1,16 @@
+{
+  "name": "hadley-website",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node scripts/preview.mjs",
+    "test": "node --experimental-websocket scripts/check-site.mjs",
+    "upload:mountain": "node scripts/upload-mountain.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@replit/object-storage": "^1.0.0"
+  }
+}
