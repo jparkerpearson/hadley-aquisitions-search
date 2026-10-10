@@ -23,6 +23,12 @@ The user supplied blue and white-on-blue Hadley logos and a Hadley brand style g
 
 Keep this website's copy very minimal. The user said there was "way too much random text, eyebrows, etc etc" and asked to "simplify this way down."
 
-**Why:** The user rejected the text-heavy first redesign.
+**Why:** The user rejected the text-heavy first redesign, then reiterated "Way too much happening here. Simple like the screenshot."
 
-**How to apply:** Avoid decorative eyebrow labels, repeated explanations, and extra marketing sections. Use direct service names and short descriptions rather than adding copy to fill space.
+**How to apply:** Avoid decorative eyebrow labels, repeated explanations, and extra marketing sections. The supplied simple reference uses a flat dark background, bold headline, one short paragraph, and one text contact link. Avoid hero circles and other ornamental geometry. Use direct service names and short descriptions rather than adding copy to fill space.
+
+The user subsequently requested: "Let's delete everything except the 'how hadley works' section."
+
+**Why:** The user wants the homepage stripped down to that section alone.
+
+**How to apply:** Do not restore the hero, navigation, footer, voicemail section, or other homepage sections unless requested. Keep the three offerings as the homepage's sole content.

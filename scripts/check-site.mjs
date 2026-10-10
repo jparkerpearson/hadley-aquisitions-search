@@ -133,24 +133,10 @@ try {
   }
   await width(1280);
   await navigate("/");
-  assert.ok(await evaluate("document.querySelector('h1').textContent.includes('the future of deal sourcing')"));
-  assert.ok(await evaluate("document.querySelector('[data-hadley-audio]').hidden"));
-  for (const id of ["offerings", "voicemail-heading"]) {
-    await evaluate(`document.getElementById(${JSON.stringify(id)}).scrollIntoView()`);
-    await pause(1000);
-    assert.ok(await evaluate(`getComputedStyle(document.getElementById(${JSON.stringify(id)}).closest('section')).opacity !== '0'`));
-  }
-  audioSource = fixture;
-  await navigate("/");
-  assert.equal(await evaluate("document.querySelector('audio').hidden"), false);
-  assert.ok(await evaluate("document.querySelector('audio').readyState >= 1 && document.querySelector('audio').controls"), "real audio metadata and controls");
-  await evaluate("document.querySelector('audio').currentTime = .4");
-  await pause(150);
-  assert.ok(await evaluate("document.querySelector('audio').currentTime >= .3"), "audio seeking");
-  audioSource = "assets/not-a-recording.mp3";
-  await navigate("/");
-  assert.equal(await evaluate("document.querySelector('[data-audio-status]').dataset.state"), "error");
-  audioSource = "";
+  assert.equal(await evaluate("document.querySelector('h1').textContent"), "How Hadley works");
+  assert.equal(await evaluate("document.querySelectorAll('main section').length"), 1, "only requested section remains");
+  assert.equal(await evaluate("document.querySelectorAll('.offer-card').length"), 3);
+  assert.equal(await evaluate("document.querySelectorAll('nav, footer, .hero, audio').length"), 0, "all other homepage content removed");
 
   await navigate("/careers.html");
   await evaluate("document.querySelector('[data-apply]').click()");
@@ -183,12 +169,12 @@ try {
 
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await navigate("/");
-  assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('.offer-card')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
   assert.ok(await evaluate("getComputedStyle(document.querySelector('.offer-card')).opacity === '1'"), "content readable without JavaScript");
   assert.equal(exceptions.length, 0, "no runtime exceptions");
-  console.log("PASS desktop/mobile, branding, motion fallbacks, real audio seeking/error states, and mocked careers dialogs/submissions");
+  console.log("PASS services-only homepage, desktop/mobile, branding, motion fallbacks, and mocked careers dialogs/submissions");
 } finally {
   socket?.close();
   browser.kill("SIGTERM");

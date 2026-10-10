@@ -12,6 +12,7 @@
 - The preview server serves root HTML/PNG files and supported files directly in `assets/`, not repository configuration, original attachments, or backend source. Audio byte ranges support seeking.
 
 ## Add a voicemail recording
+The homepage currently shows only “How Hadley works,” at the user's request. The voicemail section is not displayed; the source setting remains available for future use if that section is restored.
 1. Add an approved MP3, WAV, OGG, or M4A recording directly under `assets/`, for example `assets/hadley-voicemail.mp3`. Use a simple filename with letters, numbers, hyphens, or underscores.
 2. Set `HADLEY_VOICEMAIL_SOURCE` near the top of `assets/site.js` to `"assets/hadley-voicemail.mp3"`.
 3. Save and refresh Preview. Native audio controls appear when configured; a failed source shows an error instead of a pretend recording. Leave the setting empty to retain the honest unavailable state.
