@@ -4,10 +4,10 @@ import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-// This is the only storage object exposed publicly. Never accept an object path from a request.
+// Only these two storage objects are public. Never accept an object path from a request.
 export const mountainObjects = {
-  mp4: "hadley/mountain-hero.mp4",
-  webm: "hadley/mountain-hero.webm",
+  mp4: "hadley/mountain-rotation.mp4",
+  webm: "hadley/mountain-rotation.webm",
 };
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const pending = new Map();

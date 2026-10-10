@@ -1,10 +1,24 @@
-/* Voicemail: add an approved audio file under assets/ and set this path, e.g. "assets/hadley-voicemail.mp3". Keep empty until a real clip is supplied. */
-const HADLEY_VOICEMAIL_SOURCE = "";
 
 document.documentElement.classList.add("js-ready");
 
+// Refresh the homepage at the hero, without breaking section links or Back.
+const navigation = performance.getEntriesByType("navigation")[0];
+if (document.body.classList.contains("home-page") && !location.hash && navigation?.type !== "back_forward") {
+  const previousRestoration = history.scrollRestoration;
+  history.scrollRestoration = "manual";
+  const startAtTop = () => window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  startAtTop();
+  window.addEventListener("pageshow", (event) => {
+    if (event.persisted) return;
+    window.requestAnimationFrame(() => {
+      if (!location.hash) startAtTop();
+      history.scrollRestoration = previousRestoration;
+    });
+  }, { once: true });
+}
+
 const revealItems = document.querySelectorAll(
-  ".offer-card, .audio-card, .careers-hero, .role-row, .role"
+  ".identity-section, .contact-cta, .careers-hero, .role-row, .role, .contact-section"
 );
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const observer = new IntersectionObserver((entries, instance) => {
@@ -22,6 +36,42 @@ if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-mot
   });
 } else {
   revealItems.forEach((item) => item.classList.add("is-visible"));
+}
+
+const homeNav = document.querySelector("body.home-page > nav.home-nav");
+if (homeNav) {
+  const hero = document.querySelector("#main > .hero");
+  const logoImage = homeNav.querySelector(".logo img");
+  const whiteLogo = logoImage?.dataset.whiteSrc;
+  const blueLogo = logoImage?.dataset.blueSrc;
+  let currentState = null;
+  let updateQueued = false;
+
+  const updateHomeNav = () => {
+    const scrolled = hero
+      ? window.scrollY >= Math.max(0, hero.offsetHeight - homeNav.offsetHeight)
+      : window.scrollY > 0;
+    if (scrolled === currentState) return;
+    currentState = scrolled;
+    homeNav.classList.toggle("is-scrolled", scrolled);
+    const nextLogo = scrolled ? blueLogo : whiteLogo;
+    if (logoImage && nextLogo && logoImage.getAttribute("src") !== nextLogo) {
+      logoImage.setAttribute("src", nextLogo);
+    }
+  };
+
+  const queueHomeNavUpdate = () => {
+    if (updateQueued) return;
+    updateQueued = true;
+    window.requestAnimationFrame(() => {
+      updateQueued = false;
+      updateHomeNav();
+    });
+  };
+
+  updateHomeNav();
+  window.addEventListener("scroll", queueHomeNavUpdate, { passive: true });
+  window.addEventListener("resize", queueHomeNavUpdate);
 }
 
 const backgroundVideo = document.querySelector(".hero-video");
@@ -52,7 +102,7 @@ if (backgroundVideo) {
     toggle.hidden = !available;
     if (available) {
       const label = backgroundVideo.paused ? "Play background video" : "Pause background video";
-      toggle.textContent = backgroundVideo.paused ? "Play" : "Pause";
+      toggle.dataset.state = backgroundVideo.paused ? "paused" : "playing";
       toggle.setAttribute("aria-label", label);
     }
   };
@@ -177,23 +227,5 @@ if (backgroundVideo) {
   } else {
     heroVisible = true;
     syncPlayback();
-  }
-}
-
-const audio = document.querySelector("[data-hadley-audio]");
-const audioStatus = document.querySelector("[data-audio-status]");
-if (audio && audioStatus) {
-  if (HADLEY_VOICEMAIL_SOURCE.trim()) {
-    audio.src = HADLEY_VOICEMAIL_SOURCE;
-    audio.hidden = false;
-    audioStatus.textContent = "A Hadley voicemail recording is available. Use the playback controls to listen.";
-    audio.addEventListener("error", () => {
-      audio.hidden = true;
-      audioStatus.textContent = "The voicemail sample could not be loaded. Please check the configured audio file.";
-      audioStatus.dataset.state = "error";
-    });
-  } else {
-    audio.hidden = true;
-    audioStatus.textContent = "Voicemail sample coming soon.";
   }
 }

@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node scripts/preview.mjs",
-    "test": "node --experimental-websocket scripts/check-site.mjs",
-    "upload:mountain": "node scripts/upload-mountain.mjs"
+    "test": "node scripts/check-contact.mjs && node --experimental-websocket scripts/check-site.mjs",
+    "upload:mountain": "node scripts/upload-mountain.mjs",
+    "build:mountain": "node scripts/build-mountain-rotation.mjs"
   },
   "keywords": [],
   "author": "",

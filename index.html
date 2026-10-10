@@ -9,57 +9,52 @@
     <link rel="stylesheet" href="assets/site.css">
     <script src="assets/site.js" defer></script>
 </head>
-<body>
+<body class="home-page">
 <a class="skip-link" href="#main">Skip to content</a>
-<nav aria-label="Main navigation">
-    <a href="./" class="logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI"></a>
+<nav class="home-nav" aria-label="Main navigation">
+    <a href="./" class="logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-white-transparent.webp" data-white-src="assets/hadley-logo-white-transparent.webp" data-blue-src="assets/hadley-logo-blue-transparent.webp" alt=""></a>
     <div class="nav-right">
         <a href="careers.html" class="nav-link">Careers</a>
-        <a href="mailto:parker@gethadley.com" class="nav-cta">Contact</a>
+        <a href="contact.html" class="nav-cta">Contact</a>
     </div>
 </nav>
 
 <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-        <video class="hero-video" data-video-src="/media/mountain-hero.mp4?clip=forward" data-webm-src="/media/mountain-hero.webm?clip=forward" poster="assets/mountain-poster.webp" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+        <video class="hero-video" data-video-src="/media/mountain-hero.mp4?clip=uploaded-rotation" data-webm-src="/media/mountain-hero.webm?clip=uploaded-rotation" poster="assets/mountain-poster.webp" muted loop playsinline disablepictureinpicture preload="none" aria-hidden="true" tabindex="-1"></video>
         <div class="hero-video-status" data-video-status role="status" aria-live="polite" hidden></div>
         <div class="hero-content">
             <h1 id="hero-title">The next generation of buyside M&amp;A sourcing is here</h1>
         </div>
-        <button class="hero-video-toggle" type="button" data-video-toggle aria-label="Pause background video" hidden>Pause</button>
+        <button class="hero-video-toggle" type="button" data-video-toggle aria-label="Pause background video" hidden></button>
     </section>
 
-    <section class="services" id="offerings" aria-label="Hadley services">
-        <article class="offer-card service-brokerage">
-            <h2>Buy-side brokerage</h2>
-            <p>Full-service buy-side sourcing and owner outreach.</p>
-        </article>
-        <article class="offer-card service-technology">
-            <h2>Technology</h2>
-            <p>Access email, voicemail, LinkedIn, Facebook, mail, and handwritten-letter technology.</p>
-        </article>
-        <article class="offer-card service-market">
-            <h2>Market mapping</h2>
-            <p>Target and expert sourcing for your next acquisition.</p>
-        </article>
+    <section class="identity-section" aria-labelledby="identity-title">
+        <h2 class="identity-title" id="identity-title">We are the best, trusted by the best</h2>
+        <ul class="identity-grid">
+            <li class="identity-mark identity-mark--wide" style="--logo-width:222px;--logo-height:58px"><img src="assets/logo-jpmorgan-transparent.png" alt="J.P. Morgan" loading="lazy" decoding="async"></li>
+            <li class="identity-mark identity-mark--wide" style="--logo-width:216px;--logo-height:54px"><img src="assets/logo-blackstone-transparent.png" alt="Blackstone" loading="lazy" decoding="async"></li>
+            <li class="identity-mark" style="--logo-width:150px;--logo-height:46px"><img src="assets/logo-scale-transparent.png" alt="Scale" loading="lazy" decoding="async"></li>
+            <li class="identity-mark identity-mark--wide" style="--logo-width:244px;--logo-height:38px"><img src="assets/logo-flybridge-transparent.png" alt="Flybridge" loading="lazy" decoding="async"></li>
+            <li class="identity-mark identity-mark--wide" style="--logo-width:228px;--logo-height:54px"><img src="assets/logo-citadel-transparent.png" alt="Citadel" loading="lazy" decoding="async"></li>
+            <li class="identity-mark" style="--logo-width:134px;--logo-height:58px"><img src="assets/logo-duke-transparent.png" alt="Duke University" loading="lazy" decoding="async"></li>
+            <li class="identity-mark" style="--logo-width:158px;--logo-height:46px"><img src="assets/logo-google-transparent.png" alt="Google" loading="lazy" decoding="async"></li>
+            <li class="identity-mark" style="--logo-width:56px;--logo-height:72px"><img src="assets/logo-rbc-transparent.png" alt="RBC" loading="lazy" decoding="async"></li>
+            <li class="identity-mark identity-mark--featured" style="--logo-width:88px;--logo-height:96px;--logo-mobile-height:84px"><img src="assets/logo-columbia-transparent.png" alt="Columbia University" loading="lazy" decoding="async"></li>
+            <li class="identity-mark" style="--logo-width:90px;--logo-height:68px"><img src="assets/logo-a16z-scout-transparent.png" alt="a16z Scout" loading="lazy" decoding="async"></li>
+            <li class="identity-mark identity-mark--featured" style="--logo-width:140px;--logo-height:88px;--logo-mobile-height:84px"><img src="assets/logo-goldman-sachs-transparent.png" alt="Goldman Sachs" loading="lazy" decoding="async"></li>
+            <li class="identity-mark identity-mark--wide" style="--logo-width:250px;--logo-height:53px;--logo-padding-inline:0px"><img src="assets/logo-morgan-stanley-transparent.png" alt="Morgan Stanley" loading="lazy" decoding="async"></li>
+        </ul>
     </section>
 
-    <section class="audio-section" aria-labelledby="voicemail-heading">
-        <div class="audio-card">
-            <h2 id="voicemail-heading">Listen to Hadley AI voicemails</h2>
-            <div class="audio-player">
-                <audio data-hadley-audio controls preload="metadata" hidden aria-label="Hadley AI voicemail sample"></audio>
-                <p class="audio-status" data-audio-status role="status" aria-live="polite">Voicemail sample coming soon.</p>
-            </div>
-        </div>
+    <section class="contact-cta" id="get-in-touch" aria-labelledby="get-in-touch-title">
+        <h2 id="get-in-touch-title">Get in touch</h2>
+        <a class="contact-cta-button" href="contact.html">Contact</a>
     </section>
+
 </main>
 
 <footer>
-    <a href="./" class="footer-logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue.webp" alt="Hadley AI" width="620" height="166"></a>
-    <div class="footer-nav">
-        <a href="careers.html" class="footer-link">Careers</a>
-    </div>
     <span class="footer-copy">© 2026 Hadley AI</span>
 </footer>
 </body>

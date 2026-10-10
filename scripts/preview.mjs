@@ -4,8 +4,10 @@ import { realpath, stat } from "node:fs/promises";
 import { dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getMountainVideo } from "./mountain-media.mjs";
+import { createContactHandler } from "./contact-inquiries.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const contactHandler = createContactHandler();
 const types = {
   ".html": "text/html; charset=utf-8",
   ".png": "image/png",
@@ -25,6 +27,16 @@ const types = {
 createServer(async (req, res) => {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("X-Content-Type-Options", "nosniff");
+  let requestPath;
+  try { requestPath = new URL(req.url, "http://preview").pathname; }
+  catch {
+    res.writeHead(400);
+    res.end("Invalid URL");
+    return;
+  }
+  if (requestPath === "/api/contact") {
+    return contactHandler(req, res);
+  }
   if (req.method !== "GET" && req.method !== "HEAD") {
     res.writeHead(405, { Allow: "GET, HEAD" });
     res.end("Method not allowed");
@@ -32,7 +44,7 @@ createServer(async (req, res) => {
   }
 
   try {
-    const pathname = decodeURIComponent(new URL(req.url, "http://preview").pathname);
+    const pathname = decodeURIComponent(requestPath);
     const filename = pathname === "/" ? "index.html" : pathname.slice(1);
     const extension = extname(filename);
     // Root pages/images and public assets only; never source or configuration.

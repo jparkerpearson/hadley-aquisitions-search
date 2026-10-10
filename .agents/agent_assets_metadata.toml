@@ -14,3 +14,17 @@ mtime_ms = 1791660940341
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/107a6df3-322c-4286-886d-42a5d01f48e5/8c9201cb-3f63-4ba1-8e07-929b88dfc3d6"
 storage_version_token = "1791660946389769"
 content_type = "video/mp4"
+
+[[outputs]]
+id = "RMGKrQRgd2ajuPk91AUwY"
+uri = "file://generated-artifacts/mountain-rotation.mp4"
+type = "video"
+title = "Hadley four-video mountain rotation"
+description = "1080p silent loop using all four supplied clips. The fourth clip leads at 2× speed, followed by the other three with soft transitions."
+logical_id = "d160e998-abd5-4b72-9fa7-de2ec211d608"
+content_hash = "sha256:34ae30482f13a137ca92adab7f9679df8d89d3de6ca7fcac7d73f79053608ca2"
+size = 13260760
+mtime_ms = 1791662694112
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/d160e998-abd5-4b72-9fa7-de2ec211d608/6f9be94f-503b-4f4d-a7d7-31514868ad23"
+storage_version_token = "1791662907856516"
+content_type = "video/mp4"

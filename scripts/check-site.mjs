@@ -48,6 +48,15 @@ try {
   assert.equal((await fetch(base + "/generated-artifacts/mountain-original.mp4")).status, 404);
   assert.equal((await fetch(base + "/media/other.mp4")).status, 404);
   const original = execFileSync("git", ["show", "HEAD:careers.html"], { encoding: "utf8" });
+  for (const route of ["/", "/careers.html", "/contact.html"]) {
+    const html = await (await fetch(base + route)).text();
+    const footer = html.match(/<footer>[\s\S]*?<\/footer>/)?.[0];
+    assert.ok(footer, `${route} retains its footer`);
+    assert.doesNotMatch(footer, /<img|footer-logo|href="careers\.html"/, `${route} has no repeated footer logo or Careers link`);
+    const nav = html.match(/<nav\b[\s\S]*?<\/nav>/)?.[0] ?? "";
+    assert.match(nav, /class="logo"/, `${route} keeps the header logo`);
+    assert.match(nav, /href="careers\.html"/, `${route} keeps the header Careers link`);
+  }
   const current = await readFile("careers.html", "utf8");
   const appScript = (html) => html.match(/<script>\s*const APPLY_ENDPOINT[\s\S]*?<\/script>/)?.[0];
   assert.equal(appScript(current), appScript(original), "careers submission behavior unchanged");
@@ -68,10 +77,11 @@ try {
   let id = 0;
   const pending = new Map();
   const exceptions = [];
-  let audioSource = "";
   let mockedStatus = 422;
   let intercepted = 0;
-  const siteScript = await readFile("assets/site.js", "utf8");
+  let contactRequests = 0;
+  let contactReply = { status: 400, body: { error: "Check your firm.", fields: { firm: "Test firm error" } } };
+  let lastContactPayload;
   function send(method, params = {}) {
     return new Promise((resolve, reject) => {
       const call = ++id; pending.set(call, { resolve, reject });
@@ -103,18 +113,21 @@ try {
           ],
           body: Buffer.from(preflight ? "" : JSON.stringify(body)).toString("base64"),
         });
-      } else {
+      } else if (new URL(event.request.url).pathname === "/api/contact") {
+        contactRequests++;
+        lastContactPayload = JSON.parse(event.request.postData);
+        await pause(150);
         await send("Fetch.fulfillRequest", {
-          requestId: event.requestId, responseCode: 200,
-          responseHeaders: [{ name: "Content-Type", value: "text/javascript" }],
-          body: Buffer.from(siteScript.replace('const HADLEY_VOICEMAIL_SOURCE = "";', `const HADLEY_VOICEMAIL_SOURCE = ${JSON.stringify(audioSource)};`)).toString("base64"),
+          requestId: event.requestId, responseCode: contactReply.status,
+          responseHeaders: [{ name: "Content-Type", value: "application/json" }],
+          body: Buffer.from(JSON.stringify(contactReply.body)).toString("base64"),
         });
       }
     }
   };
   await send("Page.enable");
   await send("Runtime.enable");
-  await send("Fetch.enable", { patterns: [{ urlPattern: "*careers-intake-*"}, { urlPattern: "*/assets/site.js" }] });
+  await send("Fetch.enable", { patterns: [{ urlPattern: "*careers-intake-*" }, { urlPattern: "*/api/contact" }] });
   async function evaluate(expression) {
     const result = await send("Runtime.evaluate", { expression, returnByValue: true, awaitPromise: true });
     if (result.exceptionDetails) throw new Error(result.exceptionDetails.text);
@@ -127,7 +140,7 @@ try {
   async function width(value) {
     await send("Emulation.setDeviceMetricsOverride", { width: value, height: 900, deviceScaleFactor: 1, mobile: value < 600 });
   }
-  for (const value of [1280, 390, 320]) {
+  for (const value of [1280, 768, 390, 320]) {
     await width(value);
     for (const path of ["/", "/careers.html"]) {
       await navigate(path);
@@ -135,9 +148,93 @@ try {
       assert.ok(await evaluate("[...document.images].filter(i=>!i.loading || i.loading !== 'lazy').every(i=>i.complete && i.naturalWidth>0)"), "visible images load");
       assert.equal(await evaluate("getComputedStyle(document.body).fontFamily.includes('Helvetica')"), true);
       assert.equal(await evaluate("getComputedStyle(document.body).backgroundColor"), "rgb(250, 251, 253)");
+      if (path === "/") {
+        const navAppearance = "()=>{const nav=document.querySelector('.home-nav');const styles=['color','backgroundColor','fontSize','fontWeight','letterSpacing','textTransform','paddingLeft','paddingRight'];const read=(selector)=>{const computed=getComputedStyle(nav.querySelector(selector));return Object.fromEntries(styles.map(key=>[key,computed[key]]))};return {careers:read('.nav-link'),contact:read('.nav-cta')}}";
+        await evaluate("scrollTo({top:0,behavior:'instant'})");
+        await pause(250);
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.home-nav')).backgroundColor"), "rgba(0, 0, 0, 0)", "homepage header transparent over video");
+        const overVideo = await evaluate(`(${navAppearance})()`);
+        assert.deepEqual(overVideo.contact, overVideo.careers, "over-video Careers and Contact use the same unfilled formatting");
+        assert.equal(overVideo.contact.backgroundColor, "rgba(0, 0, 0, 0)");
+        assert.ok(await evaluate("document.querySelector('.home-nav .logo img').src.includes('white-transparent')"), "white logo over video");
+        assert.equal(await evaluate("Math.round(document.querySelector('.hero').getBoundingClientRect().top)"), 0, "video reaches page top");
+        assert.ok(await evaluate("Math.abs(document.querySelector('.hero').getBoundingClientRect().height - innerHeight) < 1"), `${value}px hero fills the full viewport height`);
+        assert.ok(await evaluate("document.querySelector('.identity-section').getBoundingClientRect().top >= innerHeight - 1"), "logos begin below the full-screen video");
+        const header = await evaluate("(()=>{const nav=document.querySelector('.home-nav');const bounds=(s)=>{const r=nav.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,centerY:(r.top+r.bottom)/2}};return {logo:bounds('.logo'),left:bounds('.nav-link'),right:bounds('.nav-cta'),width:document.documentElement.clientWidth}})()");
+        assert.ok(Math.abs((header.logo.left + header.logo.right) / 2 - header.width / 2) < 2
+          && header.left.right <= header.logo.left && header.logo.right <= header.right.left
+          && Math.abs(header.left.centerY - header.logo.centerY) < 2
+          && Math.abs(header.right.centerY - header.logo.centerY) < 2,
+        `centered header shares one row without overlap: ${JSON.stringify(header)}`);
+        await evaluate("document.getElementById('identity-title').scrollIntoView({behavior:'instant'})");
+        await pause(1000);
+        assert.ok(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), "header changes below video");
+        assert.ok(await evaluate("document.querySelector('.home-nav .logo img').src.includes('blue-transparent')"), "blue logo below hero");
+        assert.match(await evaluate("getComputedStyle(document.querySelector('.home-nav')).backgroundColor"), /^rgba?\(250, 251, 253/, "light header remains readable");
+        const belowVideo = await evaluate(`(${navAppearance})()`);
+        assert.deepEqual(belowVideo.contact, belowVideo.careers, "scrolled Careers and Contact use the same unfilled formatting");
+        assert.equal(belowVideo.contact.backgroundColor, "rgba(0, 0, 0, 0)");
+        assert.equal(await evaluate("document.getElementById('identity-title').textContent"), "We are the best, trusted by the best");
+        assert.equal(await evaluate("document.querySelectorAll('.identity-grid img').length"), 12, "remaining requested logos included");
+        assert.equal(await evaluate("document.querySelector('.identity-grid img[alt=\"Y Combinator\"]')"), null, "Y Combinator logo removed");
+        assert.ok(await evaluate("[...document.querySelectorAll('.identity-grid img')].every(i=>i.complete && i.naturalWidth>0 && i.alt.trim())"), "identity logos load with accessible names");
+        assert.ok(await evaluate("[...document.querySelectorAll('.identity-mark')].every(mark=>getComputedStyle(mark).backgroundColor==='rgba(0, 0, 0, 0)')"), "logos have no colored background cards");
+        assert.ok(await evaluate("[...document.querySelectorAll('.identity-grid img')].every(image=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const context=canvas.getContext('2d');context.drawImage(image,0,0);return context.getImageData(0,0,1,1).data[3]===0})"), "each logo image has real transparent outer pixels");
+        assert.ok(await evaluate("(()=>{const cells=[...document.querySelectorAll('.identity-mark')].map(mark=>mark.getBoundingClientRect());return cells.every(cell=>Math.abs(cell.width-cells[0].width)<1 && Math.abs(cell.height-cells[0].height)<1)})()"), "logo cells use consistent sizes");
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px logo grid fits`);
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.identity-section')).opacity"), "1", "scroll entrance finishes visibly");
+        assert.equal(await evaluate("document.getElementById('get-in-touch-title').textContent"), "Get in touch");
+        assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
+        assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Contact");
+        assert.equal(await evaluate("document.querySelector('#who-we-work-with')"), null, "audiences are replaced by the simple contact CTA");
+        await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
+        await pause(900);
+        assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact CTA fits`);
+        assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
+        assert.equal(await evaluate("document.querySelector('main > section:last-child').id"), "get-in-touch", "contact CTA leads directly to the footer");
+        await evaluate("scrollTo({top:0,behavior:'instant'})");
+        await pause(250);
+        assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "header restores on scrolling up");
+        await evaluate("document.getElementById('identity-title').scrollIntoView({behavior:'instant'})");
+        await pause(250);
+        assert.ok(await evaluate("scrollY > 300"), "reload starts from a scrolled page");
+        await send("Page.reload", { ignoreCache: true });
+        await pause(1400);
+        assert.equal(await evaluate("scrollY"), 0, `${value}px homepage reload starts at top`);
+        assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "reload restores over-video header");
+      } else {
+        assert.match(await evaluate("getComputedStyle(document.querySelector('body > nav')).backgroundColor"), /^rgba?\(250, 251, 253/, "careers keeps light header");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('body > nav .nav-cta')).backgroundColor"), "rgba(0, 0, 0, 0)", "careers page contact link is unfilled");
+        assert.ok(await evaluate("(()=>{const r=document.querySelector('body > nav .logo').getBoundingClientRect();return Math.abs((r.left+r.right)/2-document.documentElement.clientWidth/2)<2})()"), "careers logo is centered like the homepage");
+        assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "contact.html");
+        await navigate("/contact.html");
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact has no overflow`);
+        assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), false);
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"), [
+          ["name", true], ["email", true], ["phone", false], ["firm", true], ["notes", true],
+        ], "contact fields and required/optional states match the request");
+        assert.equal(await evaluate("document.querySelector('label[for=\"contact-notes\"]').textContent"), "Any notes for our conversation");
+        assert.ok(await evaluate("document.querySelector('label[for=\"contact-phone\"]').textContent.includes('optional')"));
+      }
     }
   }
   await width(1280);
+  await navigate("/#get-in-touch");
+  assert.ok(await evaluate("scrollY > 300"), "direct section links still reach their target");
+  await evaluate("document.querySelector('.contact-cta-button').click()");
+  await pause(900);
+  assert.equal(await evaluate("location.pathname"), "/contact.html", "bottom Contact button opens the form page");
+  assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), false);
+  await navigate("/");
+  await evaluate("document.getElementById('identity-title').scrollIntoView({behavior:'instant'})");
+  await pause(250);
+  const savedScroll = await evaluate("scrollY");
+  await navigate("/careers.html");
+  const navigationHistory = await send("Page.getNavigationHistory");
+  await send("Page.navigateToHistoryEntry", { entryId: navigationHistory.entries[navigationHistory.currentIndex - 1].id });
+  await pause(1400);
+  assert.ok(Math.abs((await evaluate("scrollY")) - savedScroll) < 5, "browser Back still restores the previous homepage position");
   await navigate("/");
   // Confirm actual decoding and advancing playback, not merely a video-shaped image.
   for (let retry = 0; retry < 30; retry++) {
@@ -149,9 +246,41 @@ try {
   await pause(300);
   assert.notEqual(await evaluate("document.querySelector('.hero-video').currentTime"), startingTime, "video frames advance");
   assert.ok(await evaluate("document.querySelector('.hero-video').muted && document.querySelector('.hero-video').loop && document.querySelector('.hero-video').playsInline"), "silent inline loop");
+  assert.ok(await evaluate("document.querySelector('.hero-video').disablePictureInPicture && !document.querySelector('.hero-video').controls"), "background video has no picture-in-picture pop-out or native controls");
+  assert.ok(await evaluate("(()=>{const b=document.querySelector('[data-video-toggle]');const s=getComputedStyle(b);return b.textContent==='' && b.getAttribute('aria-label')==='Pause background video' && b.dataset.state==='playing' && s.backgroundColor==='rgba(0, 0, 0, 0)' && s.borderTopWidth==='0px' && b.getBoundingClientRect().width>=44})()"), "subtle accessible pause icon with usable tap target");
+  assert.ok(await evaluate("Math.abs(document.querySelector('.hero-video').duration - 48) < .3"), "four full scenes use straight cuts with no transition overlap");
+  const sampleVideoFrame = (time) => evaluate(`new Promise((resolve, reject) => {
+      const video = document.querySelector('.hero-video');
+      const timeout = setTimeout(() => reject(new Error('Scene seeking timed out')), 5000);
+      video.addEventListener('seeked', () => {
+        clearTimeout(timeout);
+        const canvas = document.createElement('canvas');
+        canvas.width = 64; canvas.height = 36;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, 64, 36);
+        const pixels = context.getImageData(0, 0, 64, 36).data;
+        resolve({
+          hash: pixels.reduce((hash, byte) => Math.imul(hash ^ byte, 16777619) >>> 0, 2166136261),
+          brightness: pixels.reduce((total, byte, index) => total + (index % 4 === 3 ? 0 : byte), 0) / (64 * 36 * 3),
+        });
+      }, {once: true});
+      video.currentTime = ${time};
+    })`);
+  const scenes = [];
+  for (const time of [3, 14, 26, 38]) {
+    scenes.push((await sampleVideoFrame(time)).hash);
+  }
+  assert.equal(new Set(scenes).size, 4, "four different supplied scenes decode in the rotation");
+  for (const time of [12, 24, 36]) {
+    assert.ok((await sampleVideoFrame(time)).brightness > 40, `cut at ${time}s starts directly on footage, not a black opening`);
+  }
+  await evaluate("document.querySelector('.hero-video').currentTime = document.querySelector('.hero-video').duration - .2");
+  await pause(900);
+  assert.ok(await evaluate("document.querySelector('.hero-video').currentTime < 2 && !document.querySelector('.hero-video').paused"), "rotation wraps back to opening footage automatically");
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero h1')).color"), "rgb(250, 251, 253)");
   await evaluate("document.querySelector('[data-video-toggle]').click()");
   assert.ok(await evaluate("document.querySelector('.hero-video').paused"), "pause control works");
+  assert.ok(await evaluate("(()=>{const b=document.querySelector('[data-video-toggle]');return b.dataset.state==='paused' && b.getAttribute('aria-label')==='Play background video'})()"), "paused control becomes accessible play icon");
   await evaluate("document.querySelector('[data-video-toggle]').click()");
   await pause(200);
   assert.equal(await evaluate("document.querySelector('.hero-video').paused"), false, "play control resumes");
@@ -164,23 +293,13 @@ try {
   await evaluate("document.querySelector('[data-test-spacer]').remove()");
   assert.equal(await evaluate("document.querySelector('h1').textContent"), "The next generation of buyside M&A sourcing is here");
   assert.equal(await evaluate("document.querySelector('.hero-positioning')"), null);
-  assert.ok(await evaluate("document.querySelector('[data-hadley-audio]').hidden"));
-  for (const id of ["offerings", "voicemail-heading"]) {
+  assert.equal(await evaluate("document.querySelector('audio, .audio-section, #voicemail-heading')"), null, "voicemail listening section was removed");
+  assert.equal(await evaluate("document.body.textContent.includes('Voicemail sample coming soon.')"), false, "no voicemail placeholder remains");
+  for (const id of ["get-in-touch"]) {
     await evaluate(`document.getElementById(${JSON.stringify(id)}).scrollIntoView()`);
     await pause(1000);
     assert.ok(await evaluate(`getComputedStyle(document.getElementById(${JSON.stringify(id)}).closest('section')).opacity !== '0'`));
   }
-  audioSource = fixture;
-  await navigate("/");
-  assert.equal(await evaluate("document.querySelector('audio').hidden"), false);
-  assert.ok(await evaluate("document.querySelector('audio').readyState >= 1 && document.querySelector('audio').controls"), "real audio metadata and controls");
-  await evaluate("document.querySelector('audio').currentTime = .4");
-  await pause(150);
-  assert.ok(await evaluate("document.querySelector('audio').currentTime >= .3"), "audio seeking");
-  audioSource = "assets/not-a-recording.mp3";
-  await navigate("/");
-  assert.equal(await evaluate("document.querySelector('[data-audio-status]').dataset.state"), "error");
-  audioSource = "";
 
   await navigate("/careers.html");
   await evaluate("document.querySelector('[data-apply]').click()");
@@ -211,17 +330,54 @@ try {
   assert.equal(await evaluate("document.querySelector('#apply-success').hidden"), false);
   assert.equal(intercepted, 2, "two mocked submissions, none sent to live service");
 
+  await navigate("/contact.html");
+  await evaluate("document.querySelector('#contact-form').requestSubmit()");
+  assert.equal(contactRequests, 0, "invalid contact form is not submitted");
+  assert.equal(await evaluate("document.activeElement.name"), "name");
+  await evaluate("(()=>{const f=document.querySelector('#contact-form');f.elements.name.value='Test Contact';f.elements.email.value='test@example.invalid';f.elements.firm.value='Test Firm';f.elements.notes.value='Intercepted browser test, not a real inquiry.';f.requestSubmit()})()");
+  await pause(500);
+  assert.equal(contactRequests, 1);
+  assert.equal(lastContactPayload.phone, "", "blank optional phone is submitted");
+  assert.equal(await evaluate("document.activeElement.name"), "firm", "server field error receives focus");
+  assert.equal(await evaluate("document.querySelector('#contact-firm').getAttribute('aria-invalid')"), "true");
+  contactReply = { status: 503, body: { error: "Temporary test failure" } };
+  await evaluate("document.querySelector('#contact-form').requestSubmit()");
+  await pause(500);
+  assert.equal(await evaluate("document.querySelector('#contact-status').textContent"), "Temporary test failure");
+  assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact", "server failures preserve values");
+  await evaluate("(async()=>{const original=window.fetch;window.fetch=async()=>{throw Error('offline test')};document.querySelector('#contact-form').requestSubmit();await new Promise(resolve=>setTimeout(resolve,200));window.fetch=original})()");
+  assert.ok(await evaluate("document.querySelector('#contact-status').textContent.length>0"), "network failures are explicit");
+  assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact");
+  contactReply = { status: 201, body: { ok: true, id: "mocked-test-only" } };
+  await evaluate("document.querySelector('#contact-form').requestSubmit();document.querySelector('#contact-form').requestSubmit()");
+  assert.equal(await evaluate("document.querySelector('#contact-submit').disabled"), true, "pending form cannot be double submitted");
+  await pause(500);
+  assert.equal(contactRequests, 3, "duplicate submission is suppressed");
+  assert.equal(await evaluate("document.querySelector('#contact-success').hidden"), false);
+  assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), true);
+  assert.equal(await evaluate("document.activeElement.id"), "contact-success");
+
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await navigate("/");
   assert.equal(await evaluate("document.querySelector('.hero-video').hasAttribute('src')"), false, "reduced motion does not fetch video");
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('.home-nav')).transitionDuration"), "0s", "reduced motion disables header transition");
   assert.ok(await evaluate("document.querySelector('[data-video-toggle]').hidden"), "no pointless pause control for static poster");
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-video-toggle]')).display"), "none");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible with reduced motion");
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
-  assert.ok(await evaluate("getComputedStyle(document.querySelector('.offer-card')).opacity === '1'"), "content readable without JavaScript");
+  assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "contact CTA works without JavaScript");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is readable without JavaScript");
+  assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "removed sections do not return without JavaScript");
+  assert.ok(await evaluate("getComputedStyle(document.querySelector('.identity-section')).opacity === '1'"), "identity section readable without JavaScript");
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('.home-nav')).position"), "absolute", "no-JS header stays with hero rather than becoming unreadable over lower content");
   assert.equal(await evaluate("document.querySelector('.hero-video').hasAttribute('src')"), false, "no-JS uses poster only");
+  await navigate("/contact.html");
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('#contact-form')).display"), "none", "no-JS form cannot leak details through a GET submission");
+  assert.ok(await evaluate("document.querySelector('noscript').textContent.includes('requires JavaScript')"), "no-JS contact limitation is explicit");
   assert.equal(exceptions.length, 0, "no runtime exceptions");
-  console.log("PASS desktop/mobile, branding, motion fallbacks, real audio seeking/error states, and mocked careers dialogs/submissions");
+  console.log("PASS desktop/tablet/mobile layouts, shared careers/contact branding, video rotation, motion fallbacks, voicemail removal, and mocked careers/contact submissions");
 } finally {
   socket?.close();
   browser.kill("SIGTERM");

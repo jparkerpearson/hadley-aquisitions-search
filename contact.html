@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — Hadley AI</title>
+    <meta name="description" content="Contact Hadley AI.">
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    <link rel="stylesheet" href="assets/site.css">
+    <script src="assets/site.js" defer></script>
+    <script src="assets/contact.js" defer></script>
+</head>
+<body class="contact-page inner-page">
+<a class="skip-link" href="#main">Skip to content</a>
+<nav class="site-nav" aria-label="Main navigation">
+    <a href="./" class="logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue-transparent.webp" alt="Hadley AI"></a>
+    <div class="nav-right">
+        <a href="careers.html" class="nav-link">Careers</a>
+        <a href="contact.html" class="nav-cta" aria-current="page">Contact</a>
+    </div>
+</nav>
+
+<main id="main">
+    <section class="contact-section" aria-labelledby="contact-title">
+        <h1 class="contact-title" id="contact-title">Contact</h1>
+        <form class="contact-form" id="contact-form" novalidate hidden>
+            <div class="contact-fields">
+                <div class="contact-field">
+                    <label for="contact-name">Name</label>
+                    <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="160" required aria-describedby="error-name">
+                    <span class="contact-field-error" id="error-name"></span>
+                </div>
+                <div class="contact-field">
+                    <label for="contact-email">Email</label>
+                    <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="error-email">
+                    <span class="contact-field-error" id="error-email"></span>
+                </div>
+                <div class="contact-field">
+                    <label for="contact-phone">Phone (optional)</label>
+                    <input id="contact-phone" name="phone" type="tel" autocomplete="tel" maxlength="80" aria-describedby="error-phone">
+                    <span class="contact-field-error" id="error-phone"></span>
+                </div>
+                <div class="contact-field">
+                    <label for="contact-firm">Firm</label>
+                    <input id="contact-firm" name="firm" type="text" autocomplete="organization" maxlength="200" required aria-describedby="error-firm">
+                    <span class="contact-field-error" id="error-firm"></span>
+                </div>
+                <div class="contact-field contact-field--notes">
+                    <label for="contact-notes">Any notes for our conversation</label>
+                    <textarea id="contact-notes" name="notes" rows="4" maxlength="5000" required aria-describedby="error-notes"></textarea>
+                    <span class="contact-field-error" id="error-notes"></span>
+                </div>
+            </div>
+            <div class="contact-form-footer">
+                <p class="contact-status" id="contact-status" role="alert" aria-live="assertive"></p>
+                <button class="contact-submit" id="contact-submit" type="submit">Send</button>
+            </div>
+        </form>
+        <p class="contact-success" id="contact-success" role="status" tabindex="-1" hidden>Thanks. Your message has been received.</p>
+        <noscript><p class="contact-noscript">This form requires JavaScript to submit.</p></noscript>
+    </section>
+</main>
+
+<footer>
+    <div class="footer-nav">
+        <a href="contact.html" class="footer-link" aria-current="page">Contact</a>
+    </div>
+    <span class="footer-copy">© 2026 Hadley AI</span>
+</footer>
+</body>
+</html>

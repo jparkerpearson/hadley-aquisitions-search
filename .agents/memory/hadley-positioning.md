@@ -9,6 +9,24 @@ Hadley AI's website hero headline is "The next generation of buyside M&A sourcin
 
 **How to apply:** Keep future website copy aligned with these three offerings unless the user changes the business direction. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
 
+Under the homepage trust logos, show only "Get in touch" above a Contact button.
+
+**Why:** The user asked for just this contact prompt at the bottom, replacing the audience section.
+
+**How to apply:** Link the button to the existing contact form; do not add extra descriptions or restore the audience list.
+
+Do not show the "How it works" section or the three service offering cards on the homepage.
+
+**Why:** The user explicitly requested removing both after seeing them together.
+
+**How to apply:** Preserve the underlying business positioning, but do not restore these homepage sections unless requested. Keep the hero, trust logos, and minimal contact prompt.
+
+The user requested removal of the separate "Listen to Hadley AI voicemails" section.
+
+**Why:** They explicitly asked to delete it.
+
+**How to apply:** Do not restore the voicemail listening/sample section unless requested. This does not remove voicemail from the technology offering.
+
 Use 48 North for its vibe, loading animations, and varied cards—not as a requirement to match its colors. The user values that it "feels great and not AI generated at all."
 
 **Why:** The user explicitly clarified the design reference after the first plan interpreted it as a color direction.
@@ -27,8 +45,56 @@ Keep this website's copy very minimal. The user said there was "way too much ran
 
 **How to apply:** Avoid decorative eyebrow labels, repeated explanations, and extra marketing sections. Use direct service names and short descriptions rather than adding copy to fill space.
 
-The user wants a mountain video behind the hero headline, referencing summitpartners.com, and selected 1080p quality for the original generated widescreen clip. They want more pace and forward motion over the mountain, not a nearly stationary view.
+The user wants a mountain video behind the hero headline, referencing summitpartners.com, and selected 1080p quality. They want more pace and forward motion over the mountain, not a nearly stationary view. They replaced the generated footage with four supplied videos and want them to rotate, with the fourth video sped up and placed first for momentum. They also want the homepage header over the video, like the supplied Summit Partners example, rather than an opaque bar above it. The video hero should fill the user's screen vertically on desktop and mobile.
 
 **Why:** The user explicitly requested this visual treatment and selected the quality.
 
 **How to apply:** Keep the hero's mountain-video treatment without reintroducing marketing filler; preserve the Hadley brand palette and readable headline.
+
+The four-video background should switch directly between scenes with no fades, including at the loop boundary.
+
+**Why:** The user corrected the initial faded montage; they want straight cuts like the Summit site.
+
+**How to apply:** Preserve hard cuts when changing the sequence or editing its footage.
+
+The user wants the homepage Careers and Contact links to have identical formatting with no filled background, including after the header changes on scroll.
+
+**Why:** They explicitly rejected the filled Contact button shown beside the plain Careers link.
+
+**How to apply:** Keep both navigation actions as matching text links over the video and in the light scrolled header. Do not restore the filled Contact treatment.
+
+The user wants a subtle two-line pause icon at the bottom-right of the mountain hero rather than a bordered, labeled button. They do not want a pop-out button.
+
+**Why:** They explicitly requested a quieter playback control without the visual weight of the previous button and said a pop-out button was not needed.
+
+**How to apply:** Preserve a usable touch target and accessible play/pause names, but keep the visible controls limited to the minimal in-page pause/play icon.
+
+Homepage reloads should start at the mountain hero, not restore a position halfway down the page. Keep explicit section links and ordinary browser Back navigation working.
+
+**Why:** The user reported refreshes landing in the middle of the homepage. Fixing refresh behavior should not override deliberate section or history navigation.
+
+**How to apply:** Reset ordinary homepage loads and refreshes without a URL fragment; do not apply the reset to explicit section links or history traversal.
+
+The user supplied company and university logos for a section originally titled "Who we are," then asked to replace that heading with "We are the best, trusted by the best." They later asked to remove the Y Combinator (YC) logo. They did not specify the individual affiliations represented by the other logos.
+
+**Why:** The user explicitly supplied the new wording, but did not identify the organizations as customers, partners, or former employers.
+
+**How to apply:** Use the user's requested heading exactly and do not restore the YC logo. Ask for confirmation before adding more specific affiliation claims or relabeling these as client logos.
+
+The user wants consistently sized logos with genuinely transparent backgrounds, not white rectangles or dark background cards.
+
+**Why:** They called out uneven logo sizing and backgrounds that were still white instead of clear.
+
+**How to apply:** Optically balance different wordmarks and crests without stretching them. Preserve intrinsic shield/crest details; use readable dark wordmarks for reversed logos on the light section.
+
+The careers page should feel like the same Hadley website as the homepage.
+
+**Why:** The user said it felt like a "totally different website" and asked to clear that up.
+
+**How to apply:** Keep the Hadley header, typography, colors, spacing, and footer consistent while preserving the job descriptions and application functionality.
+
+Do not repeat the Hadley logo or Careers link in the page footer.
+
+**Why:** The user explicitly said they do not need the logo and Careers again at the bottom.
+
+**How to apply:** Keep the logo and Careers navigation in the header; do not reintroduce those repeated footer elements.
