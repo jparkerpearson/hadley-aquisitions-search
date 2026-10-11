@@ -3,17 +3,17 @@ name: Hadley positioning
 description: User-defined business positioning and brand direction for the website.
 ---
 
-Hadley AI's website hero headline is "The next generation of buyside M&A sourcing is here", without a separate "Hadley AI" heading or audience subtitle. The user defines three offerings: a full-on buy-side broker product; technology with email, voicemail, LinkedIn, Facebook, mail, and handwritten-letter capabilities; and market mapping with target and expert sourcing.
+Hadley AI's website hero headline is "The next generation of buyside M&A advisory is here", without a separate "Hadley AI" heading or audience subtitle. The user defines three offerings: a full-on buy-side broker product; technology with email, voicemail, LinkedIn, Facebook, mail, and handwritten-letter capabilities; and market mapping with target and expert sourcing.
 
 **Why:** The user explicitly asked to replace both hero lines with this sentence and defined these offerings instead of the previous computational-reasoning messaging.
 
 **How to apply:** Keep future website copy aligned with these three offerings unless the user changes the business direction. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
 
-Under the homepage trust logos, show only "Get in touch" above a Contact button.
+Below the trust logos, show the user's figures: "100+ transactions supported", "$500B+ partner AUM", and "$1B+ enterprise value created", followed by "Get in touch" and a Contact button.
 
-**Why:** The user asked for just this contact prompt at the bottom, replacing the audience section.
+**Why:** The user asked for these three stats to count up as visitors scroll, adding them above the previously requested simple contact prompt.
 
-**How to apply:** Link the button to the existing contact form; do not add extra descriptions or restore the audience list.
+**How to apply:** Preserve the exact figures and labels, including "partner" AUM rather than claiming Hadley's own AUM. Keep the contact button linked to the existing form; do not add descriptions or restore the audience list.
 
 Do not show the "How it works" section or the three service offering cards on the homepage.
 
@@ -92,6 +92,12 @@ The careers page should feel like the same Hadley website as the homepage.
 **Why:** The user said it felt like a "totally different website" and asked to clear that up.
 
 **How to apply:** Keep the Hadley header, typography, colors, spacing, and footer consistent while preserving the job descriptions and application functionality.
+
+Start the careers page with open roles, without the introductory "Build the future of deal sourcing" heading, Careers eyebrow, or supporting paragraph.
+
+**Why:** The user explicitly requested removing that entire introductory block.
+
+**How to apply:** Preserve the jobs and application flow; do not restore the promotional careers introduction.
 
 Do not repeat the Hadley logo or Careers link in the page footer.
 

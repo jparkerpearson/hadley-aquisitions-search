@@ -18,7 +18,7 @@ if (document.body.classList.contains("home-page") && !location.hash && navigatio
 }
 
 const revealItems = document.querySelectorAll(
-  ".identity-section, .contact-cta, .careers-hero, .role-row, .role, .contact-section"
+  ".identity-section, .contact-cta, .role-row, .role, .contact-section"
 );
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const observer = new IntersectionObserver((entries, instance) => {

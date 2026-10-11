@@ -183,6 +183,11 @@ try {
         assert.ok(await evaluate("(()=>{const cells=[...document.querySelectorAll('.identity-mark')].map(mark=>mark.getBoundingClientRect());return cells.every(cell=>Math.abs(cell.width-cells[0].width)<1 && Math.abs(cell.height-cells[0].height)<1)})()"), "logo cells use consistent sizes");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px logo grid fits`);
         assert.equal(await evaluate("getComputedStyle(document.querySelector('.identity-section')).opacity"), "1", "scroll entrance finishes visibly");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('.stat-label')].map(item=>item.textContent)"), [
+          "transactions supported", "partner AUM", "enterprise value created",
+        ], "stats use the requested labels");
+        assert.equal(await evaluate("document.getElementById('stats').previousElementSibling.classList.contains('identity-section')"), true, "stats follow the trust logos");
+        assert.equal(await evaluate("document.getElementById('stats').nextElementSibling.id"), "get-in-touch", "contact follows the stats");
         assert.equal(await evaluate("document.getElementById('get-in-touch-title').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Contact");
@@ -206,6 +211,9 @@ try {
       } else {
         assert.match(await evaluate("getComputedStyle(document.querySelector('body > nav')).backgroundColor"), /^rgba?\(250, 251, 253/, "careers keeps light header");
         assert.equal(await evaluate("getComputedStyle(document.querySelector('body > nav .nav-cta')).backgroundColor"), "rgba(0, 0, 0, 0)", "careers page contact link is unfilled");
+        assert.equal(await evaluate("document.querySelector('.careers-hero')"), null, "careers intro is removed");
+        assert.equal(await evaluate("document.querySelector('#main > :first-child').className"), "roles", "careers begins with open roles");
+        assert.ok(await evaluate("document.querySelector('.roles-header').getBoundingClientRect().top >= document.querySelector('body > nav').getBoundingClientRect().bottom"), "roles start below the fixed navigation");
         assert.ok(await evaluate("(()=>{const r=document.querySelector('body > nav .logo').getBoundingClientRect();return Math.abs((r.left+r.right)/2-document.documentElement.clientWidth/2)<2})()"), "careers logo is centered like the homepage");
         assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "contact.html");
         await navigate("/contact.html");
@@ -220,6 +228,34 @@ try {
     }
   }
   await width(1280);
+  await navigate("/");
+  const finalStats = ["100+", "$500B+", "$1B+"];
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "final stats exist before scrolling");
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>!item.dataset.counterState)"), "counters wait until they are visible");
+  await evaluate("document.getElementById('stats').scrollIntoView({behavior:'instant'})");
+  await pause(150);
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='running')"), "all visible stats begin counting");
+  assert.notDeepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "intermediate counts are rendered");
+  assert.match(await evaluate("document.querySelector('[data-count-to=\"1\"]').textContent"), /^\$0\.\dB\+$/, "$1B visibly animates using fractional billions");
+  await pause(1800);
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "counters land on exact requested values");
+  await evaluate("scrollTo({top:0,behavior:'instant'})");
+  await pause(100);
+  await evaluate("document.getElementById('stats').scrollIntoView({behavior:'instant'})");
+  await pause(100);
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"), "counters do not restart on repeat scrolling");
+  await navigate("/");
+  await evaluate("document.getElementById('stats').scrollIntoView({behavior:'instant'})");
+  await pause(100);
+  await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+  await pause(100);
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "enabling reduced motion finishes active counters");
+  await send("Emulation.setEmulatedMedia", { features: [] });
+  const noStatsObserver = await send("Page.addScriptToEvaluateOnNewDocument", { source: "delete window.IntersectionObserver;" });
+  await navigate("/");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "unsupported observers retain the final stats");
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
+  await send("Page.removeScriptToEvaluateOnNewDocument", { identifier: noStatsObserver.identifier });
   await navigate("/#get-in-touch");
   assert.ok(await evaluate("scrollY > 300"), "direct section links still reach their target");
   await evaluate("document.querySelector('.contact-cta-button').click()");
@@ -291,7 +327,7 @@ try {
   await pause(300);
   assert.equal(await evaluate("document.querySelector('.hero-video').paused"), false, "visible video resumes");
   await evaluate("document.querySelector('[data-test-spacer]').remove()");
-  assert.equal(await evaluate("document.querySelector('h1').textContent"), "The next generation of buyside M&A sourcing is here");
+  assert.equal(await evaluate("document.querySelector('h1').textContent"), "The next generation of buyside M&A advisory is here");
   assert.equal(await evaluate("document.querySelector('.hero-positioning')"), null);
   assert.equal(await evaluate("document.querySelector('audio, .audio-section, #voicemail-heading')"), null, "voicemail listening section was removed");
   assert.equal(await evaluate("document.body.textContent.includes('Voicemail sample coming soon.')"), false, "no voicemail placeholder remains");
@@ -364,9 +400,12 @@ try {
   assert.ok(await evaluate("document.querySelector('[data-video-toggle]').hidden"), "no pointless pause control for static poster");
   assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-video-toggle]')).display"), "none");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible with reduced motion");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "reduced motion shows final stats immediately");
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "all stats remain readable without JavaScript");
   assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "contact CTA works without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is readable without JavaScript");
   assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "removed sections do not return without JavaScript");
