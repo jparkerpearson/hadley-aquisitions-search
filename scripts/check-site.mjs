@@ -56,7 +56,12 @@ try {
     assert.doesNotMatch(html, /<footer\b|footer-copy|© 2026 Hadley AI/, `${route} has no copyright footer`);
     const nav = html.match(/<nav\b[\s\S]*?<\/nav>/)?.[0] ?? "";
     assert.match(nav, /class="logo"/, `${route} keeps the header logo`);
-    assert.match(nav, /href="careers\.html"/, `${route} keeps the header Careers link`);
+    if (route === "/careers.html") {
+      assert.match(nav, /<a href="\.\/" class="nav-link">Home<\/a>/, "careers navigation returns home");
+      assert.doesNotMatch(nav, /href="careers\.html"/, "careers page has no self-link");
+    } else {
+      assert.match(nav, /href="careers\.html"/, `${route} keeps the header Careers link`);
+    }
   }
   const current = await readFile("careers.html", "utf8");
   const appScript = (html) => html.match(/<script>\s*const APPLY_ENDPOINT[\s\S]*?<\/script>/)?.[0];
@@ -279,11 +284,12 @@ try {
         await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13, text: "\r", unmodifiedText: "\r" });
         await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
         assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').open"), true, "roles expand with the keyboard");
-        assert.deepEqual(await evaluate("[...document.querySelectorAll('#founding-applied-ai-engineer .role-body h3')].map(heading=>heading.textContent)"), ["Location", "Responsibilities", "Profile"], "engineering role has matching sections without compensation");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#founding-applied-ai-engineer .role-body h3')].map(heading=>heading.textContent)"), ["Location", "Responsibilities", "Profile", "Comp"], "engineering role uses the matching four-section structure");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('#founding-applied-ai-engineer .role-body p')].map(paragraph=>paragraph.textContent)"), [
           "SF, in office 5 days / week",
           "Improve our SOTA research agents. Iterate on the voice model and reduce its mistake rate. Increase coverage of the capital allocation reasoning model.",
           "Familiar with how a computer works, from assembly to high-level languages. Comfortable working with cloud infrastructure, or able to learn it quickly. Elite use of coding agents.",
+          "In line with best-in-class AI startups",
         ]);
         assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').textContent.includes('$300K')"), false, "origination compensation does not appear in the engineering role");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px expanded roles fit`);

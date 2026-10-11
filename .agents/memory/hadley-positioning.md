@@ -99,6 +99,12 @@ Career roles should expand and collapse under their titles, without the separate
 
 **How to apply:** Start both roles collapsed; retain job descriptions and an Apply action inside each expanded role. Keep shared role links working.
 
+Engineering compensation is deliberately described against best-in-class AI startups rather than a numerical figure.
+
+**Why:** The user clarified that this wording applies to Founding Applied AI Engineer, not Founding Origination Lead.
+
+**How to apply:** Keep compensation role-specific; do not copy the origination role's numerical compensation into the engineering listing.
+
 Keep role URL anchors stable when changing a job's public title.
 
 **Why:** Existing career links may already have been shared; a title change should not invalidate them.
