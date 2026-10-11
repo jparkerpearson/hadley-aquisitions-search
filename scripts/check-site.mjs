@@ -344,8 +344,10 @@ try {
         assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "#get-in-touch", "homepage Contact scrolls to the inline form");
         assert.equal(await evaluate("getComputedStyle(document.querySelector('#get-in-touch')).backgroundColor"), "rgb(11, 31, 59)", "contact continues the dark offerings background");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"),
-          [["name",true],["email",true]], "inline form has only name and work email");
+          [["name",true],["email",true],["interest",false]], "inline form has name, work email and area of interest");
         assert.equal(await evaluate("document.querySelector('label[for=\"contact-email\"]').textContent"), "Work Email");
+        assert.equal(await evaluate("document.querySelector('label[for=\"contact-interest\"]').textContent"), "Area of Interest");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('#contact-submit')).backgroundColor"), "rgba(0, 0, 0, 0)", "send blends with the dark form");
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
@@ -405,7 +407,7 @@ try {
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact has no overflow`);
         assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), false);
         assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"), [
-          ["name", true], ["email", true],
+          ["name", true], ["email", true], ["interest", false],
         ], "contact fields and required/optional states match the request");
         assert.equal(await evaluate("document.querySelector('label[for=\"contact-email\"]').textContent"), "Work Email");
       }
@@ -572,10 +574,11 @@ try {
     await evaluate("document.querySelector('#contact-form').requestSubmit()");
     assert.equal(contactRequests, 0, "invalid contact form is not submitted");
     assert.equal(await evaluate("document.activeElement.name"), "name");
-    await evaluate("(()=>{const f=document.querySelector('#contact-form');f.elements.name.value='Test Contact';f.elements.email.value='test@example.invalid';f.requestSubmit()})()");
+    await evaluate("(()=>{const f=document.querySelector('#contact-form');f.elements.name.value='Test Contact';f.elements.email.value='test@example.invalid';f.elements.interest.value='Expert sourcing';f.requestSubmit()})()");
     await pause(500);
     assert.equal(contactRequests, 1);
-    assert.deepEqual(Object.keys(lastContactPayload).sort(), ["email", "name"], "only name and work email are submitted");
+    assert.deepEqual(Object.keys(lastContactPayload).sort(), ["email", "interest", "name"], "only the three visible fields are submitted");
+    assert.equal(lastContactPayload.interest, "Expert sourcing");
     assert.equal(await evaluate("document.activeElement.name"), "email", "server field error receives focus");
     assert.equal(await evaluate("document.querySelector('#contact-email').getAttribute('aria-invalid')"), "true");
     contactReply = { status: 503, body: { error: "Temporary test failure" } };
@@ -583,6 +586,7 @@ try {
     await pause(500);
     assert.equal(await evaluate("document.querySelector('#contact-status').textContent"), "Temporary test failure");
     assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact", "server failures preserve values");
+    assert.equal(await evaluate("document.querySelector('#contact-interest').value"), "Expert sourcing", "server failures preserve area of interest");
     await evaluate("(async()=>{const original=window.fetch;window.fetch=async()=>{throw Error('offline test')};document.querySelector('#contact-form').requestSubmit();await new Promise(resolve=>setTimeout(resolve,200));window.fetch=original})()");
     assert.ok(await evaluate("document.querySelector('#contact-status').textContent.length>0"), "network failures are explicit");
     assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact");
@@ -594,6 +598,26 @@ try {
     assert.equal(await evaluate("document.querySelector('#contact-success').hidden"), false);
     assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), true);
     assert.equal(await evaluate("document.activeElement.id"), "contact-success");
+    assert.equal(await evaluate("document.querySelector('#contact-success').textContent"), "Thanks. Your message has been received.");
+    // A fragment-only Page.navigate can retain the successful, hidden form.
+    // Change the query to exercise errors on a genuinely fresh form.
+    await navigate(contactRoute.includes("#")
+      ? contactRoute.replace("#", "?form-check=interest#")
+      : `${contactRoute}?form-check=interest`);
+    contactReply = { status: 400, body: { error: "Check your interest.", fields: { interest: "Test interest error" } } };
+    await evaluate("(()=>{const f=document.querySelector('#contact-form');f.elements.name.value='Notification Test';f.elements.email.value='test@example.invalid';f.requestSubmit()})()");
+    await pause(500);
+    assert.equal(await evaluate("document.activeElement.id"), "contact-interest", "interest errors receive focus");
+    assert.equal(await evaluate("document.querySelector('#contact-interest').getAttribute('aria-invalid')"), "true");
+    await evaluate("(()=>{const input=document.querySelector('#contact-interest');input.value='Buyside advisory';input.dispatchEvent(new Event('input',{bubbles:true}))})()");
+    assert.equal(await evaluate("document.querySelector('#error-interest').textContent"), "", "editing interest clears its error");
+    contactReply = { status: 201, body: { ok: true, notification: "unconfirmed" } };
+    await evaluate("document.querySelector('#contact-form').requestSubmit()");
+    await pause(500);
+    assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), true, "saved inquiry is not offered for duplicate resubmission");
+    assert.ok(await evaluate("document.querySelector('#contact-success').textContent.includes(\"couldn't confirm the email notification\")"), "email failure has an honest visitor acknowledgement");
+    assert.ok(await evaluate("document.querySelector('#contact-success').textContent.includes('info@gethadley.com')"), "email failure offers direct contact");
+    assert.equal(await evaluate("document.activeElement.id"), "contact-success", "notification warning receives accessible focus");
   }
 
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });

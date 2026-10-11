@@ -1,15 +1,15 @@
 ---
 name: Contact inquiry handling
-description: Why contact inquiries are kept separate from applications and are not described as emailed.
+description: Contact scope, save-before-notification behavior and honest delivery acknowledgements.
 ---
 Keep contact inquiries separate from the existing careers application service.
 
 **Why:** The user requested a sales contact form, not a change to the job-application workflow. Reusing the application service would mix different submissions and delivery expectations.
 
-**How to apply:** Preserve the existing application behavior when changing branding. The user now wants the contact form to contain only Name and Work Email; the earlier phone, firm and interest fields are no longer part of the form.
+**How to apply:** Preserve the existing application behavior when changing branding. Keep the sales form minimal: the user removed phone and firm, retained Name and Work Email, and subsequently asked to add Area of Interest.
 
-Only acknowledge contact submissions after a durable private save; do not claim they were emailed without an authorized mail provider.
+Save contact inquiries privately before attempting a notification. Resend acceptance is not proof of inbox delivery; preserve the inquiry and show an honest acknowledgement if email cannot be confirmed.
 
-**Why:** No email-delivery integration was connected when the contact form was requested. A stored inquiry is not an email notification.
+**Why:** The user requested email notifications after initially using private saves. Notification failures must not lose a lead or encourage duplicate submissions after a successful send.
 
-**How to apply:** Keep inquiry data out of public endpoints, logs, source files, and screenshots. Explain notification delivery accurately and obtain a connected provider before adding it.
+**How to apply:** Keep inquiry data out of public endpoints, logs, source files, and screenshots. Retry ambiguous email failures with the same idempotency key and distinguish private receipt, provider acceptance and confirmed delivery.

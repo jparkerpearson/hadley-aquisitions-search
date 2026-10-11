@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node scripts/preview.mjs",
-    "test": "node scripts/check-contact.mjs && node scripts/check-stats.mjs && node --experimental-websocket scripts/check-site.mjs",
+    "test": "node scripts/check-contact-email.mjs && node scripts/check-contact.mjs && node scripts/check-stats.mjs && node --experimental-websocket scripts/check-site.mjs",
     "upload:mountain": "node scripts/upload-mountain.mjs",
     "build:mountain": "node scripts/build-mountain-rotation.mjs"
   },
@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@replit/connectors-sdk": "^0.4.3",
     "@replit/object-storage": "^1.0.0"
   }
 }

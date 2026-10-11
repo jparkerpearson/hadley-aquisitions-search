@@ -5,7 +5,7 @@ if (contactForm) {
   const submitButton = document.querySelector("#contact-submit");
   const statusMessage = document.querySelector("#contact-status");
   const successMessage = document.querySelector("#contact-success");
-  const fieldNames = ["name", "email"];
+  const fieldNames = ["name", "email", "interest"];
   let submitting = false;
 
   const fieldFor = (name) => contactForm.elements.namedItem(name);
@@ -68,12 +68,16 @@ if (contactForm) {
         body: JSON.stringify({
           name: payload.name,
           email: payload.email,
+          interest: payload.interest,
         }),
       });
       const body = await response.json().catch(() => ({}));
 
       if (response.status === 201 && body.ok === true) {
         contactForm.hidden = true;
+        successMessage.textContent = body.notification === "unconfirmed"
+          ? "Your details have been saved, but we couldn't confirm the email notification. You can also reach us at info@gethadley.com."
+          : "Thanks. Your message has been received.";
         successMessage.hidden = false;
         successMessage.focus();
         return;

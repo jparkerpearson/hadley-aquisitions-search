@@ -1,9 +1,10 @@
 import { Client } from "@replit/object-storage";
 import { createHash, randomUUID } from "node:crypto";
+import { sendContactNotification } from "./contact-email.mjs";
 
 const MAX_BYTES = 32768;
 const WINDOW_MS = 10 * 60 * 1000;
-const limits = { name: 160, email: 254, phone: 80, firm: 200, notes: 5000 };
+const limits = { name: 160, email: 254, interest: 500, phone: 80, firm: 200, notes: 5000 };
 class RequestError extends Error {
   constructor(status, message) { super(message); this.status = status; }
 }
@@ -63,7 +64,7 @@ function readBody(req) {
   });
 }
 
-export function createContactHandler({ save = saveContactInquiry } = {}) {
+export function createContactHandler({ save = saveContactInquiry, notify = sendContactNotification } = {}) {
   const attempts = new Map();
   const takeAttempt = (key, limit) => {
     const now = Date.now();
@@ -118,8 +119,26 @@ export function createContactHandler({ save = saveContactInquiry } = {}) {
         return reply(429, { error: "Too many messages. Please try again in ten minutes." });
       }
       const id = randomUUID();
-      await save({ id, createdAt: new Date().toISOString(), ...values });
-      reply(201, { ok: true, id });
+      const inquiry = {
+        id, createdAt: new Date().toISOString(), ...values,
+        emailNotification: { status: "pending" },
+      };
+      await save(inquiry);
+      let notification;
+      try {
+        notification = await notify(inquiry);
+      } catch {
+        notification = { status: "unconfirmed" };
+        console.error("Contact inquiry saved; email notification could not be confirmed.");
+      }
+      try {
+        await save({ ...inquiry, emailNotification: notification });
+      } catch {
+        // The original private record already exists. Do not turn an accepted
+        // email into a failed submission and invite the visitor to send twice.
+        console.error("Contact email notification status could not be saved.");
+      }
+      reply(201, { ok: true, id, notification: notification.status });
     } catch (error) {
       if (error instanceof RequestError) return reply(error.status, { error: error.message });
       // Never log contact details or storage-provider error objects.

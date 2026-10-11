@@ -135,7 +135,7 @@ End the homepage with a dark inline contact form below the offerings, rather tha
 
 **Why:** The user said the white area around the button looked weird and explicitly chose the dark inline form so visitors can scroll straight into it.
 
-**How to apply:** Blend the form into the dark offerings background and let homepage Contact navigation scroll to the form. The user now wants only Name and Work Email fields. Preserve the standalone contact page for existing links.
+**How to apply:** Blend the form into the dark offerings background and let homepage Contact navigation scroll to the form. Keep the form minimal and use an integrated submit action, not an isolated pale button. Preserve the standalone contact page for existing links.
 
 The user wants the overall website to feel "more snappy and smooth," with each section feeling distinct. They referenced corgi.insure and said the section headers are "too small / weak."
 
