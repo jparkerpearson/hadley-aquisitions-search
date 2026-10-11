@@ -50,7 +50,7 @@ if (contactForm) {
       validationErrors.email = "Please enter a valid email address.";
     }
     if (!payload.firm.trim()) validationErrors.firm = "Please enter your firm.";
-    if (!payload.notes.trim()) validationErrors.notes = "Please add notes for our conversation.";
+    if (!payload.notes.trim()) validationErrors.notes = "Please tell us what you're interested in.";
     if (Object.keys(validationErrors).length) {
       showFieldErrors(validationErrors);
       return;

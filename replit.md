@@ -5,7 +5,7 @@
 - The workflow runs `node scripts/preview.mjs` on `0.0.0.0:5000`.
 - Run `npm install` on a fresh copy to install the App Storage SDK. No user-supplied secrets are needed for the website preview.
 - Edit `index.html` for homepage content and `careers.html` for careers content.
-- Shared branding, layout, and motion for all three pages are in `assets/site.css`; entrance/scroll motion and background video behavior are in `assets/site.js`. Careers application behavior remains in `careers.html`; contact behavior is in `assets/contact.js`.
+- Shared branding, layout, and motion for all three pages are in `assets/site.css`; entrance/scroll motion and background video behavior are in `assets/site.js`. Careers uses native collapsible roles, with shared role links handled by `assets/careers.js`. Application behavior remains in `careers.html`; contact behavior is in `assets/contact.js`.
 - Optimized versions of the supplied blue/white logos and flyer imagery are in `assets/`. The original attachments remain unchanged.
 - Flyer images are labeled illustrative; counts and names in them are not presented as verified client or performance claims.
 - Typography uses `"Helvetica Neue", Helvetica, Arial, sans-serif` with the supplied guide's weights. Helvetica Neue is used where installed; no proprietary webfont files were supplied.
@@ -19,7 +19,7 @@
 - `node --experimental-websocket scripts/check-site.mjs` runs HTTP and Chromium browser checks when the preview is running. It uses temporary audio fixtures and intercepts every careers-service request so no live applications are sent.
 
 ## Contact inquiries
-- Contact links open `contact.html`. Name, email, firm, and conversation notes are required; phone is optional.
+- Contact links open `contact.html`. Name, email, firm, and interest details are required; phone is optional.
 - `POST /api/contact` validates requests and saves each inquiry privately in App Storage under `hadley/contact-inquiries/`. Success is returned only after a successful save.
 - Inquiries are not exposed by a public read endpoint and are not written to source files or logs. Automatic email notifications are not configured.
 - This form requires the Node server (`npm start`), not static-only hosting. JavaScript is required to submit; the no-JS page says so and does not expose an active form.

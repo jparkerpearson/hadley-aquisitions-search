@@ -5,9 +5,9 @@ description: User-defined business positioning and brand direction for the websi
 
 Hadley AI's website hero headline is "The next generation of buyside M&A advisory is here", without a separate "Hadley AI" heading or audience subtitle. The user's "Product offerings" are buyside advisory, market mapping, expert sourcing, agentic sales, and sourcing software, in that order.
 
-**Why:** The user explicitly chose this hero sentence and requested a Product offerings section with these five names. They subsequently asked to remove the descriptions and Learn more controls.
+**Why:** The user explicitly chose this hero sentence and requested a Product offerings section with these five names. They subsequently asked to remove the descriptions and Learn more controls, then suggested a dark blue section with lighter blue cards using investment-site references.
 
-**How to apply:** Keep future website copy aligned with these five offerings unless the user changes the business direction. Show them as cards with only simple outline icons and offering names, without descriptions or Learn more controls. Keep Hadley's blue branding rather than adopting the reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
+**How to apply:** Keep future website copy aligned with these five offerings unless the user changes the business direction. Show them as cards with only simple outline icons and offering names, without descriptions or Learn more controls, on a dark blue section with lighter blue cards. Keep Hadley's blue branding rather than adopting the earlier reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
 
 Below the trust logos, show the user's figures: "100+ transactions supported", "$500B+ partner AUM", and "$1B+ enterprise value created", followed by "Get in touch" and a Contact button.
 
@@ -92,6 +92,12 @@ The careers page should feel like the same Hadley website as the homepage.
 **Why:** The user said it felt like a "totally different website" and asked to clear that up.
 
 **How to apply:** Keep the Hadley header, typography, colors, spacing, and footer consistent while preserving the job descriptions and application functionality.
+
+Career roles should expand and collapse under their titles, without the separate side panels.
+
+**Why:** The user asked for collapsible roles rather than full descriptions shown below and requested removing the sidebar.
+
+**How to apply:** Start both roles collapsed; retain job descriptions and an Apply action inside each expanded role. Keep shared role links working.
 
 Start the careers page with open roles, without the introductory "Build the future of deal sourcing" heading, Careers eyebrow, or supporting paragraph.
 

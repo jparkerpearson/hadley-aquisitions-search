@@ -13,7 +13,10 @@ const fixture = "assets/check-voicemail.wav";
 const browser = spawn("chromium", [
   "--headless", "--no-sandbox", "--disable-dev-shm-usage",
   "--remote-debugging-port=9229", `--user-data-dir=${profile}`, "about:blank",
-], { stdio: "ignore" });
+], { stdio: ["ignore", "ignore", "pipe"] });
+let browserErrors = "";
+browser.stderr.setEncoding("utf8");
+browser.stderr.on("data", chunk => { browserErrors = (browserErrors + chunk).slice(-8000); });
 let socket;
 try {
   // An unbranded synthetic tone is a test fixture, never a shipped voicemail.
@@ -61,17 +64,19 @@ try {
   const appScript = (html) => html.match(/<script>\s*const APPLY_ENDPOINT[\s\S]*?<\/script>/)?.[0];
   assert.equal(appScript(current), appScript(original), "careers submission behavior unchanged");
   for (const role of ["origination-lead", "founding-applied-ai-engineer"]) {
-    const section = (html) => html.match(new RegExp(`<section class="role" id="${role}">[\\s\\S]*?<\\/section>`))?.[0];
-    assert.equal(section(current), section(original), "job copy unchanged");
+    const section = (html) => html.match(new RegExp(`<(?:section|details) class="role" id="${role}">[\\s\\S]*?<\\/(?:section|details)>`))?.[0];
+    const lists = (html) => (section(html)?.match(/<ul>[\s\S]*?<\/ul>/g) || []).map(list => list.replace(/\s+/g, " ").trim());
+    assert.equal(lists(current).length, 2, "both job description lists remain");
+    assert.deepEqual(lists(current), lists(original), "job copy unchanged");
   }
   console.log("PASS HTTP assets, security boundaries, audio ranges, and preserved careers content");
 
   let targets;
-  for (let retry = 0; retry < 40; retry++) {
+  for (let retry = 0; retry < 300; retry++) {
     try { targets = await (await fetch("http://127.0.0.1:9229/json")).json(); break; }
     catch { await pause(100); }
   }
-  assert.ok(targets?.length, "Chromium started");
+  assert.ok(targets?.length, `Chromium started${browserErrors ? `\n${browserErrors}` : ""}`);
   socket = new WebSocket(targets.find((target) => target.type === "page").webSocketDebuggerUrl);
   await new Promise((resolve, reject) => { socket.onopen = resolve; socket.onerror = reject; });
   let id = 0;
@@ -137,6 +142,23 @@ try {
     await send("Page.navigate", { url: base + path });
     await pause(1400);
   }
+  async function waitForPageLoad() {
+    for (let attempt = 0; attempt < 100; attempt++) {
+      if (await evaluate("document.readyState === 'complete'")) {
+        await pause(100);
+        return;
+      }
+      await pause(100);
+    }
+    throw new Error("Page did not finish loading");
+  }
+  async function waitForReveal(selector) {
+    for (let attempt = 0; attempt < 80; attempt++) {
+      if (await evaluate(`getComputedStyle(document.querySelector(${JSON.stringify(selector)})).opacity === "1"`)) return;
+      await pause(50);
+    }
+    throw new Error(`Reveal did not finish: ${selector}`);
+  }
   async function width(value) {
     await send("Emulation.setDeviceMetricsOverride", { width: value, height: 900, deviceScaleFactor: 1, mobile: value < 600 });
   }
@@ -194,17 +216,35 @@ try {
           "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
         ], "all five offerings appear in the requested order");
         await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
-        await pause(900);
+        await waitForReveal("#product-offerings");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings reveal on scroll");
         assert.equal(await evaluate("document.querySelectorAll('.product-card p, .product-card details, .product-card a, .product-card button').length"), 0, "product descriptions and controls are removed");
         assert.ok(await evaluate("[...document.querySelectorAll('.product-card')].every(card=>card.children.length===2 && card.querySelector('svg') && card.querySelector('h3'))"), "cards contain only icons and offering names");
+        assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).backgroundColor"), "rgb(11, 31, 59)", "offerings use the Hadley midnight background");
+        assert.ok(await evaluate(`(() => {
+          const luminance = color => {
+            const channels = color.match(/[0-9.]+/g).slice(0,3).map(value => {
+              const s = Number(value)/255;
+              return s <= .04045 ? s/12.92 : ((s+.055)/1.055)**2.4;
+            });
+            return channels[0]*.2126 + channels[1]*.7152 + channels[2]*.0722;
+          };
+          const section = luminance(getComputedStyle(document.getElementById('product-offerings')).backgroundColor);
+          return [...document.querySelectorAll('.product-card')].every(card => {
+            const title = card.querySelector('h3');
+            const background = luminance(getComputedStyle(card).backgroundColor);
+            const foreground = luminance(getComputedStyle(title).color);
+            return background > section && (Math.max(background,foreground)+.05)/(Math.min(background,foreground)+.05) >= 4.5;
+          });
+        })()`), "lighter blue cards retain accessible title contrast");
+        assert.ok(await evaluate("[...document.querySelectorAll('.product-card')].every(card=> {const title=card.querySelector('h3'); return title.scrollWidth<=title.clientWidth+1 && title.getBoundingClientRect().right<=card.getBoundingClientRect().right+1;})"), `${value}px titles fit inside every card`);
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
         assert.equal(await evaluate("document.getElementById('get-in-touch-title').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Contact");
         assert.equal(await evaluate("document.querySelector('#who-we-work-with')"), null, "audiences are replaced by the simple contact CTA");
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
-        await pause(900);
+        await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact CTA fits`);
         assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
@@ -217,6 +257,7 @@ try {
         assert.ok(await evaluate("scrollY > 300"), "reload starts from a scrolled page");
         await send("Page.reload", { ignoreCache: true });
         await pause(1400);
+        await waitForPageLoad();
         assert.equal(await evaluate("scrollY"), 0, `${value}px homepage reload starts at top`);
         assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "reload restores over-video header");
       } else {
@@ -225,6 +266,20 @@ try {
         assert.equal(await evaluate("document.querySelector('.careers-hero')"), null, "careers intro is removed");
         assert.equal(await evaluate("document.querySelector('#main > :first-child').className"), "roles", "careers begins with open roles");
         assert.ok(await evaluate("document.querySelector('.roles-header').getBoundingClientRect().top >= document.querySelector('body > nav').getBoundingClientRect().bottom"), "roles start below the fixed navigation");
+        assert.equal(await evaluate("document.querySelectorAll('.role-aside, .role-facts').length"), 0, "role side panels removed");
+        assert.equal(await evaluate("document.querySelectorAll('details.role').length"), 2);
+        assert.ok(await evaluate("[...document.querySelectorAll('details.role')].every(role=>!role.open)"), "job descriptions begin collapsed");
+        await evaluate("document.querySelector('#origination-lead > summary').click()");
+        assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true);
+        assert.ok(await evaluate("document.querySelector('#origination-lead [data-apply]').checkVisibility()"), "expanded role has a visible Apply button");
+        assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').open"), false, "opening a role leaves the other collapsed");
+        await evaluate("document.querySelector('#founding-applied-ai-engineer > summary').focus()");
+        await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13, text: "\r", unmodifiedText: "\r" });
+        await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
+        assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').open"), true, "roles expand with the keyboard");
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px expanded roles fit`);
+        await evaluate("document.querySelectorAll('details.role > summary').forEach(summary=>summary.click())");
+        assert.ok(await evaluate("[...document.querySelectorAll('details.role')].every(role=>!role.open)"), "each role collapses again");
         assert.ok(await evaluate("(()=>{const r=document.querySelector('body > nav .logo').getBoundingClientRect();return Math.abs((r.left+r.right)/2-document.documentElement.clientWidth/2)<2})()"), "careers logo is centered like the homepage");
         assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "contact.html");
         await navigate("/contact.html");
@@ -233,12 +288,20 @@ try {
         assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"), [
           ["name", true], ["email", true], ["phone", false], ["firm", true], ["notes", true],
         ], "contact fields and required/optional states match the request");
-        assert.equal(await evaluate("document.querySelector('label[for=\"contact-notes\"]').textContent"), "Any notes for our conversation");
+        assert.equal(await evaluate("document.querySelector('label[for=\"contact-notes\"]').textContent"), "What are you interested in?");
         assert.ok(await evaluate("document.querySelector('label[for=\"contact-phone\"]').textContent.includes('optional')"));
       }
     }
   }
   await width(1280);
+  await navigate("/careers.html#founding-applied-ai-engineer");
+  assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').open"), true, "direct engineer links expand the role");
+  await evaluate("location.hash='#origination-lead'");
+  await pause(200);
+  assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true, "hash changes open the matching role");
+  await navigate("/careers.html#head-of-origination");
+  assert.equal(await evaluate("location.hash"), "#origination-lead", "legacy role links remain canonical");
+  assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true, "legacy role links expand the role");
   await navigate("/");
   const finalStats = ["100+", "$500B+", "$1B+"];
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "final stats exist before scrolling");
@@ -349,6 +412,7 @@ try {
   }
 
   await navigate("/careers.html");
+  await evaluate("document.querySelector('#origination-lead > summary').click()");
   await evaluate("document.querySelector('[data-apply]').click()");
   assert.ok(await evaluate("document.querySelector('dialog').open"), "apply opens");
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
@@ -359,7 +423,7 @@ try {
   await evaluate("document.querySelector('[data-close]').click()");
   assert.equal(await evaluate("document.querySelector('dialog').open"), false);
   assert.equal(await evaluate("document.activeElement.matches('[data-apply]')"), true, "focus returns to apply button");
-  await evaluate("document.querySelectorAll('[data-apply]')[1].click()");
+  await evaluate("document.querySelector('#founding-applied-ai-engineer > summary').click(); document.querySelectorAll('[data-apply]')[1].click()");
   assert.equal(await evaluate("document.querySelector('#apply-title').textContent"), "Founding Applied AI Engineer");
   await evaluate("document.querySelector('#apply-form').requestSubmit()");
   assert.equal(intercepted, 0, "invalid form stays local");
@@ -419,6 +483,11 @@ try {
   await navigate("/");
   assert.equal(await evaluate("document.querySelectorAll('.offerings-list > li').length"), 5, "all offerings remain available without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1");
+  await navigate("/careers.html");
+  assert.ok(await evaluate("[...document.querySelectorAll('details.role')].every(role=>!role.open)"));
+  await evaluate("document.querySelector('#origination-lead > summary').click()");
+  assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true, "native job descriptions expand without JavaScript");
+  await navigate("/");
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "all stats remain readable without JavaScript");
   assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "contact CTA works without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is readable without JavaScript");
