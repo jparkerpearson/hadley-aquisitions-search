@@ -61,13 +61,7 @@ try {
   const current = await readFile("careers.html", "utf8");
   const appScript = (html) => html.match(/<script>\s*const APPLY_ENDPOINT[\s\S]*?<\/script>/)?.[0];
   assert.equal(appScript(current), appScript(original), "careers submission behavior unchanged");
-  for (const role of ["founding-applied-ai-engineer"]) {
-    const section = (html) => html.match(new RegExp(`<(?:section|details) class="role" id="${role}">[\\s\\S]*?<\\/(?:section|details)>`))?.[0];
-    const lists = (html) => (section(html)?.match(/<ul>[\s\S]*?<\/ul>/g) || []).map(list => list.replace(/\s+/g, " ").trim());
-    assert.equal(lists(current).length, 2, "both job description lists remain");
-    assert.deepEqual(lists(current), lists(original), "job copy unchanged");
-  }
-  console.log("PASS HTTP assets, security boundaries, audio ranges, and preserved careers content");
+  console.log("PASS HTTP assets, security boundaries, audio ranges, and preserved careers application behavior");
 
   let targets;
   for (let retry = 0; retry < 300; retry++) {
@@ -285,6 +279,13 @@ try {
         await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13, text: "\r", unmodifiedText: "\r" });
         await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
         assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').open"), true, "roles expand with the keyboard");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#founding-applied-ai-engineer .role-body h3')].map(heading=>heading.textContent)"), ["Location", "Responsibilities", "Profile"], "engineering role has matching sections without compensation");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#founding-applied-ai-engineer .role-body p')].map(paragraph=>paragraph.textContent)"), [
+          "SF, in office 5 days / week",
+          "Improve our SOTA research agents. Iterate on the voice model and reduce its mistake rate. Increase coverage of the capital allocation reasoning model.",
+          "Familiar with how a computer works, from assembly to high-level languages. Comfortable working with cloud infrastructure, or able to learn it quickly. Elite use of coding agents.",
+        ]);
+        assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').textContent.includes('$300K')"), false, "origination compensation does not appear in the engineering role");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px expanded roles fit`);
         await evaluate("document.querySelectorAll('details.role > summary').forEach(summary=>summary.click())");
         assert.ok(await evaluate("[...document.querySelectorAll('details.role')].every(role=>!role.open)"), "each role collapses again");
