@@ -1,0 +1,147 @@
+.hadley-connected-scroll {
+  --hcs-line: rgba(132, 182, 244, .36);
+  width: 100%;
+  min-height: 100vh;
+  padding: clamp(34px, 5.2vw, 68px) clamp(22px, 7vw, 96px) clamp(40px, 5.5vw, 74px);
+  overflow: hidden;
+  background: var(--midnight);
+  color: var(--powder);
+}
+
+.hadley-connected-scroll *,
+.hadley-connected-scroll *::before,
+.hadley-connected-scroll *::after { box-sizing: border-box; }
+
+.hadley-connected-scroll__inner { width: min(1280px, 100%); margin-inline: auto; }
+
+.hadley-connected-scroll__tools {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 34px;
+  margin-bottom: 18px;
+}
+
+.hadley-connected-scroll__replay {
+  padding: 5px 0 4px 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(215, 228, 247, .34);
+  background: transparent;
+  color: rgba(215, 228, 247, .76);
+  font: 500 10px/1.4 var(--sans);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.hadley-connected-scroll__replay:hover { color: var(--ivory); border-color: var(--sky); }
+
+.hadley-connected-scroll__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--hcs-line);
+  border-left: 1px solid var(--hcs-line);
+}
+
+.hadley-connected-scroll__cell {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  aspect-ratio: 1;
+  padding: clamp(24px, 3.7vw, 52px);
+  border-right: 1px solid var(--hcs-line);
+  border-bottom: 1px solid var(--hcs-line);
+  background: rgba(30, 75, 155, .26);
+  color: var(--powder);
+}
+
+.hadley-connected-scroll__cell:nth-child(odd) { background: rgba(15, 45, 100, .36); }
+.hadley-connected-scroll__title { background: rgba(30, 75, 155, .21); }
+
+.hadley-connected-scroll__cell::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: var(--blue);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform .72s cubic-bezier(.2, .7, .2, 1);
+}
+
+.hadley-connected-scroll__cell[data-revealed="false"]::before {
+  transform: scaleX(1);
+  transform-origin: left center;
+}
+
+.hadley-connected-scroll__cell h2,
+.hadley-connected-scroll__cell h3 {
+  margin: 0;
+  color: inherit;
+  font-family: var(--sans);
+  font-weight: 300;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.hadley-connected-scroll__cell h2 {
+  max-width: 8ch;
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.04;
+}
+
+.hadley-connected-scroll__cell h3 {
+  font-size: clamp(24px, 3vw, 39px);
+  line-height: 1.13;
+}
+
+.hadley-connected-scroll__grid.is-motion-ready .hadley-connected-scroll__cell {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity .48s ease,
+    transform .58s cubic-bezier(.2, .7, .2, 1);
+}
+
+.hadley-connected-scroll__grid.is-motion-ready .hadley-connected-scroll__cell[data-revealed="false"] {
+  opacity: 0;
+  transform: translateY(14px);
+}
+
+.hadley-connected-scroll__grid.is-motion-ready .hadley-connected-scroll__cell[data-revealed="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hadley-connected-scroll__grid.is-motion-ready .hadley-connected-scroll__cell[data-revealed="true"]::before {
+  transform: scaleX(0);
+  transition-delay: 90ms;
+}
+
+@media (max-width: 780px) {
+  .hadley-connected-scroll { padding-inline: 28px; }
+  .hadley-connected-scroll__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 520px) {
+  .hadley-connected-scroll { padding: 34px 18px 42px; }
+  .hadley-connected-scroll__tools { margin-bottom: 13px; }
+  .hadley-connected-scroll__grid { grid-template-columns: minmax(0, 1fr); }
+  .hadley-connected-scroll__cell { aspect-ratio: auto; min-height: 116px; padding: 23px 22px; }
+  .hadley-connected-scroll__cell h2 { font-size: 36px; }
+  .hadley-connected-scroll__cell h3 { font-size: clamp(27px, 8vw, 35px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hadley-connected-scroll__cell,
+  .hadley-connected-scroll__cell::before {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

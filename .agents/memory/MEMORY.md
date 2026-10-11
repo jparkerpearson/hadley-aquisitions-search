@@ -3,3 +3,4 @@
 - [App Storage SDK quirks](app-storage-sdk-quirks.md) — Download responses can differ from the SDK's documented types; validate them explicitly.
 - [Contact inquiry handling](contact-inquiries.md) — Keep inquiries separate from applications; acknowledge private saves, not unconfigured email delivery.
 - [Browser verification](browser-verification.md) — Parallel captures can delay Chromium startup and animation timing; wait for real readiness.
+- [Imported-project mockups](imported-project-mockups.md) — Artifact creation alone does not guarantee isolated preview dependencies or type checks are ready.

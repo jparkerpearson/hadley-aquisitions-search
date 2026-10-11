@@ -1,3 +1,5 @@
 /generated-artifacts/
 /node_modules/
+**/node_modules/
+artifacts/mockup-sandbox/dist/
 /attached_assets/*.mp4

@@ -160,6 +160,24 @@ body.home-page > nav.home-nav.is-scrolled .nav-cta:hover { color:var(--slate); }
   font-weight:300; line-height:1.06; letter-spacing:-.045em; font-variant-numeric:tabular-nums;
 }
 .stat-label { margin:0; color:var(--navy); font-size:16px; line-height:1.4; }
+.who-we-work-with {
+  padding:68px clamp(24px,8vw,128px) 72px; background:#F4F6FA;
+}
+.who-we-work-with h2 {
+  max-width:1300px; margin:0 auto; color:var(--navy);
+  font-size:clamp(32px,4vw,44px); font-weight:500; line-height:1.1; letter-spacing:-.04em;
+}
+.who-we-work-with-list {
+  max-width:1300px; margin:30px auto 0; padding:0; list-style:none;
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); column-gap:64px;
+}
+.who-we-work-with-list li {
+  min-width:0; padding:24px 0; border-top:1px solid var(--line);
+}
+.who-we-work-with-list h3 {
+  margin:0; color:var(--navy); font-size:clamp(21px,2.2vw,28px);
+  font-weight:300; line-height:1.25; letter-spacing:-.035em;
+}
 .product-offerings { padding:76px clamp(24px,8vw,128px) 74px; background:var(--midnight); }
 .product-offerings h2 {
   max-width:1300px; margin:0 auto; color:var(--powder);
@@ -360,6 +378,8 @@ form[hidden] { display:none !important; }
   .identity-mark--wide { padding-inline:var(--logo-padding-inline,6px); }
   .contact-cta { padding:58px 24px 62px; }
   .stats-section { padding:58px 24px 16px; }
+  .who-we-work-with { padding:58px 24px 62px; }
+  .who-we-work-with-list { column-gap:36px; }
   .product-offerings { padding:62px 24px 58px; }
   .offerings-list { gap:12px; }
   .product-card { grid-column:span 3; min-height:154px; padding:22px; gap:16px; }
@@ -389,6 +409,11 @@ form[hidden] { display:none !important; }
   .identity-mark img { max-height:min(var(--logo-height,54px),var(--logo-mobile-height,64px)); }
   .contact-cta { padding:48px 18px 52px; }
   .stats-section { padding:48px 18px 8px; }
+  .who-we-work-with { padding:48px 18px 52px; }
+  .who-we-work-with h2 { font-size:32px; }
+  .who-we-work-with-list { margin-top:22px; grid-template-columns:1fr; }
+  .who-we-work-with-list li { padding:19px 0; }
+  .who-we-work-with-list h3 { font-size:22px; }
   .product-offerings { padding:50px 18px 46px; }
   .product-offerings h2 { font-size:34px; }
   .offerings-list { margin-top:24px; grid-template-columns:1fr; }

@@ -1,0 +1,92 @@
+.product-book {
+  padding: 76px clamp(24px, 8vw, 128px) 96px;
+  overflow: clip;
+  background: var(--midnight);
+}
+
+.product-book h2 {
+  margin-bottom: 36px;
+}
+
+.product-book-pages {
+  display: grid;
+  gap: 30px;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.product-book-page {
+  min-width: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 650ms cubic-bezier(.2, .65, .25, 1),
+    transform 650ms cubic-bezier(.2, .65, .25, 1);
+}
+
+.product-book-page.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.product-book-page:nth-child(2) { transition-delay: 80ms; }
+.product-book-page:nth-child(3) { transition-delay: 120ms; }
+.product-book-page:nth-child(4) { transition-delay: 160ms; }
+.product-book-page:nth-child(5) { transition-delay: 200ms; }
+
+.product-book-sheet {
+  position: relative;
+  min-height: clamp(360px, 42vw, 520px);
+  padding: clamp(30px, 5.5vw, 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-left: 6px solid var(--blue);
+  background: var(--ivory);
+  box-shadow:
+    0 18px 46px rgba(0, 0, 0, .18),
+    0 3px 0 #e8edf4,
+    0 6px 0 #d9e2ef;
+}
+
+.product-book-number {
+  color: var(--slate);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .12em;
+  line-height: 1;
+}
+
+.product-book-sheet h3 {
+  max-width: 760px;
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 300;
+  line-height: 1.06;
+  letter-spacing: -.05em;
+  text-wrap: balance;
+}
+
+@media (max-width: 600px) {
+  .product-book { padding: 52px 18px 68px; }
+  .product-book h2 { margin-bottom: 26px; }
+  .product-book-pages { gap: 24px; }
+  .product-book-sheet {
+    min-height: clamp(350px, 62svh, 490px);
+    padding: 30px 25px;
+  }
+  .product-book-sheet h3 { font-size: clamp(34px, 9vw, 48px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-book-page,
+  .product-book-page.is-revealed {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+}

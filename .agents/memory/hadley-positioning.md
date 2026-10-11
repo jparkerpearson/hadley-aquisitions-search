@@ -13,7 +13,13 @@ Below the trust logos, show the user's figures: "100+ transactions supported", "
 
 **Why:** The user asked for these three stats to count up as visitors scroll and later simplified the contact prompt into one button, without a separate heading or Contact button.
 
-**How to apply:** Preserve the exact figures and labels, including "partner" AUM rather than claiming Hadley's own AUM. Keep the contact button linked to the existing form; do not add descriptions or restore the audience list.
+**How to apply:** Preserve the exact figures and labels, including "partner" AUM rather than claiming Hadley's own AUM. Keep the single contact button linked to the existing form, without additional descriptions.
+
+The user restored "Who we work with" with these groups: "AI roll-ups & high growth AI platforms", "Corporate development teams", "Private equity funds", and "Private equity portfolio companies".
+
+**Why:** These are the user-defined customer groups; this supersedes the earlier removal of the audience section.
+
+**How to apply:** Keep these four names and their order, without substituting the earlier audience categories or adding descriptive marketing copy.
 
 Do not show the "How it works" section or the three service offering cards on the homepage.
 
@@ -122,3 +128,9 @@ Do not show the copyright/footer section on the website.
 **Why:** The user first removed repeated footer navigation, then explicitly requested removing the copyright section.
 
 **How to apply:** Keep navigation in the header; end the homepage with the single "Get in touch" button linking to the contact form. Do not restore the copyright footer.
+
+The user wants the overall website to feel "more snappy and smooth," with each section feeling distinct. They referenced corgi.insure and said the section headers are "too small / weak."
+
+**Why:** The user asked for a site-wide improvement in hierarchy and section transitions, not just better Product offerings cards.
+
+**How to apply:** Prioritize stronger section headings, deliberate section boundaries, and purposeful motion across the site. Retain the supplied Hadley branding and the minimal-copy constraints above.

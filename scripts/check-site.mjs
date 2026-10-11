@@ -207,7 +207,18 @@ try {
           "transactions supported", "partner AUM", "enterprise value created",
         ], "stats use the requested labels");
         assert.equal(await evaluate("document.getElementById('stats').previousElementSibling.classList.contains('identity-section')"), true, "stats follow the trust logos");
-        assert.equal(await evaluate("document.getElementById('stats').nextElementSibling.id"), "product-offerings", "offerings follow the stats");
+        assert.equal(await evaluate("document.getElementById('stats').nextElementSibling.id"), "who-we-work-with", "audiences follow the stats");
+        assert.equal(await evaluate("document.getElementById('who-we-work-with').nextElementSibling.id"), "product-offerings", "offerings follow the audiences");
+        assert.equal(await evaluate("document.getElementById('who-we-work-with-title').textContent"), "Who we work with");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('.who-we-work-with-list h3')].map(heading=>heading.textContent)"), [
+          "AI roll-ups & high growth AI platforms", "Corporate development teams",
+          "Private equity funds", "Private equity portfolio companies",
+        ], "exact requested customer groups and order");
+        assert.equal(await evaluate("document.querySelectorAll('#who-we-work-with a, #who-we-work-with button, #who-we-work-with p').length"), 0, "audiences have no extra descriptions or actions");
+        await evaluate("document.getElementById('who-we-work-with').scrollIntoView({behavior:'instant'})");
+        await waitForReveal("#who-we-work-with");
+        assert.ok(await evaluate("[...document.querySelectorAll('.who-we-work-with-list h3')].every(heading=>{const title=heading.getBoundingClientRect(),item=heading.closest('li').getBoundingClientRect();return title.left>=item.left-1 && title.right<=item.right+1;})"), `${value}px audience titles fit their rows`);
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px audience section fits the viewport`);
         assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
         assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "Product offerings");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
@@ -241,7 +252,6 @@ try {
         assert.equal(await evaluate("document.querySelectorAll('#get-in-touch a, #get-in-touch button').length"), 1, "single bottom contact action");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Get in touch");
-        assert.equal(await evaluate("document.querySelector('#who-we-work-with')"), null, "audiences are replaced by the simple contact CTA");
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
@@ -493,12 +503,15 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-video-toggle]')).display"), "none");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible with reduced motion");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings are visible with reduced motion");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('who-we-work-with')).opacity"), "1", "audiences are visible with reduced motion");
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "reduced motion shows final stats immediately");
   assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
   assert.equal(await evaluate("document.querySelectorAll('.offerings-list > li').length"), 5, "all offerings remain available without JavaScript");
+  assert.equal(await evaluate("document.querySelectorAll('.who-we-work-with-list > li').length"), 4, "all customer groups remain available without JavaScript");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('who-we-work-with')).opacity"), "1", "audiences remain visible without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1");
   await navigate("/careers.html");
   assert.ok(await evaluate("[...document.querySelectorAll('details.role')].every(role=>!role.open)"));
