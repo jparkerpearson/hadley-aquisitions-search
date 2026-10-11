@@ -42,7 +42,9 @@
         finish(counter);
         return;
       }
-      const value = counter.target * (1 - (1 - progress) ** 3);
+      // Keep a steady pace: easing to zero speed plus rounding holds the
+      // penultimate number on screen long before the animation finishes.
+      const value = counter.target * progress;
       // Fractional billions let the $1B figure visibly count up, too.
       const number = counter.target < 10
         ? decimalFormat.format(Math.floor(value * 10) / 10)

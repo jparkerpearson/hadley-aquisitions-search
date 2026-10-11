@@ -30,7 +30,7 @@ try {
   for (let n = 0; n < 8000; n++) wav.writeInt16LE(Math.sin(n * .15) * 1000, 44 + n * 2);
   await writeFile(fixture, wav);
 
-  for (const path of ["/", "/careers.html", "/assets/site.css", "/assets/site.js", "/assets/hadley-logo-blue.webp", "/assets/hadley-logo-white.webp", "/assets/market-map.webp"]) {
+  for (const path of ["/", "/careers.html", "/assets/site.css", "/assets/site.js", "/assets/offerings.css", "/assets/offerings.js", "/assets/hadley-logo-blue.webp", "/assets/hadley-logo-white.webp", "/assets/market-map.webp"]) {
     const response = await fetch(base + path);
     assert.equal(response.status, 200, path);
     assert.equal(response.headers.get("cache-control"), "no-store");
@@ -159,6 +159,27 @@ try {
   }
   async function width(value) {
     await send("Emulation.setDeviceMetricsOverride", { width: value, height: 900, deviceScaleFactor: 1, mobile: value < 600 });
+    await send("Emulation.setTouchEmulationEnabled", { enabled:value < 600, maxTouchPoints:1 });
+  }
+  async function waitForOffering(index) {
+    let stableFrames = 0;
+    for (let attempt = 0; attempt < 100; attempt++) {
+      if (await evaluate(`(() => {
+        const rail = document.querySelector('.offerings-rail').getBoundingClientRect();
+        const page = document.querySelectorAll('.offering-page')[${index}];
+        const bounds = page.getBoundingClientRect();
+        return page.dataset.active === 'true'
+          && page.getAttribute('aria-current') === 'true'
+          && Math.abs(bounds.left + bounds.width / 2 - rail.left - rail.width / 2) < 2;
+      })()`)) {
+        // A swipe can briefly pass through a centered slide while momentum is
+        // still running. Wait for stable geometry before the next interaction.
+        if (++stableFrames >= 5) return;
+      } else stableFrames = 0;
+      await pause(40);
+    }
+    const state = await evaluate("(()=>{const rail=document.querySelector('.offerings-rail');return {width:innerWidth,left:rail.scrollLeft,max:rail.scrollWidth-rail.clientWidth,active:[...rail.children].map(page=>page.dataset.active)}})()");
+    throw new Error(`Offering ${index + 1} did not settle in the center: ${JSON.stringify(state)}`);
   }
   for (const value of [1280, 768, 390, 320]) {
     await width(value);
@@ -195,7 +216,27 @@ try {
         assert.deepEqual(belowVideo.contact, belowVideo.careers, "scrolled Careers and Contact use the same unfilled formatting");
         assert.equal(belowVideo.contact.backgroundColor, "rgba(0, 0, 0, 0)");
         assert.equal(await evaluate("document.getElementById('identity-title').textContent"), "We are the best, trusted by the best");
-        assert.equal(await evaluate("document.querySelectorAll('.identity-grid img').length"), 12, "remaining requested logos included");
+        const sectionHeadings = await evaluate(`[
+          ...document.querySelectorAll('.identity-title, #who-we-work-with-title, #product-offerings-title')
+        ].map(title => {
+          const style = getComputedStyle(title);
+          return {size: parseFloat(style.fontSize), weight: Number(style.fontWeight),
+            fits: title.scrollWidth <= title.clientWidth + 1};
+        })`);
+        assert.ok(sectionHeadings.every(title => title.fits && title.weight >= 400), `${value}px headings are confident and unclipped`);
+        assert.ok(sectionHeadings.every(title => title.size >= (value > 800 ? 64 : value <= 560 ? 36 : 48)
+          && title.size <= 84), `${value}px section heading scale: ${JSON.stringify(sectionHeadings)}`);
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.identity-section')).backgroundColor"),
+          await evaluate("getComputedStyle(document.getElementById('stats')).backgroundColor"), "logos and stats form one coherent proof field");
+        assert.notEqual(await evaluate("getComputedStyle(document.getElementById('stats')).backgroundColor"),
+          await evaluate("getComputedStyle(document.getElementById('who-we-work-with')).backgroundColor"), "audiences have a distinct color field");
+        assert.notEqual(await evaluate("getComputedStyle(document.getElementById('who-we-work-with')).backgroundColor"),
+          await evaluate("getComputedStyle(document.getElementById('product-offerings')).backgroundColor"), "offerings have a distinct color field");
+        assert.equal(await evaluate("getComputedStyle(document.documentElement).scrollSnapType"), "none", "ordinary scrolling is not snapped");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.identity-section')).animationName"), "none", "large proof section is not animated as a whole");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('.identity-grid img')].map(image=>image.alt)"),
+          ["J.P. Morgan", "Blackstone", "Flybridge", "RBC", "Citadel", "Goldman Sachs", "Morgan Stanley", "Galaxy Service Partners"],
+          "only the eight requested logos appear, in order");
         assert.equal(await evaluate("document.querySelector('.identity-grid img[alt=\"Y Combinator\"]')"), null, "Y Combinator logo removed");
         assert.ok(await evaluate("[...document.querySelectorAll('.identity-grid img')].every(i=>i.complete && i.naturalWidth>0 && i.alt.trim())"), "identity logos load with accessible names");
         assert.ok(await evaluate("[...document.querySelectorAll('.identity-mark')].every(mark=>getComputedStyle(mark).backgroundColor==='rgba(0, 0, 0, 0)')"), "logos have no colored background cards");
@@ -220,15 +261,56 @@ try {
         assert.ok(await evaluate("[...document.querySelectorAll('.who-we-work-with-list h3')].every(heading=>{const title=heading.getBoundingClientRect(),item=heading.closest('li').getBoundingClientRect();return title.left>=item.left-1 && title.right<=item.right+1;})"), `${value}px audience titles fit their rows`);
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px audience section fits the viewport`);
         assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
-        assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "Product offerings");
+        assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "What we do");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
           "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
         ], "all five offerings appear in the requested order");
         await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#product-offerings");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings reveal on scroll");
-        assert.equal(await evaluate("document.querySelectorAll('.product-card p, .product-card details, .product-card a, .product-card button').length"), 0, "product descriptions and controls are removed");
-        assert.ok(await evaluate("[...document.querySelectorAll('.product-card')].every(card=>card.children.length===2 && card.querySelector('svg') && card.querySelector('h3'))"), "cards contain only icons and offering names");
+        assert.equal(await evaluate("document.querySelectorAll('.offering-page p, .offering-page details, .offering-page a, .offering-page button, .product-card-icon').length"), 0, "covers have no descriptions, Learn more buttons or generic product icons");
+        assert.equal(await evaluate("document.querySelectorAll('.offering-page').length"), 5);
+        assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=>card.children.length===2 && card.querySelector('[aria-hidden=\"true\"].offering-art') && card.querySelector('h3'))"), "covers contain only decorative artwork and offering names");
+        await waitForOffering(0);
+        assert.equal(await evaluate("document.querySelector('.offering-previous').disabled"), true);
+        assert.equal(await evaluate("document.querySelector('.offering-next').disabled"), false);
+        assert.equal(await evaluate("document.querySelectorAll('.offerings-controls button').length"), 2, "only the two side arrows remain");
+        assert.equal(await evaluate("document.querySelector('.offering-pagination, [data-offering-index]')"), null, "numbered navigation is removed");
+        assert.ok(await evaluate("(()=>{const status=document.querySelector('.offering-status'),s=getComputedStyle(status);return status.getAttribute('aria-live')==='polite' && s.position==='absolute' && s.clipPath==='inset(50%)' && s.width==='1px' && s.height==='1px';})()"), "current offering is announced without adding visible copy");
+        assert.ok(await evaluate("[...document.querySelectorAll('.offerings-controls button')].every(button=>{const r=button.getBoundingClientRect();return r.width>=44 && r.height>=44 && r.left>=0 && r.right<=innerWidth;})"), `${value}px offering controls are usable and unclipped`);
+        assert.ok(await evaluate("(()=>{const rail=document.querySelector('.offerings-rail').getBoundingClientRect(),center=rail.top+rail.height/2;return [...document.querySelectorAll('.offerings-controls button')].every(button=>{const r=button.getBoundingClientRect();return Math.abs(r.top+r.height/2-center)<2;});})()"), `${value}px arrows are vertically centered beside the cards`);
+        await evaluate("document.querySelector('.offering-next').click()");
+        await waitForOffering(1);
+        await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
+        await send("Input.dispatchKeyEvent", { type:"keyDown", key:"End", code:"End" });
+        await send("Input.dispatchKeyEvent", { type:"keyUp", key:"End", code:"End" });
+        await waitForOffering(4);
+        assert.equal(await evaluate("document.querySelector('.offering-next').disabled"), true);
+        await evaluate("document.querySelector('.offering-previous').click()");
+        await waitForOffering(3);
+        await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
+        await send("Input.dispatchKeyEvent", { type:"keyDown", key:"Home", code:"Home" });
+        await send("Input.dispatchKeyEvent", { type:"keyUp", key:"Home", code:"Home" });
+        await waitForOffering(0);
+        await send("Input.dispatchKeyEvent", { type:"keyDown", key:"ArrowRight", code:"ArrowRight" });
+        await send("Input.dispatchKeyEvent", { type:"keyUp", key:"ArrowRight", code:"ArrowRight" });
+        await waitForOffering(1);
+        await evaluate("document.querySelector('.offering-next').click()");
+        await waitForOffering(2);
+        await evaluate("document.querySelector('.offerings-rail').scrollTo({left:0,behavior:'instant'})");
+        await waitForOffering(0);
+        if (value < 600) {
+          const start = await evaluate("(()=>{const r=document.querySelector('.offerings-rail').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+100}})()");
+          await send("Input.dispatchTouchEvent", { type:"touchStart", touchPoints:[start] });
+          for (let step = 1; step <= 5; step++) {
+            await send("Input.dispatchTouchEvent", { type:"touchMove", touchPoints:[{x:start.x-step*30,y:start.y}] });
+            await pause(50);
+          }
+          await send("Input.dispatchTouchEvent", { type:"touchEnd", touchPoints:[] });
+          await waitForOffering(1);
+          await evaluate("document.querySelector('.offering-previous').click()");
+          await waitForOffering(0);
+        }
         assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).backgroundColor"), "rgb(11, 31, 59)", "offerings use the Hadley midnight background");
         assert.ok(await evaluate(`(() => {
           const luminance = color => {
@@ -239,14 +321,23 @@ try {
             return channels[0]*.2126 + channels[1]*.7152 + channels[2]*.0722;
           };
           const section = luminance(getComputedStyle(document.getElementById('product-offerings')).backgroundColor);
-          return [...document.querySelectorAll('.product-card')].every(card => {
+          return [...document.querySelectorAll('.offering-page')].every(card => {
             const title = card.querySelector('h3');
             const background = luminance(getComputedStyle(card).backgroundColor);
             const foreground = luminance(getComputedStyle(title).color);
             return background > section && (Math.max(background,foreground)+.05)/(Math.min(background,foreground)+.05) >= 4.5;
           });
         })()`), "lighter blue cards retain accessible title contrast");
-        assert.ok(await evaluate("[...document.querySelectorAll('.product-card')].every(card=> {const title=card.querySelector('h3'); return title.scrollWidth<=title.clientWidth+1 && title.getBoundingClientRect().right<=card.getBoundingClientRect().right+1;})"), `${value}px titles fit inside every card`);
+        assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=> {const title=card.querySelector('h3'); const t=title.getBoundingClientRect(),r=card.getBoundingClientRect(); return title.scrollWidth<=title.clientWidth+1 && t.left>=r.left-1 && t.right<=r.right+1 && t.bottom<=r.bottom+1;})"), `${value}px titles fit inside every cover`);
+        // Give the page room to scroll even when the entire compact section
+        // already fits near the bottom of a tall, narrow test viewport.
+        await evaluate("document.body.insertAdjacentHTML('beforeend','<div data-wheel-spacer aria-hidden=\"true\" style=\"height:300px\"></div>')");
+        const wheelPosition = await evaluate("(()=>{const rail=document.querySelector('.offerings-rail'),r=rail.getBoundingClientRect();return {x:Math.round(r.left+r.width/2),y:Math.round(r.top+100),scroll:scrollY,left:rail.scrollLeft}})()");
+        await send("Input.dispatchMouseEvent", { type:"mouseWheel", x:wheelPosition.x, y:wheelPosition.y, deltaX:0, deltaY:160 });
+        await pause(200);
+        assert.ok(await evaluate(`scrollY > ${wheelPosition.scroll} + 20`), "vertical wheel continues down the page rather than cycling cards");
+        assert.ok(await evaluate(`Math.abs(document.querySelector('.offerings-rail').scrollLeft - ${wheelPosition.left}) < 2`), "vertical wheel does not move the horizontal rail");
+        await evaluate("document.querySelector('[data-wheel-spacer]').remove()");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
         assert.equal(await evaluate("document.querySelector('#get-in-touch h2')"), null, "CTA has no separate heading");
         assert.equal(await evaluate("document.querySelectorAll('#get-in-touch a, #get-in-touch button').length"), 1, "single bottom contact action");
@@ -354,6 +445,10 @@ try {
   await navigate("/");
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "unsupported observers retain the final stats");
   assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
+  assert.ok(await evaluate(`[
+    ...document.querySelectorAll('.identity-title, .identity-mark, .who-we-work-with h2, .who-we-work-with-list li, .product-offerings h2, .offering-page, .contact-cta-button')
+  ].every(item => getComputedStyle(item).opacity === '1' && getComputedStyle(item).transform === 'none')`),
+  "reduced motion immediately shows every heading, logo, audience and offering");
   await send("Page.removeScriptToEvaluateOnNewDocument", { identifier: noStatsObserver.identifier });
   await navigate("/#get-in-touch");
   assert.ok(await evaluate("scrollY > 300"), "direct section links still reach their target");
@@ -509,7 +604,9 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
-  assert.equal(await evaluate("document.querySelectorAll('.offerings-list > li').length"), 5, "all offerings remain available without JavaScript");
+  assert.equal(await evaluate("document.querySelectorAll('.offerings-rail > li').length"), 5, "all offerings remain available without JavaScript");
+  assert.equal(await evaluate("document.querySelector('.offerings-controls').hidden"), true, "inactive carousel buttons are hidden without JavaScript");
+  assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(page=>getComputedStyle(page).opacity==='1')"), "all covers are readable without JavaScript");
   assert.equal(await evaluate("document.querySelectorAll('.who-we-work-with-list > li').length"), 4, "all customer groups remain available without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('who-we-work-with')).opacity"), "1", "audiences remain visible without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1");

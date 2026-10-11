@@ -7,7 +7,7 @@ Hadley AI's website hero headline is "The next generation of buyside M&A advisor
 
 **Why:** The user explicitly chose this hero sentence and requested a Product offerings section with these five names. They subsequently asked to remove the descriptions and Learn more controls, then suggested a dark blue section with lighter blue cards using investment-site references.
 
-**How to apply:** Keep future website copy aligned with these five offerings unless the user changes the business direction. Show them as cards with only simple outline icons and offering names, without descriptions or Learn more controls, on a dark blue section with lighter blue cards. Keep Hadley's blue branding rather than adopting the earlier reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
+**How to apply:** Keep future website copy aligned with these five offerings unless the user changes the business direction. Use the approved advisory-first direction with offering names, without generic icons, descriptions or Learn more controls, on a dark blue section with lighter blue cards. Keep Hadley's blue branding rather than adopting the earlier reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
 
 Below the trust logos, show the user's figures: "100+ transactions supported", "$500B+ partner AUM", and "$1B+ enterprise value created", followed by a single "Get in touch" button.
 
@@ -83,9 +83,11 @@ Homepage reloads should start at the mountain hero, not restore a position halfw
 
 The user supplied company and university logos for a section originally titled "Who we are," then asked to replace that heading with "We are the best, trusted by the best." They later asked to remove the Y Combinator (YC) logo. They did not specify the individual affiliations represented by the other logos.
 
-**Why:** The user explicitly supplied the new wording, but did not identify the organizations as customers, partners, or former employers.
+The approved selection is now J.P. Morgan, Blackstone, Flybridge, RBC, Citadel, Goldman Sachs, Morgan Stanley, and Galaxy Service Partners only.
 
-**How to apply:** Use the user's requested heading exactly and do not restore the YC logo. Ask for confirmation before adding more specific affiliation claims or relabeling these as client logos.
+**Why:** The user explicitly supplied the heading and narrowed the logo selection to these eight, but did not identify the organizations as customers, partners, or former employers.
+
+**How to apply:** Use the user's requested heading exactly and keep only their approved logo selection; do not restore the removed university, technology, or investor-program logos. Ask for confirmation before adding more specific affiliation claims or relabeling these as client logos.
 
 The user wants consistently sized logos with genuinely transparent backgrounds, not white rectangles or dark background cards.
 
@@ -134,3 +136,15 @@ The user wants the overall website to feel "more snappy and smooth," with each s
 **Why:** The user asked for a site-wide improvement in hierarchy and section transitions, not just better Product offerings cards.
 
 **How to apply:** Prioritize stronger section headings, deliberate section boundaries, and purposeful motion across the site. Retain the supplied Hadley branding and the minimal-copy constraints above.
+
+The user likes the "advisory first scroll" offering design and asked to add it to the live site, but wants it more designed because it still feels "JV / empty."
+
+**Why:** The user selected that direction and explicitly asked for integration plus further visual refinement.
+
+**How to apply:** Keep the approved advisory-first direction when refining offerings. Improve the visual composition rather than restoring descriptions, extra eyebrows, or generic icons.
+
+The user wants only simple circular arrows beside the offering cards, not the numbered navigation row underneath.
+
+**Why:** They supplied a side-arrow carousel reference and explicitly asked to replace the previous controls with that treatment.
+
+**How to apply:** Keep navigation at the sides of the cards; do not reintroduce numbered pagination below them.

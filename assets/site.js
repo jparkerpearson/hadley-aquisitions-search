@@ -1,6 +1,4 @@
 
-document.documentElement.classList.add("js-ready");
-
 // Refresh the homepage at the hero, without breaking section links or Back.
 const navigation = performance.getEntriesByType("navigation")[0];
 if (document.body.classList.contains("home-page") && !location.hash && navigation?.type !== "back_forward") {
@@ -20,22 +18,64 @@ if (document.body.classList.contains("home-page") && !location.hash && navigatio
 const revealItems = document.querySelectorAll(
   ".identity-section, .who-we-work-with, .product-offerings, .contact-cta, .contact-section"
 );
-if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-  const observer = new IntersectionObserver((entries, instance) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("reveal", "is-visible");
+const revealChildren = document.querySelectorAll(
+  ".identity-title, .identity-mark, .stats-list li, .who-we-work-with h2, " +
+  ".who-we-work-with-list li, .product-offerings h2, .offerings-book, " +
+  ".contact-cta-button, .contact-title, .roles-header h1"
+);
+const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+let sectionObserver = null;
+let itemObserver = null;
+
+const settleRevealMotion = () => {
+  sectionObserver?.disconnect();
+  itemObserver?.disconnect();
+  revealItems.forEach((item) => item.classList.add("reveal", "is-visible"));
+  revealChildren.forEach((item) => item.classList.add("reveal-item", "is-revealed"));
+  document.documentElement.classList.add("motion-settled", "js-ready");
+};
+
+if ("IntersectionObserver" in window && !motionPreference.matches) {
+  try {
+    sectionObserver = new IntersectionObserver((entries, instance) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
         instance.unobserve(entry.target);
-      }
+      });
+    }, { threshold: 0.04, rootMargin: "0px 0px -18px 0px" });
+    itemObserver = new IntersectionObserver((entries, instance) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-revealed");
+        instance.unobserve(entry.target);
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -12px 0px" });
+
+    revealItems.forEach((item) => {
+      item.classList.add("reveal");
+      sectionObserver.observe(item);
     });
-  }, { threshold: 0.08, rootMargin: "0px 0px -24px 0px" });
-  revealItems.forEach((item, index) => {
-    item.style.setProperty("--delay", `${Math.min(index % 4, 3) * 75}ms`);
-    item.classList.add("reveal");
-    observer.observe(item);
-  });
+    revealChildren.forEach((item, index) => {
+      item.classList.add("reveal-item");
+      item.style.setProperty("--item-delay", `${Math.min(index % 5, 4) * 42}ms`);
+      itemObserver.observe(item);
+    });
+    document.documentElement.classList.add("js-ready");
+  } catch (error) {
+    settleRevealMotion();
+  }
 } else {
-  revealItems.forEach((item) => item.classList.add("is-visible"));
+  settleRevealMotion();
+}
+
+const finishOnReducedMotion = (event) => {
+  if (event.matches) settleRevealMotion();
+};
+if (typeof motionPreference.addEventListener === "function") {
+  motionPreference.addEventListener("change", finishOnReducedMotion);
+} else {
+  motionPreference.addListener(finishOnReducedMotion);
 }
 
 const homeNav = document.querySelector("body.home-page > nav.home-nav");
