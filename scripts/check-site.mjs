@@ -54,13 +54,8 @@ try {
   for (const route of ["/", "/careers.html", "/contact.html"]) {
     const html = await (await fetch(base + route)).text();
     const footer = html.match(/<footer>[\s\S]*?<\/footer>/)?.[0];
-    if (route === "/") {
-      assert.equal(footer, undefined, "homepage has no copyright footer");
-      assert.doesNotMatch(html, /© 2026 Hadley AI/);
-    } else {
-      assert.ok(footer, `${route} retains its footer`);
-      assert.doesNotMatch(footer, /<img|footer-logo|href="careers\.html"/, `${route} has no repeated footer logo or Careers link`);
-    }
+    assert.ok(footer, `${route} retains its footer`);
+    assert.doesNotMatch(footer, /<img|footer-logo|href="careers\.html"/, `${route} has no repeated footer logo or Careers link`);
     const nav = html.match(/<nav\b[\s\S]*?<\/nav>/)?.[0] ?? "";
     assert.match(nav, /class="logo"/, `${route} keeps the header logo`);
     assert.match(nav, /href="careers\.html"/, `${route} keeps the header Careers link`);
@@ -186,41 +181,80 @@ try {
         assert.ok(await evaluate("document.querySelector('.home-nav .logo img').src.includes('white-transparent')"), "white logo over video");
         assert.equal(await evaluate("Math.round(document.querySelector('.hero').getBoundingClientRect().top)"), 0, "video reaches page top");
         assert.ok(await evaluate("Math.abs(document.querySelector('.hero').getBoundingClientRect().height - innerHeight) < 1"), `${value}px hero fills the full viewport height`);
-        assert.ok(await evaluate("(()=>{const b=document.querySelector('.hero .contact-cta-button').getBoundingClientRect();const h=document.querySelector('.hero').getBoundingClientRect();const title=document.querySelector('.hero h1').getBoundingClientRect();return b.top>=title.bottom && b.bottom<=h.bottom && b.right<=h.right && b.left>=h.left})()"), "Learn more sits below the headline inside the video");
-        assert.equal(await evaluate("document.querySelector('.contact-cta')"), null, "no separate button section below the video");
+        assert.ok(await evaluate("document.querySelector('.identity-section').getBoundingClientRect().top >= innerHeight - 1"), "logos begin below the full-screen video");
         const header = await evaluate("(()=>{const nav=document.querySelector('.home-nav');const bounds=(s)=>{const r=nav.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,centerY:(r.top+r.bottom)/2}};return {logo:bounds('.logo'),left:bounds('.nav-link'),right:bounds('.nav-cta'),width:document.documentElement.clientWidth}})()");
         assert.ok(Math.abs((header.logo.left + header.logo.right) / 2 - header.width / 2) < 2
           && header.left.right <= header.logo.left && header.logo.right <= header.right.left
           && Math.abs(header.left.centerY - header.logo.centerY) < 2
           && Math.abs(header.right.centerY - header.logo.centerY) < 2,
         `centered header shares one row without overlap: ${JSON.stringify(header)}`);
-        await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
+        await evaluate("document.getElementById('identity-title').scrollIntoView({behavior:'instant'})");
         await pause(1000);
-        assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "short homepage keeps header over the still-visible video");
-        assert.ok(await evaluate("document.querySelector('.home-nav .logo img').src.includes('white-transparent')"), "white logo remains over the video");
-        assert.equal(await evaluate("getComputedStyle(document.querySelector('.home-nav')).backgroundColor"), "rgba(0, 0, 0, 0)");
+        assert.ok(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), "header changes below video");
+        assert.ok(await evaluate("document.querySelector('.home-nav .logo img').src.includes('blue-transparent')"), "blue logo below hero");
+        assert.match(await evaluate("getComputedStyle(document.querySelector('.home-nav')).backgroundColor"), /^rgba?\(250, 251, 253/, "light header remains readable");
         const belowVideo = await evaluate(`(${navAppearance})()`);
         assert.deepEqual(belowVideo.contact, belowVideo.careers, "scrolled Careers and Contact use the same unfilled formatting");
         assert.equal(belowVideo.contact.backgroundColor, "rgba(0, 0, 0, 0)");
-        assert.equal(await evaluate("document.querySelector('.identity-section, .stats-section, .product-offerings, [data-count-to]')"), null, "logos, stats, and offerings removed");
-        assert.equal(await evaluate("document.querySelector('script[src=\"assets/stats.js\"]')"), null, "unused counter script is not loaded");
-        assert.equal(await evaluate("document.querySelector('#get-in-touch h2')"), null, "only the Learn more button remains");
-        assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "hero CTA opens the contact form");
-        assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Learn more");
+        assert.equal(await evaluate("document.getElementById('identity-title').textContent"), "We are the best, trusted by the best");
+        assert.equal(await evaluate("document.querySelectorAll('.identity-grid img').length"), 12, "remaining requested logos included");
+        assert.equal(await evaluate("document.querySelector('.identity-grid img[alt=\"Y Combinator\"]')"), null, "Y Combinator logo removed");
+        assert.ok(await evaluate("[...document.querySelectorAll('.identity-grid img')].every(i=>i.complete && i.naturalWidth>0 && i.alt.trim())"), "identity logos load with accessible names");
+        assert.ok(await evaluate("[...document.querySelectorAll('.identity-mark')].every(mark=>getComputedStyle(mark).backgroundColor==='rgba(0, 0, 0, 0)')"), "logos have no colored background cards");
+        assert.ok(await evaluate("[...document.querySelectorAll('.identity-grid img')].every(image=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const context=canvas.getContext('2d');context.drawImage(image,0,0);return context.getImageData(0,0,1,1).data[3]===0})"), "each logo image has real transparent outer pixels");
+        assert.ok(await evaluate("(()=>{const cells=[...document.querySelectorAll('.identity-mark')].map(mark=>mark.getBoundingClientRect());return cells.every(cell=>Math.abs(cell.width-cells[0].width)<1 && Math.abs(cell.height-cells[0].height)<1)})()"), "logo cells use consistent sizes");
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px logo grid fits`);
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.identity-section')).opacity"), "1", "scroll entrance finishes visibly");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('.stat-label')].map(item=>item.textContent)"), [
+          "transactions supported", "partner AUM", "enterprise value created",
+        ], "stats use the requested labels");
+        assert.equal(await evaluate("document.getElementById('stats').previousElementSibling.classList.contains('identity-section')"), true, "stats follow the trust logos");
+        assert.equal(await evaluate("document.getElementById('stats').nextElementSibling.id"), "product-offerings", "offerings follow the stats");
+        assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
+        assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "Product offerings");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
+          "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
+        ], "all five offerings appear in the requested order");
+        await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
+        await waitForReveal("#product-offerings");
+        assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings reveal on scroll");
+        assert.equal(await evaluate("document.querySelectorAll('.product-card p, .product-card details, .product-card a, .product-card button').length"), 0, "product descriptions and controls are removed");
+        assert.ok(await evaluate("[...document.querySelectorAll('.product-card')].every(card=>card.children.length===2 && card.querySelector('svg') && card.querySelector('h3'))"), "cards contain only icons and offering names");
+        assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).backgroundColor"), "rgb(11, 31, 59)", "offerings use the Hadley midnight background");
+        assert.ok(await evaluate(`(() => {
+          const luminance = color => {
+            const channels = color.match(/[0-9.]+/g).slice(0,3).map(value => {
+              const s = Number(value)/255;
+              return s <= .04045 ? s/12.92 : ((s+.055)/1.055)**2.4;
+            });
+            return channels[0]*.2126 + channels[1]*.7152 + channels[2]*.0722;
+          };
+          const section = luminance(getComputedStyle(document.getElementById('product-offerings')).backgroundColor);
+          return [...document.querySelectorAll('.product-card')].every(card => {
+            const title = card.querySelector('h3');
+            const background = luminance(getComputedStyle(card).backgroundColor);
+            const foreground = luminance(getComputedStyle(title).color);
+            return background > section && (Math.max(background,foreground)+.05)/(Math.min(background,foreground)+.05) >= 4.5;
+          });
+        })()`), "lighter blue cards retain accessible title contrast");
+        assert.ok(await evaluate("[...document.querySelectorAll('.product-card')].every(card=> {const title=card.querySelector('h3'); return title.scrollWidth<=title.clientWidth+1 && title.getBoundingClientRect().right<=card.getBoundingClientRect().right+1;})"), `${value}px titles fit inside every card`);
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
+        assert.equal(await evaluate("document.getElementById('get-in-touch-title').textContent"), "Get in touch");
+        assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
+        assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Contact");
         assert.equal(await evaluate("document.querySelector('#who-we-work-with')"), null, "audiences are replaced by the simple contact CTA");
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact CTA fits`);
         assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
-        assert.equal(await evaluate("document.querySelectorAll('main > section').length"), 1, "only the hero remains");
-        assert.equal(await evaluate("document.querySelector('footer')"), null, "homepage has no empty footer strip");
+        assert.equal(await evaluate("document.querySelector('main > section:last-child').id"), "get-in-touch", "contact CTA leads directly to the footer");
         await evaluate("scrollTo({top:0,behavior:'instant'})");
         await pause(250);
         assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "header restores on scrolling up");
-        await evaluate("document.body.insertAdjacentHTML('beforeend','<div style=\"height:1000px\"></div>'); scrollTo({top:200,behavior:'instant'})");
+        await evaluate("document.getElementById('identity-title').scrollIntoView({behavior:'instant'})");
         await pause(250);
-        assert.ok(await evaluate("scrollY > 0"), "reload starts from a scrolled page");
+        assert.ok(await evaluate("scrollY > 300"), "reload starts from a scrolled page");
         await send("Page.reload", { ignoreCache: true });
         await pause(1400);
         await waitForPageLoad();
@@ -269,19 +303,41 @@ try {
   assert.equal(await evaluate("location.hash"), "#origination-lead", "legacy role links remain canonical");
   assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true, "legacy role links expand the role");
   await navigate("/");
+  const finalStats = ["100+", "$500B+", "$1B+"];
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "final stats exist before scrolling");
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>!item.dataset.counterState)"), "counters wait until they are visible");
+  await evaluate("document.getElementById('stats').scrollIntoView({behavior:'instant'})");
+  await pause(150);
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='running')"), "all visible stats begin counting");
+  assert.notDeepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "intermediate counts are rendered");
+  assert.match(await evaluate("document.querySelector('[data-count-to=\"1\"]').textContent"), /^\$0\.\dB\+$/, "$1B visibly animates using fractional billions");
+  await pause(1800);
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "counters land on exact requested values");
+  await evaluate("scrollTo({top:0,behavior:'instant'})");
+  await pause(100);
+  await evaluate("document.getElementById('stats').scrollIntoView({behavior:'instant'})");
+  await pause(100);
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"), "counters do not restart on repeat scrolling");
+  await navigate("/");
+  await evaluate("document.getElementById('stats').scrollIntoView({behavior:'instant'})");
+  await pause(100);
+  await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+  await pause(100);
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "enabling reduced motion finishes active counters");
+  await send("Emulation.setEmulatedMedia", { features: [] });
   const noStatsObserver = await send("Page.addScriptToEvaluateOnNewDocument", { source: "delete window.IntersectionObserver;" });
   await navigate("/");
-  assert.equal(await evaluate("getComputedStyle(document.querySelector('.contact-cta-button')).opacity"), "1", "Learn more stays visible without observer support");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "unsupported observers retain the final stats");
   assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
   await send("Page.removeScriptToEvaluateOnNewDocument", { identifier: noStatsObserver.identifier });
   await navigate("/#get-in-touch");
-  assert.ok(await evaluate("(()=>{const r=document.getElementById('get-in-touch').getBoundingClientRect();return r.top>=0 && r.bottom<=innerHeight})()"), "direct CTA links remain visible");
+  assert.ok(await evaluate("scrollY > 300"), "direct section links still reach their target");
   await evaluate("document.querySelector('.contact-cta-button').click()");
   await pause(900);
   assert.equal(await evaluate("location.pathname"), "/contact.html", "bottom Contact button opens the form page");
   assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), false);
   await navigate("/");
-  await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
+  await evaluate("document.getElementById('identity-title').scrollIntoView({behavior:'instant'})");
   await pause(250);
   const savedScroll = await evaluate("scrollY");
   await navigate("/careers.html");
@@ -338,8 +394,7 @@ try {
   await evaluate("document.querySelector('[data-video-toggle]').click()");
   await pause(200);
   assert.equal(await evaluate("document.querySelector('.hero-video').paused"), false, "play control resumes");
-  await evaluate("document.body.insertAdjacentHTML('beforeend','<div data-test-spacer style=\"height:1000px\"></div>'); scrollTo({top:document.querySelector('.hero').offsetHeight+1,behavior:'instant'})");
-  assert.ok(await evaluate("document.querySelector('.hero').getBoundingClientRect().bottom < 0"), "hero is fully outside the viewport");
+  await evaluate("document.body.insertAdjacentHTML('beforeend','<div data-test-spacer style=\"height:1000px\"></div>'); document.querySelector('footer').scrollIntoView({behavior:'instant'})");
   await pause(300);
   assert.equal(await evaluate("document.querySelector('.hero-video').paused"), true, "offscreen video pauses");
   await evaluate("scrollTo({top:0,behavior:'instant'})");
@@ -420,18 +475,24 @@ try {
   assert.ok(await evaluate("document.querySelector('[data-video-toggle]').hidden"), "no pointless pause control for static poster");
   assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-video-toggle]')).display"), "none");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible with reduced motion");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings are visible with reduced motion");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "reduced motion shows final stats immediately");
+  assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
-  assert.equal(await evaluate("document.querySelector('.identity-section, .stats-section, .product-offerings')"), null, "removed sections stay absent without JavaScript");
+  assert.equal(await evaluate("document.querySelectorAll('.offerings-list > li').length"), 5, "all offerings remain available without JavaScript");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1");
   await navigate("/careers.html");
   assert.ok(await evaluate("[...document.querySelectorAll('details.role')].every(role=>!role.open)"));
   await evaluate("document.querySelector('#origination-lead > summary').click()");
   assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true, "native job descriptions expand without JavaScript");
   await navigate("/");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "all stats remain readable without JavaScript");
   assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "contact CTA works without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is readable without JavaScript");
   assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "removed sections do not return without JavaScript");
+  assert.ok(await evaluate("getComputedStyle(document.querySelector('.identity-section')).opacity === '1'"), "identity section readable without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.home-nav')).position"), "absolute", "no-JS header stays with hero rather than becoming unreadable over lower content");
   assert.equal(await evaluate("document.querySelector('.hero-video').hasAttribute('src')"), false, "no-JS uses poster only");
   await navigate("/contact.html");
