@@ -187,7 +187,28 @@ try {
           "transactions supported", "partner AUM", "enterprise value created",
         ], "stats use the requested labels");
         assert.equal(await evaluate("document.getElementById('stats').previousElementSibling.classList.contains('identity-section')"), true, "stats follow the trust logos");
-        assert.equal(await evaluate("document.getElementById('stats').nextElementSibling.id"), "get-in-touch", "contact follows the stats");
+        assert.equal(await evaluate("document.getElementById('stats').nextElementSibling.id"), "product-offerings", "offerings follow the stats");
+        assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
+        assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "Product offerings");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
+          "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
+        ], "all five offerings appear in the requested order");
+        await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
+        await pause(900);
+        assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings reveal on scroll");
+        assert.equal(await evaluate("document.querySelectorAll('.product-card-details').length"), 5, "every offering has working details");
+        await evaluate("document.querySelector('.product-card-details summary').focus()");
+        assert.equal(await evaluate("document.activeElement.tagName"), "SUMMARY", "Learn more receives keyboard focus");
+        await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13, text: "\r", unmodifiedText: "\r" });
+        await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Enter", code: "Enter", windowsVirtualKeyCode: 13 });
+        await pause(100);
+        assert.equal(await evaluate("document.querySelector('.product-card-details').open"), true, "Learn more works with the keyboard");
+        await evaluate("document.querySelector('.product-card-details summary').click()");
+        await evaluate("document.querySelectorAll('.product-card-details summary').forEach(summary=>summary.click())");
+        assert.ok(await evaluate("[...document.querySelectorAll('.product-card-details')].every(details=>details.open && details.querySelector('p')?.textContent.trim().length>0)"), "all Learn more buttons reveal real content");
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px expanded cards fit without overflow`);
+        await evaluate("document.querySelectorAll('.product-card-details summary').forEach(summary=>summary.click())");
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
         assert.equal(await evaluate("document.getElementById('get-in-touch-title').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Contact");
@@ -400,11 +421,16 @@ try {
   assert.ok(await evaluate("document.querySelector('[data-video-toggle]').hidden"), "no pointless pause control for static poster");
   assert.equal(await evaluate("getComputedStyle(document.querySelector('[data-video-toggle]')).display"), "none");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible with reduced motion");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings are visible with reduced motion");
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "reduced motion shows final stats immediately");
   assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
+  assert.equal(await evaluate("document.querySelectorAll('.offerings-list > li').length"), 5, "all offerings remain available without JavaScript");
+  await evaluate("document.querySelector('.product-card-details summary').click()");
+  assert.equal(await evaluate("document.querySelector('.product-card-details').open"), true, "Learn more works without JavaScript");
+  assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1");
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "all stats remain readable without JavaScript");
   assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "contact CTA works without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is readable without JavaScript");
