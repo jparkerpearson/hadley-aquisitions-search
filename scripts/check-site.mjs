@@ -82,7 +82,7 @@ try {
   let mockedStatus = 422;
   let intercepted = 0;
   let contactRequests = 0;
-  let contactReply = { status: 400, body: { error: "Check your firm.", fields: { firm: "Test firm error" } } };
+  let contactReply = { status: 400, body: { error: "Check your email.", fields: { email: "Test email error" } } };
   let lastContactPayload;
   function send(method, params = {}) {
     return new Promise((resolve, reject) => {
@@ -339,14 +339,17 @@ try {
         assert.ok(await evaluate(`Math.abs(document.querySelector('.offerings-rail').scrollLeft - ${wheelPosition.left}) < 2`), "vertical wheel does not move the horizontal rail");
         await evaluate("document.querySelector('[data-wheel-spacer]').remove()");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
-        assert.equal(await evaluate("document.querySelector('#get-in-touch h2')"), null, "CTA has no separate heading");
-        assert.equal(await evaluate("document.querySelectorAll('#get-in-touch a, #get-in-touch button').length"), 1, "single bottom contact action");
-        assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
-        assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Get in touch");
+        assert.equal(await evaluate("document.querySelector('#get-in-touch h2').textContent"), "Get in touch");
+        assert.equal(await evaluate("document.querySelector('.contact-cta-button')"), null, "standalone contact button is removed");
+        assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "#get-in-touch", "homepage Contact scrolls to the inline form");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('#get-in-touch')).backgroundColor"), "rgb(11, 31, 59)", "contact continues the dark offerings background");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"),
+          [["name",true],["email",true]], "inline form has only name and work email");
+        assert.equal(await evaluate("document.querySelector('label[for=\"contact-email\"]').textContent"), "Work Email");
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
-        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact CTA fits`);
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth && [...document.querySelectorAll('#contact-form input, #contact-form textarea, #contact-submit')].every(field=>{const r=field.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})"), `${value}px inline form fits`);
         assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
         assert.equal(await evaluate("document.querySelector('main > section:last-child').id"), "get-in-touch", "contact CTA finishes the page");
         await evaluate("scrollTo({top:0,behavior:'instant'})");
@@ -402,10 +405,9 @@ try {
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact has no overflow`);
         assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), false);
         assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"), [
-          ["name", true], ["email", true], ["phone", false], ["firm", true], ["notes", true],
+          ["name", true], ["email", true],
         ], "contact fields and required/optional states match the request");
-        assert.equal(await evaluate("document.querySelector('label[for=\"contact-notes\"]').textContent"), "What are you interested in?");
-        assert.ok(await evaluate("document.querySelector('label[for=\"contact-phone\"]').textContent.includes('optional')"));
+        assert.equal(await evaluate("document.querySelector('label[for=\"contact-email\"]').textContent"), "Work Email");
       }
     }
   }
@@ -446,15 +448,15 @@ try {
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "unsupported observers retain the final stats");
   assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>item.dataset.counterState==='complete')"));
   assert.ok(await evaluate(`[
-    ...document.querySelectorAll('.identity-title, .identity-mark, .who-we-work-with h2, .who-we-work-with-list li, .product-offerings h2, .offering-page, .contact-cta-button')
+    ...document.querySelectorAll('.identity-title, .identity-mark, .who-we-work-with h2, .who-we-work-with-list li, .product-offerings h2, .offering-page, .home-contact .contact-title')
   ].every(item => getComputedStyle(item).opacity === '1' && getComputedStyle(item).transform === 'none')`),
   "reduced motion immediately shows every heading, logo, audience and offering");
   await send("Page.removeScriptToEvaluateOnNewDocument", { identifier: noStatsObserver.identifier });
   await navigate("/#get-in-touch");
   assert.ok(await evaluate("scrollY > 300"), "direct section links still reach their target");
-  await evaluate("document.querySelector('.contact-cta-button').click()");
+  await evaluate("document.querySelector('.home-nav .nav-cta').click()");
   await pause(900);
-  assert.equal(await evaluate("location.pathname"), "/contact.html", "bottom Contact button opens the form page");
+  assert.equal(await evaluate("location.pathname"), "/", "homepage Contact keeps visitors on the homepage");
   assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), false);
   await navigate("/");
   await evaluate("document.getElementById('identity-title').scrollIntoView({behavior:'instant'})");
@@ -563,32 +565,36 @@ try {
   assert.equal(await evaluate("document.querySelector('#apply-success').hidden"), false);
   assert.equal(intercepted, 2, "two mocked submissions, none sent to live service");
 
-  await navigate("/contact.html");
-  await evaluate("document.querySelector('#contact-form').requestSubmit()");
-  assert.equal(contactRequests, 0, "invalid contact form is not submitted");
-  assert.equal(await evaluate("document.activeElement.name"), "name");
-  await evaluate("(()=>{const f=document.querySelector('#contact-form');f.elements.name.value='Test Contact';f.elements.email.value='test@example.invalid';f.elements.firm.value='Test Firm';f.elements.notes.value='Intercepted browser test, not a real inquiry.';f.requestSubmit()})()");
-  await pause(500);
-  assert.equal(contactRequests, 1);
-  assert.equal(lastContactPayload.phone, "", "blank optional phone is submitted");
-  assert.equal(await evaluate("document.activeElement.name"), "firm", "server field error receives focus");
-  assert.equal(await evaluate("document.querySelector('#contact-firm').getAttribute('aria-invalid')"), "true");
-  contactReply = { status: 503, body: { error: "Temporary test failure" } };
-  await evaluate("document.querySelector('#contact-form').requestSubmit()");
-  await pause(500);
-  assert.equal(await evaluate("document.querySelector('#contact-status').textContent"), "Temporary test failure");
-  assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact", "server failures preserve values");
-  await evaluate("(async()=>{const original=window.fetch;window.fetch=async()=>{throw Error('offline test')};document.querySelector('#contact-form').requestSubmit();await new Promise(resolve=>setTimeout(resolve,200));window.fetch=original})()");
-  assert.ok(await evaluate("document.querySelector('#contact-status').textContent.length>0"), "network failures are explicit");
-  assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact");
-  contactReply = { status: 201, body: { ok: true, id: "mocked-test-only" } };
-  await evaluate("document.querySelector('#contact-form').requestSubmit();document.querySelector('#contact-form').requestSubmit()");
-  assert.equal(await evaluate("document.querySelector('#contact-submit').disabled"), true, "pending form cannot be double submitted");
-  await pause(500);
-  assert.equal(contactRequests, 3, "duplicate submission is suppressed");
-  assert.equal(await evaluate("document.querySelector('#contact-success').hidden"), false);
-  assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), true);
-  assert.equal(await evaluate("document.activeElement.id"), "contact-success");
+  for (const contactRoute of ["/#get-in-touch", "/contact.html"]) {
+    contactRequests = 0;
+    contactReply = { status: 400, body: { error: "Check your email.", fields: { email: "Test email error" } } };
+    await navigate(contactRoute);
+    await evaluate("document.querySelector('#contact-form').requestSubmit()");
+    assert.equal(contactRequests, 0, "invalid contact form is not submitted");
+    assert.equal(await evaluate("document.activeElement.name"), "name");
+    await evaluate("(()=>{const f=document.querySelector('#contact-form');f.elements.name.value='Test Contact';f.elements.email.value='test@example.invalid';f.requestSubmit()})()");
+    await pause(500);
+    assert.equal(contactRequests, 1);
+    assert.deepEqual(Object.keys(lastContactPayload).sort(), ["email", "name"], "only name and work email are submitted");
+    assert.equal(await evaluate("document.activeElement.name"), "email", "server field error receives focus");
+    assert.equal(await evaluate("document.querySelector('#contact-email').getAttribute('aria-invalid')"), "true");
+    contactReply = { status: 503, body: { error: "Temporary test failure" } };
+    await evaluate("document.querySelector('#contact-form').requestSubmit()");
+    await pause(500);
+    assert.equal(await evaluate("document.querySelector('#contact-status').textContent"), "Temporary test failure");
+    assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact", "server failures preserve values");
+    await evaluate("(async()=>{const original=window.fetch;window.fetch=async()=>{throw Error('offline test')};document.querySelector('#contact-form').requestSubmit();await new Promise(resolve=>setTimeout(resolve,200));window.fetch=original})()");
+    assert.ok(await evaluate("document.querySelector('#contact-status').textContent.length>0"), "network failures are explicit");
+    assert.equal(await evaluate("document.querySelector('#contact-name').value"), "Test Contact");
+    contactReply = { status: 201, body: { ok: true, id: "mocked-test-only" } };
+    await evaluate("document.querySelector('#contact-form').requestSubmit();document.querySelector('#contact-form').requestSubmit()");
+    assert.equal(await evaluate("document.querySelector('#contact-submit').disabled"), true, "pending form cannot be double submitted");
+    await pause(500);
+    assert.equal(contactRequests, 3, "duplicate submission is suppressed");
+    assert.equal(await evaluate("document.querySelector('#contact-success').hidden"), false);
+    assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), true);
+    assert.equal(await evaluate("document.activeElement.id"), "contact-success");
+  }
 
   await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
   await navigate("/");
@@ -616,7 +622,9 @@ try {
   assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true, "native job descriptions expand without JavaScript");
   await navigate("/");
   assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "all stats remain readable without JavaScript");
-  assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "contact CTA works without JavaScript");
+  assert.equal(await evaluate("document.querySelector('.home-nav .nav-cta').getAttribute('href')"), "#get-in-touch", "contact section link works without JavaScript");
+  assert.equal(await evaluate("getComputedStyle(document.querySelector('#contact-form')).display"), "none", "no-JS inline form cannot leak details through a GET submission");
+  assert.ok(await evaluate("document.querySelector('noscript').textContent.includes('requires JavaScript')"), "no-JS inline form limitation is explicit");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is readable without JavaScript");
   assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "removed sections do not return without JavaScript");
   assert.ok(await evaluate("getComputedStyle(document.querySelector('.identity-section')).opacity === '1'"), "identity section readable without JavaScript");

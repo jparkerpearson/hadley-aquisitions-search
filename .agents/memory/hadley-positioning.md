@@ -9,11 +9,11 @@ Hadley AI's website hero headline is "The next generation of buyside M&A advisor
 
 **How to apply:** Keep future website copy aligned with these five offerings unless the user changes the business direction. Use the approved advisory-first direction with offering names, without generic icons, descriptions or Learn more controls, on a dark blue section with lighter blue cards. Keep Hadley's blue branding rather than adopting the earlier reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
 
-Below the trust logos, show the user's figures: "100+ transactions supported", "$500B+ partner AUM", and "$1B+ enterprise value created", followed by a single "Get in touch" button.
+Below the trust logos, show the user's figures: "100+ transactions supported", "$500B+ partner AUM", and "$1B+ enterprise value created".
 
-**Why:** The user asked for these three stats to count up as visitors scroll and later simplified the contact prompt into one button, without a separate heading or Contact button.
+**Why:** The user asked for these three stats to count up as visitors scroll.
 
-**How to apply:** Preserve the exact figures and labels, including "partner" AUM rather than claiming Hadley's own AUM. Keep the single contact button linked to the existing form, without additional descriptions.
+**How to apply:** Preserve the exact figures and labels, including "partner" AUM rather than claiming Hadley's own AUM.
 
 The user restored "Who we work with" with these groups: "AI roll-ups & high growth AI platforms", "Corporate development teams", "Private equity funds", and "Private equity portfolio companies".
 
@@ -129,7 +129,13 @@ Do not show the copyright/footer section on the website.
 
 **Why:** The user first removed repeated footer navigation, then explicitly requested removing the copyright section.
 
-**How to apply:** Keep navigation in the header; end the homepage with the single "Get in touch" button linking to the contact form. Do not restore the copyright footer.
+**How to apply:** Keep navigation in the header and do not restore the copyright footer.
+
+End the homepage with a dark inline contact form below the offerings, rather than a separate white "Get in touch" button section.
+
+**Why:** The user said the white area around the button looked weird and explicitly chose the dark inline form so visitors can scroll straight into it.
+
+**How to apply:** Blend the form into the dark offerings background and let homepage Contact navigation scroll to the form. The user now wants only Name and Work Email fields. Preserve the standalone contact page for existing links.
 
 The user wants the overall website to feel "more snappy and smooth," with each section feeling distinct. They referenced corgi.insure and said the section headers are "too small / weak."
 

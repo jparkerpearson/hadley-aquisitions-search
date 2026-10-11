@@ -5,7 +5,7 @@ if (contactForm) {
   const submitButton = document.querySelector("#contact-submit");
   const statusMessage = document.querySelector("#contact-status");
   const successMessage = document.querySelector("#contact-success");
-  const fieldNames = ["name", "email", "phone", "firm", "notes"];
+  const fieldNames = ["name", "email"];
   let submitting = false;
 
   const fieldFor = (name) => contactForm.elements.namedItem(name);
@@ -47,10 +47,8 @@ if (contactForm) {
     const validationErrors = {};
     if (!payload.name.trim()) validationErrors.name = "Please enter your name.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email.trim())) {
-      validationErrors.email = "Please enter a valid email address.";
+      validationErrors.email = "Please enter a valid work email address.";
     }
-    if (!payload.firm.trim()) validationErrors.firm = "Please enter your firm.";
-    if (!payload.notes.trim()) validationErrors.notes = "Please tell us what you're interested in.";
     if (Object.keys(validationErrors).length) {
       showFieldErrors(validationErrors);
       return;
@@ -70,9 +68,6 @@ if (contactForm) {
         body: JSON.stringify({
           name: payload.name,
           email: payload.email,
-          phone: payload.phone,
-          firm: payload.firm,
-          notes: payload.notes,
         }),
       });
       const body = await response.json().catch(() => ({}));

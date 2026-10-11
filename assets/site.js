@@ -16,12 +16,12 @@ if (document.body.classList.contains("home-page") && !location.hash && navigatio
 }
 
 const revealItems = document.querySelectorAll(
-  ".identity-section, .who-we-work-with, .product-offerings, .contact-cta, .contact-section"
+  ".identity-section, .who-we-work-with, .product-offerings, .home-contact, .contact-section"
 );
 const revealChildren = document.querySelectorAll(
   ".identity-title, .identity-mark, .stats-list li, .who-we-work-with h2, " +
   ".who-we-work-with-list li, .product-offerings h2, .offerings-book, " +
-  ".contact-cta-button, .contact-title, .roles-header h1"
+  ".contact-title, .roles-header h1"
 );
 const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
 let sectionObserver = null;

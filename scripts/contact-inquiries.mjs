@@ -23,7 +23,7 @@ export function validateContact(input) {
     }
     values[key] = value.trim();
     if (values[key].length > max) fields[key] = `Use ${max} characters or fewer.`;
-    else if (key !== "phone" && !values[key]) fields[key] = "This field is required.";
+    else if ((key === "name" || key === "email") && !values[key]) fields[key] = "This field is required.";
     else if (key !== "notes" && /[\r\n\0]/.test(values[key])) fields[key] = "Enter a single line of text.";
   }
   if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(values.email)) {
