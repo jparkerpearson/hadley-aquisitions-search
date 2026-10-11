@@ -191,14 +191,9 @@ body.home-page > nav.home-nav.is-scrolled .nav-cta:hover { color:var(--slate); }
   padding:70px clamp(24px,8vw,128px) 76px;
   background:var(--ivory); text-align:center;
 }
-.contact-cta h2 {
-  margin:0; color:var(--navy);
-  font-size:clamp(32px,4vw,44px); font-weight:500; line-height:1.1;
-  letter-spacing:-.04em;
-}
 .contact-cta-button {
   display:inline-flex; align-items:center; justify-content:center;
-  min-height:48px; margin-top:28px; padding:14px 36px;
+  min-height:48px; padding:14px 36px;
   background:var(--navy); color:var(--ivory); text-decoration:none;
   font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase;
   transition:background-color .2s;
@@ -209,12 +204,6 @@ body.home-page > nav.home-nav.is-scrolled .nav-cta:hover { color:var(--slate); }
 }
 
 
-footer { padding:25px clamp(22px,5.2vw,82px); min-height:86px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:24px; }
-.footer-logo img { display:block; width:146px; height:auto; }
-.footer-nav { display:flex; align-items:center; gap:24px; }
-.footer-link { color:var(--ink-soft); font-size:11px; letter-spacing:.1em; text-transform:uppercase; text-decoration:none; }
-.footer-link:hover { color:var(--blue); }
-.footer-copy { font-size:11px; color:var(--ink-soft); }
 
 /* Interior pages share the homepage's centered mark and quiet navigation. */
 .inner-page > nav.site-nav {
@@ -263,6 +252,7 @@ footer { padding:25px clamp(22px,5.2vw,82px); min-height:86px; border-top:1px so
 .role-actions { display:flex; align-items:center; gap:16px; }
 .role-body h3 { margin:34px 0 12px; color:var(--blue); font-size:11px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; }
 .role-body h3:first-of-type { margin-top:0; }
+.role-body p { max-width:740px; margin:0 0 24px; color:var(--ink-soft); font-size:15px; line-height:1.65; }
 .role-body ul { max-width:640px; margin:0 0 36px; list-style:none; }
 .role-body li { position:relative; padding:8px 0 8px 22px; color:var(--ink-soft); font-size:15px; line-height:1.65; }
 .role-body li::before { position:absolute; top:19px; left:0; width:10px; height:1px; background:var(--sky); content:""; }
@@ -407,10 +397,6 @@ form[hidden] { display:none !important; }
   .product-card-icon { width:36px; height:36px; }
   .stats-list { grid-template-columns:1fr; gap:8px; }
   .stat-number { font-size:60px; }
-  .contact-cta h2 { font-size:32px; }
-  footer { flex-wrap:wrap; justify-content:center; text-align:center; padding:26px 18px; }
-  .footer-nav { width:100%; justify-content:center; order:3; }
-  .footer-copy { margin-left:auto; margin-right:auto; }
   .roles { padding:110px 22px 24px; }
   .role-row { grid-template-columns:1fr auto; }
   .role-row-meta { grid-column:1; }

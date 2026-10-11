@@ -53,9 +53,7 @@ try {
   const original = execFileSync("git", ["show", "HEAD:careers.html"], { encoding: "utf8" });
   for (const route of ["/", "/careers.html", "/contact.html"]) {
     const html = await (await fetch(base + route)).text();
-    const footer = html.match(/<footer>[\s\S]*?<\/footer>/)?.[0];
-    assert.ok(footer, `${route} retains its footer`);
-    assert.doesNotMatch(footer, /<img|footer-logo|href="careers\.html"/, `${route} has no repeated footer logo or Careers link`);
+    assert.doesNotMatch(html, /<footer\b|footer-copy|© 2026 Hadley AI/, `${route} has no copyright footer`);
     const nav = html.match(/<nav\b[\s\S]*?<\/nav>/)?.[0] ?? "";
     assert.match(nav, /class="logo"/, `${route} keeps the header logo`);
     assert.match(nav, /href="careers\.html"/, `${route} keeps the header Careers link`);
@@ -63,7 +61,7 @@ try {
   const current = await readFile("careers.html", "utf8");
   const appScript = (html) => html.match(/<script>\s*const APPLY_ENDPOINT[\s\S]*?<\/script>/)?.[0];
   assert.equal(appScript(current), appScript(original), "careers submission behavior unchanged");
-  for (const role of ["origination-lead", "founding-applied-ai-engineer"]) {
+  for (const role of ["founding-applied-ai-engineer"]) {
     const section = (html) => html.match(new RegExp(`<(?:section|details) class="role" id="${role}">[\\s\\S]*?<\\/(?:section|details)>`))?.[0];
     const lists = (html) => (section(html)?.match(/<ul>[\s\S]*?<\/ul>/g) || []).map(list => list.replace(/\s+/g, " ").trim());
     assert.equal(lists(current).length, 2, "both job description lists remain");
@@ -141,6 +139,7 @@ try {
   async function navigate(path) {
     await send("Page.navigate", { url: base + path });
     await pause(1400);
+    await waitForPageLoad();
   }
   async function waitForPageLoad() {
     for (let attempt = 0; attempt < 100; attempt++) {
@@ -154,7 +153,7 @@ try {
   }
   async function waitForReveal(selector) {
     for (let attempt = 0; attempt < 80; attempt++) {
-      if (await evaluate(`getComputedStyle(document.querySelector(${JSON.stringify(selector)})).opacity === "1"`)) return;
+      if (await evaluate(`(() => {const target=document.querySelector(${JSON.stringify(selector)});return target.classList.contains("is-visible") && getComputedStyle(target).opacity === "1";})()`)) return;
       await pause(50);
     }
     throw new Error(`Reveal did not finish: ${selector}`);
@@ -239,16 +238,17 @@ try {
         })()`), "lighter blue cards retain accessible title contrast");
         assert.ok(await evaluate("[...document.querySelectorAll('.product-card')].every(card=> {const title=card.querySelector('h3'); return title.scrollWidth<=title.clientWidth+1 && title.getBoundingClientRect().right<=card.getBoundingClientRect().right+1;})"), `${value}px titles fit inside every card`);
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
-        assert.equal(await evaluate("document.getElementById('get-in-touch-title').textContent"), "Get in touch");
+        assert.equal(await evaluate("document.querySelector('#get-in-touch h2')"), null, "CTA has no separate heading");
+        assert.equal(await evaluate("document.querySelectorAll('#get-in-touch a, #get-in-touch button').length"), 1, "single bottom contact action");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button').getAttribute('href')"), "contact.html", "bottom CTA opens the contact form");
-        assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Contact");
+        assert.equal(await evaluate("document.querySelector('.contact-cta-button').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('#who-we-work-with')"), null, "audiences are replaced by the simple contact CTA");
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact CTA fits`);
         assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
-        assert.equal(await evaluate("document.querySelector('main > section:last-child').id"), "get-in-touch", "contact CTA leads directly to the footer");
+        assert.equal(await evaluate("document.querySelector('main > section:last-child').id"), "get-in-touch", "contact CTA finishes the page");
         await evaluate("scrollTo({top:0,behavior:'instant'})");
         await pause(250);
         assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "header restores on scrolling up");
@@ -271,6 +271,14 @@ try {
         assert.ok(await evaluate("[...document.querySelectorAll('details.role')].every(role=>!role.open)"), "job descriptions begin collapsed");
         await evaluate("document.querySelector('#origination-lead > summary').click()");
         assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true);
+        assert.equal(await evaluate("document.querySelector('#origination-lead .role-row-title').textContent"), "Founding Origination Lead");
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#origination-lead .role-body h3')].map(heading=>heading.textContent)"), ["Location", "Responsibilities", "Profile", "Comp"]);
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#origination-lead .role-body p')].map(paragraph=>paragraph.textContent)"), [
+          "SF, in office 5 days / week",
+          "High ownership sales role focused on helping clients source M&A deals",
+          "Looking for ex-SaaS sales or experience with outbound deal sourcing at a PE fund / buyside bank. Hardworking, outcome-motivated, hungry, moves fast. Thinks tech natively. Wants to be a founder or own their own business one day. Startup experience is a big plus",
+          "$300K+",
+        ]);
         assert.ok(await evaluate("document.querySelector('#origination-lead [data-apply]').checkVisibility()"), "expanded role has a visible Apply button");
         assert.equal(await evaluate("document.querySelector('#founding-applied-ai-engineer').open"), false, "opening a role leaves the other collapsed");
         await evaluate("document.querySelector('#founding-applied-ai-engineer > summary').focus()");
@@ -394,7 +402,7 @@ try {
   await evaluate("document.querySelector('[data-video-toggle]').click()");
   await pause(200);
   assert.equal(await evaluate("document.querySelector('.hero-video').paused"), false, "play control resumes");
-  await evaluate("document.body.insertAdjacentHTML('beforeend','<div data-test-spacer style=\"height:1000px\"></div>'); document.querySelector('footer').scrollIntoView({behavior:'instant'})");
+  await evaluate("document.body.insertAdjacentHTML('beforeend','<div data-test-spacer style=\"height:1000px\"></div>'); document.querySelector('[data-test-spacer]').scrollIntoView({behavior:'instant'})");
   await pause(300);
   assert.equal(await evaluate("document.querySelector('.hero-video').paused"), true, "offscreen video pauses");
   await evaluate("scrollTo({top:0,behavior:'instant'})");
@@ -415,6 +423,8 @@ try {
   await evaluate("document.querySelector('#origination-lead > summary').click()");
   await evaluate("document.querySelector('[data-apply]').click()");
   assert.ok(await evaluate("document.querySelector('dialog').open"), "apply opens");
+  assert.equal(await evaluate("document.querySelector('#apply-title').textContent"), "Founding Origination Lead");
+  assert.equal(await evaluate("document.querySelector('#apply-form').elements.role.value"), "Founding Origination Lead", "application identifies the renamed opening");
   await send("Input.dispatchKeyEvent", { type: "keyDown", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
   await send("Input.dispatchKeyEvent", { type: "keyUp", key: "Escape", code: "Escape", windowsVirtualKeyCode: 27 });
   await pause(100);

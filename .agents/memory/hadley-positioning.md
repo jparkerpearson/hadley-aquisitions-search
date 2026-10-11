@@ -9,9 +9,9 @@ Hadley AI's website hero headline is "The next generation of buyside M&A advisor
 
 **How to apply:** Keep future website copy aligned with these five offerings unless the user changes the business direction. Show them as cards with only simple outline icons and offering names, without descriptions or Learn more controls, on a dark blue section with lighter blue cards. Keep Hadley's blue branding rather than adopting the earlier reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
 
-Below the trust logos, show the user's figures: "100+ transactions supported", "$500B+ partner AUM", and "$1B+ enterprise value created", followed by "Get in touch" and a Contact button.
+Below the trust logos, show the user's figures: "100+ transactions supported", "$500B+ partner AUM", and "$1B+ enterprise value created", followed by a single "Get in touch" button.
 
-**Why:** The user asked for these three stats to count up as visitors scroll, adding them above the previously requested simple contact prompt.
+**Why:** The user asked for these three stats to count up as visitors scroll and later simplified the contact prompt into one button, without a separate heading or Contact button.
 
 **How to apply:** Preserve the exact figures and labels, including "partner" AUM rather than claiming Hadley's own AUM. Keep the contact button linked to the existing form; do not add descriptions or restore the audience list.
 
@@ -91,7 +91,7 @@ The careers page should feel like the same Hadley website as the homepage.
 
 **Why:** The user said it felt like a "totally different website" and asked to clear that up.
 
-**How to apply:** Keep the Hadley header, typography, colors, spacing, and footer consistent while preserving the job descriptions and application functionality.
+**How to apply:** Keep the Hadley header, typography, colors, and spacing consistent while preserving the job descriptions and application functionality.
 
 Career roles should expand and collapse under their titles, without the separate side panels.
 
@@ -99,14 +99,20 @@ Career roles should expand and collapse under their titles, without the separate
 
 **How to apply:** Start both roles collapsed; retain job descriptions and an Apply action inside each expanded role. Keep shared role links working.
 
+Keep role URL anchors stable when changing a job's public title.
+
+**Why:** Existing career links may already have been shared; a title change should not invalidate them.
+
+**How to apply:** Rename the displayed title and its application name together, but keep previously working role links opening the same vacancy.
+
 Start the careers page with open roles, without the introductory "Build the future of deal sourcing" heading, Careers eyebrow, or supporting paragraph.
 
 **Why:** The user explicitly requested removing that entire introductory block.
 
 **How to apply:** Preserve the jobs and application flow; do not restore the promotional careers introduction.
 
-Do not repeat the Hadley logo or Careers link in the page footer.
+Do not show the copyright/footer section on the website.
 
-**Why:** The user explicitly said they do not need the logo and Careers again at the bottom.
+**Why:** The user first removed repeated footer navigation, then explicitly requested removing the copyright section.
 
-**How to apply:** Keep the logo and Careers navigation in the header; do not reintroduce those repeated footer elements.
+**How to apply:** Keep navigation in the header; end the homepage with the single "Get in touch" button linking to the contact form. Do not restore the copyright footer.
