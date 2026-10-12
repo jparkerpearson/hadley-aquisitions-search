@@ -5,3 +5,4 @@
 - [Browser verification](browser-verification.md) — Parallel captures can delay Chromium startup and animation timing; wait for real readiness.
 - [Imported-project mockups](imported-project-mockups.md) — Artifact creation alone does not guarantee isolated preview dependencies or type checks are ready.
 - [Git provider authorization](git-provider-authorization.md) — Git CLI authentication is separate from the general GitHub app connector; use Git Providers recovery.
+- [Publishing runtime dependencies](publishing-runtime-dependencies.md) — Publishing exclusions can remove installed Node packages despite a successful build.
