@@ -131,11 +131,11 @@ Do not show the copyright/footer section on the website.
 
 **How to apply:** Keep navigation in the header and do not restore the copyright footer.
 
-End the homepage with a dark inline contact form below the offerings, rather than a separate white "Get in touch" button section.
+End the homepage with a dark contact section below the offerings, rather than a separate white button section. Contact now opens a prefilled email instead of a form.
 
-**Why:** The user said the white area around the button looked weird and explicitly chose the dark inline form so visitors can scroll straight into it.
+**Why:** The user rejected the white contact surround; they subsequently chose email contact instead of Resend-backed form submission.
 
-**How to apply:** Blend the form into the dark offerings background and let homepage Contact navigation scroll to the form. Keep the form minimal and use an integrated submit action, not an isolated pale button. Preserve the standalone contact page for existing links.
+**How to apply:** Blend the contact section into the dark offerings background. Use Contact mailto actions; preserve the standalone contact page for existing links.
 
 The user wants the overall website to feel "more snappy and smooth," with each section feeling distinct. They referenced corgi.insure and said the section headers are "too small / weak."
 
@@ -159,4 +159,4 @@ The user chose the split contact layout over the compact blue contact panel.
 
 **Why:** After rejecting the stretched form and several Send-button revisions, they explicitly selected the split layout from a side-by-side design comparison.
 
-**How to apply:** Preserve that approved direction when refining contact: a prominent heading beside a narrow underlined form, stacked on mobile, with a full-width blue submit action. Do not revert to the stretched-box layout or the unchosen panel without a new request.
+**How to apply:** The later email-contact request supersedes the form fields, and the user then rejected the separate "Get in touch" heading and Contact button as duplicative. Use one clickable "Get in touch" action in the dark section, not a split heading and button.
