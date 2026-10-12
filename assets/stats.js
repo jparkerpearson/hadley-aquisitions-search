@@ -29,11 +29,16 @@
     return;
   }
 
+  // Initialize before observing so entering the viewport never resets a
+  // previously visible final total back to zero.
+  counters.forEach((counter) => {
+    counter.element.textContent = `${counter.prefix}${counter.target < 10 ? "0.0" : "0"}${counter.suffix}`;
+  });
+
   const animate = (counter) => {
     if (counter.started) return;
     counter.started = true;
     counter.element.dataset.counterState = "running";
-    counter.element.textContent = `${counter.prefix}${counter.target < 10 ? "0.0" : "0"}${counter.suffix}`;
     const start = performance.now();
 
     const tick = (now) => {
@@ -62,7 +67,7 @@
       if (counter) animate(counter);
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.35, rootMargin: "0px 0px -48px 0px" });
+  }, { threshold: 0, rootMargin: "0px 0px 96px 0px" });
   counters.forEach((counter) => observer.observe(counter.element.closest("li")));
 
   motion.addEventListener("change", () => {

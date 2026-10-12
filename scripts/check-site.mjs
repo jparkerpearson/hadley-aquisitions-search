@@ -429,7 +429,7 @@ try {
   assert.equal(await evaluate("document.querySelector('#origination-lead').open"), true, "legacy role links expand the role");
   await navigate("/");
   const finalStats = ["100+", "$500B+", "$1B+"];
-  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), finalStats, "final stats exist before scrolling");
+  assert.deepEqual(await evaluate("[...document.querySelectorAll('[data-count-to]')].map(item=>item.textContent)"), ["0+", "$0B+", "$0.0B+"], "animated stats initialize before scrolling without flashing final totals");
   assert.ok(await evaluate("[...document.querySelectorAll('[data-count-to]')].every(item=>!item.dataset.counterState)"), "counters wait until they are visible");
   await evaluate("document.getElementById('stats').scrollIntoView({behavior:'instant'})");
   await pause(150);
