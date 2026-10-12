@@ -347,7 +347,12 @@ try {
           [["name",true],["email",true],["interest",false]], "inline form has name, work email and area of interest");
         assert.equal(await evaluate("document.querySelector('label[for=\"contact-email\"]').textContent"), "Work Email");
         assert.equal(await evaluate("document.querySelector('label[for=\"contact-interest\"]').textContent"), "Area of Interest");
-        assert.equal(await evaluate("getComputedStyle(document.querySelector('#contact-submit')).backgroundColor"), "rgba(0, 0, 0, 0)", "send blends with the dark form");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('#contact-submit')).backgroundColor"), "rgb(30, 75, 155)", "approved full-width Send uses Hadley blue");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('#contact-name')).backgroundColor"), "rgba(0, 0, 0, 0)", "approved form uses transparent underlined fields");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('#contact-name')).borderBottomWidth"), "1px", "field underline remains visible");
+        assert.equal(await evaluate("getComputedStyle(document.querySelector('.home-contact .contact-fields')).gridTemplateColumns.split(' ').length"), 1, "contact fields stay in one narrow column");
+        assert.ok(await evaluate("Math.abs(document.getElementById('contact-submit').getBoundingClientRect().width-document.getElementById('contact-name').getBoundingClientRect().width)<1"), "submit action aligns with the field width");
+        assert.ok(await evaluate(`(()=>{const heading=document.querySelector('.home-contact-heading').getBoundingClientRect(),form=document.getElementById('contact-form').getBoundingClientRect();return ${value}>700 ? form.left>=heading.right : form.top>=heading.bottom;})()`), `${value}px contact uses the approved responsive split layout`);
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");

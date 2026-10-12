@@ -154,3 +154,9 @@ The user wants only simple circular arrows beside the offering cards, not the nu
 **Why:** They supplied a side-arrow carousel reference and explicitly asked to replace the previous controls with that treatment.
 
 **How to apply:** Keep navigation at the sides of the cards; do not reintroduce numbered pagination below them.
+
+The user chose the split contact layout over the compact blue contact panel.
+
+**Why:** After rejecting the stretched form and several Send-button revisions, they explicitly selected the split layout from a side-by-side design comparison.
+
+**How to apply:** Preserve that approved direction when refining contact: a prominent heading beside a narrow underlined form, stacked on mobile, with a full-width blue submit action. Do not revert to the stretched-box layout or the unchosen panel without a new request.

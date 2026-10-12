@@ -109,32 +109,38 @@
     </section>
 
     <section class="home-contact" id="get-in-touch" aria-labelledby="contact-title">
-        <h2 class="contact-title" id="contact-title">Get in touch</h2>
-        <form class="contact-form" id="contact-form" novalidate hidden>
-            <div class="contact-fields">
-                <div class="contact-field">
-                    <label for="contact-name">Name</label>
-                    <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="160" required aria-describedby="error-name">
-                    <span class="contact-field-error" id="error-name"></span>
-                </div>
-                <div class="contact-field">
-                    <label for="contact-email">Work Email</label>
-                    <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="error-email">
-                    <span class="contact-field-error" id="error-email"></span>
-                </div>
-                <div class="contact-field contact-field--interest">
-                    <label for="contact-interest">Area of Interest</label>
-                    <input id="contact-interest" name="interest" type="text" maxlength="500" aria-describedby="error-interest">
-                    <span class="contact-field-error" id="error-interest"></span>
-                </div>
+        <div class="home-contact-layout">
+            <header class="home-contact-heading">
+                <h2 class="contact-title" id="contact-title">Get in touch</h2>
+            </header>
+            <div class="home-contact-content">
+                <form class="contact-form" id="contact-form" novalidate hidden>
+                    <div class="contact-fields">
+                        <div class="contact-field">
+                            <label for="contact-name">Name</label>
+                            <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="160" required aria-describedby="error-name">
+                            <span class="contact-field-error" id="error-name"></span>
+                        </div>
+                        <div class="contact-field">
+                            <label for="contact-email">Work Email</label>
+                            <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="error-email">
+                            <span class="contact-field-error" id="error-email"></span>
+                        </div>
+                        <div class="contact-field contact-field--interest">
+                            <label for="contact-interest">Area of Interest</label>
+                            <input id="contact-interest" name="interest" type="text" maxlength="500" aria-describedby="error-interest">
+                            <span class="contact-field-error" id="error-interest"></span>
+                        </div>
+                    </div>
+                    <div class="contact-form-footer">
+                        <p class="contact-status" id="contact-status" role="alert" aria-live="assertive"></p>
+                        <button class="contact-submit" id="contact-submit" type="submit">Send</button>
+                    </div>
+                </form>
+                <p class="contact-success" id="contact-success" role="status" tabindex="-1" hidden>Thanks. Your message has been received.</p>
+                <noscript><p class="contact-noscript">This form requires JavaScript to submit.</p></noscript>
             </div>
-            <div class="contact-form-footer">
-                <p class="contact-status" id="contact-status" role="alert" aria-live="assertive"></p>
-                <button class="contact-submit" id="contact-submit" type="submit">Send</button>
-            </div>
-        </form>
-        <p class="contact-success" id="contact-success" role="status" tabindex="-1" hidden>Thanks. Your message has been received.</p>
-        <noscript><p class="contact-noscript">This form requires JavaScript to submit.</p></noscript>
+        </div>
     </section>
 
 </main>
