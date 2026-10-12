@@ -1,6 +1,7 @@
 import { Client } from "@replit/object-storage";
 import { createHash, randomUUID } from "node:crypto";
 import { sendContactNotification } from "./contact-email.mjs";
+import { allowWebsiteCors } from "./website-origins.mjs";
 
 const MAX_BYTES = 32768;
 const WINDOW_MS = 10 * 60 * 1000;
@@ -77,28 +78,39 @@ export function createContactHandler({ save = saveContactInquiry, notify = sendC
     return entry.count <= limit;
   };
   return async (req, res) => {
+    const trustedWebsite = allowWebsiteCors(req, res, "POST, OPTIONS");
     const reply = (status, data) => {
       res.writeHead(status, {
         "Content-Type": "application/json; charset=utf-8",
         "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff",
-        ...(status === 405 ? { Allow: "POST" } : {}),
+        ...(status === 405 ? { Allow: "POST, OPTIONS" } : {}),
         ...(status === 429 ? { "Retry-After": "600" } : {}),
       });
       res.end(JSON.stringify(data));
     };
-    if (req.method !== "POST") return reply(405, { error: "Use POST to send a contact inquiry." });
     try {
-      if (req.headers["sec-fetch-site"] === "cross-site") {
+      if (req.headers["sec-fetch-site"] === "cross-site" && !trustedWebsite) {
         return reply(403, { error: "Please submit the form from this website." });
       }
       if (req.headers.origin) {
         let originHost;
         try { originHost = new URL(req.headers.origin).host; }
         catch { return reply(403, { error: "Please submit the form from this website." }); }
-        if (originHost !== req.headers.host) {
+        if (originHost !== req.headers.host && !trustedWebsite) {
           return reply(403, { error: "Please submit the form from this website." });
         }
       }
+      if (req.method === "OPTIONS") {
+        const headers = (req.headers["access-control-request-headers"] || "").toLowerCase().split(",").map(value => value.trim()).filter(Boolean);
+        if (!trustedWebsite || req.headers["access-control-request-method"] !== "POST" ||
+          headers.some(value => value !== "content-type")) {
+          return reply(403, { error: "This form request is not allowed." });
+        }
+        res.writeHead(204);
+        res.end();
+        return;
+      }
+      if (req.method !== "POST") return reply(405, { error: "Use POST to send a contact inquiry." });
       if (req.headers["content-type"]?.split(";")[0].trim() !== "application/json") {
         return reply(415, { error: "Send the form as JSON." });
       }

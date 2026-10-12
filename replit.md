@@ -19,9 +19,9 @@
 - `node --experimental-websocket scripts/check-site.mjs` runs HTTP and Chromium browser checks when the preview is running. It uses temporary audio fixtures and intercepts every careers-service request so no live applications are sent.
 
 ## Contact inquiries
-- Contact links open `contact.html`. Name, email, firm, and interest details are required; phone is optional.
+- The home page has an inline contact form; `contact.html` also provides the form. Fields are Name, Work Email, and Area of Interest. Name and email are required.
 - `POST /api/contact` validates requests and saves each inquiry privately in App Storage under `hadley/contact-inquiries/`. Success is returned only after a successful save.
-- Inquiries are not exposed by a public read endpoint and are not written to source files or logs. Automatic email notifications are not configured.
+- Inquiries are not exposed by a public read endpoint and are not written to source files or logs. Automatic internal email notifications use the connected Gmail mailbox, with the recipient configured server-side. No confirmation email is sent to the submitter.
 - This form requires the Node server (`npm start`), not static-only hosting. JavaScript is required to submit; the no-JS page says so and does not expose an active form.
 - Browser tests intercept contact submissions; no real inquiries are created by `npm test`.
 
@@ -41,6 +41,10 @@
 - Running the intake service locally would require Google Cloud authentication and access to the existing Firestore database. Do not replace the database or invent credentials.
 
 ## Git and publishing
+- Keep the public website and `gethadley.com` on GitHub Pages. Use Replit only for the mountain video and contact-form backend; do not move the domain or its DNS records to Replit.
+- Publish the Replit backend as an Autoscale deployment with `npm ci` as the build command and `npm start` as the run command. A static deployment cannot run the video or contact endpoints.
+- After publishing the backend, obtain its actual public URL from deployment metadata and connect the GitHub-hosted site's video and contact requests to it. Never use the development URL as the production backend.
+- Cross-origin contact requests are restricted to `https://gethadley.com` and `https://www.gethadley.com`; do not allow arbitrary origins.
 - This workspace is an editable copy of the imported GitHub repository, not automatic live synchronization with GitHub.
 - Use Git to pull updates and commit/push your changes when ready.
 - Preview edits do not change the public website. Publishing or updating the existing hosting is a separate action.

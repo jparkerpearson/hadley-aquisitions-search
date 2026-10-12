@@ -93,6 +93,33 @@ try {
   response = await send(input);
   assert.equal(response.status, 429);
   assert.equal(response.headers.get("retry-after"), "600");
+  const savedBeforePreflight = saved.length;
+  for (const origin of ["https://gethadley.com", "https://www.gethadley.com"]) {
+    response = await fetch(base, {
+      method: "OPTIONS",
+      headers: { Origin: origin, "Sec-Fetch-Site": "cross-site",
+        "Access-Control-Request-Method": "POST", "Access-Control-Request-Headers": "content-type" },
+    });
+    assert.equal(response.status, 204, "GitHub-hosted form passes browser preflight");
+    assert.equal(response.headers.get("access-control-allow-origin"), origin);
+    assert.equal(response.headers.get("vary"), "Origin");
+  }
+  assert.equal(saved.length, savedBeforePreflight, "preflight never saves or emails");
+  response = await send({ ...input, email: "github-form@example.invalid" }, {
+    headers: { "Content-Type": "application/json", Origin: "https://gethadley.com", "Sec-Fetch-Site": "cross-site" },
+  });
+  assert.equal(response.status, 201, "GitHub-hosted form saves and notifies through Replit");
+  assert.equal(response.headers.get("access-control-allow-origin"), "https://gethadley.com");
+  for (const origin of ["https://untrusted.invalid", "https://gethadley.com.untrusted.invalid"]) {
+    response = await send(input, { headers: { "Content-Type": "application/json", Origin: origin, "Sec-Fetch-Site": "cross-site" } });
+    assert.equal(response.status, 403, "other sites cannot submit the contact form");
+    assert.equal(response.headers.get("access-control-allow-origin"), null);
+  }
+  response = await fetch(base, { method: "OPTIONS", headers: {
+    Origin: "https://gethadley.com", "Access-Control-Request-Method": "DELETE",
+  } });
+  assert.equal(response.status, 403, "preflight does not authorize other methods");
+  console.log("PASS restricted cross-origin form requests and preflight; all notifications mocked");
   console.log("PASS contact validation, save-before-email, notification failures, request limits, and spam limits");
 } finally {
   server.closeAllConnections();

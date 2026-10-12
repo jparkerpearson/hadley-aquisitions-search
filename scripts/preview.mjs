@@ -5,6 +5,7 @@ import { dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getMountainVideo } from "./mountain-media.mjs";
 import { createContactHandler } from "./contact-inquiries.mjs";
+import { allowWebsiteCors } from "./website-origins.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const contactHandler = createContactHandler();
@@ -51,6 +52,7 @@ createServer(async (req, res) => {
     const rootFile = /^[a-zA-Z0-9_-]+\.(html|png)$/.test(filename);
     const publicAsset = /^assets\/[a-zA-Z0-9_-]+\.(png|webp|jpg|svg|css|js|mp3|wav|ogg|m4a)$/.test(filename);
     const publicMountain = filename === "media/mountain-hero.mp4" || filename === "media/mountain-hero.webm";
+    if (publicMountain) allowWebsiteCors(req, res, "GET, HEAD");
     if ((!rootFile && !publicAsset && !publicMountain) || !types[extension]) {
       res.writeHead(404);
       res.end("Not found");
