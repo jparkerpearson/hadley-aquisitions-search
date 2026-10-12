@@ -42,3 +42,59 @@ mtime_ms = 1791838880371
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/47551f95-e37b-45c0-865d-0172943a3b57/ef89329c-05ba-42ce-8e32-8eef0266cea4"
 storage_version_token = "1791838886519724"
 content_type = "application/octet-stream"
+
+[[outputs]]
+id = "kUvm8FnaZ78k_4aGSh3iU"
+uri = "file://generated-artifacts/hadley-all-video-assets.zip"
+type = "unspecified"
+title = "All four clips — GitHub-ready"
+description = "Four separate 1080p MP4 clips, the combined hero loop in MP4 and WebM, and setup instructions. Approximately 91 MB."
+logical_id = "d5e8e62b-e93d-4ab4-853a-e1dc3dd255b4"
+content_hash = "sha256:3e0ba72fa68d46450cf0556b5ffb91a0d9b2bdb132af02fc5683310c7f8377bc"
+size = 94523994
+mtime_ms = 1791845954153
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/d5e8e62b-e93d-4ab4-853a-e1dc3dd255b4/54dd4d6f-f8df-4ddb-a1b5-5cd8f5009102"
+storage_version_token = "1791845975282902"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "ASS9KCAPIRXpO6MyWweFC"
+uri = "file://generated-artifacts/hadley-original-clips.part-01.zip"
+type = "unspecified"
+title = "Original videos — archive part 1 of 3"
+description = "Download all three parts and combine them before unzipping. These contain all four full-resolution original uploads. Use the separate GitHub-ready package for the repository."
+logical_id = "952a3454-1010-4a7b-9c92-efb2cc3fa802"
+content_hash = "sha256:4cff88343ac3f09cb577e561d43faeeb4ba4cae9209affff1430b19ab563e193"
+size = 94371840
+mtime_ms = 1791846002701
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/952a3454-1010-4a7b-9c92-efb2cc3fa802/abf740ef-6bba-4978-a529-51f2a20bf3b6"
+storage_version_token = "1791846013791425"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "yGXEGcbWFSCAUVRDWPnc3"
+uri = "file://generated-artifacts/hadley-original-clips.part-02.zip"
+type = "unspecified"
+title = "Original videos — archive part 2 of 3"
+description = "Download all three parts and combine them before unzipping. These contain all four full-resolution original uploads. Use the separate GitHub-ready package for the repository."
+logical_id = "99595bdd-797d-4d6e-b3d4-c1925d42cb4a"
+content_hash = "sha256:d17787c1e100342be0fc6edbe02d6119e0621116438a271e38a276ae272d5226"
+size = 94371840
+mtime_ms = 1791846003065
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/99595bdd-797d-4d6e-b3d4-c1925d42cb4a/95a7fc7b-582e-4ab3-aa8c-83801d63d5ad"
+storage_version_token = "1791846015260845"
+content_type = "application/octet-stream"
+
+[[outputs]]
+id = "qreoDDrn4XnCMlJXc5eiS"
+uri = "file://generated-artifacts/hadley-original-clips.part-03.zip"
+type = "unspecified"
+title = "Original videos — archive part 3 of 3"
+description = "Download all three parts and combine them before unzipping. These contain all four full-resolution original uploads. Use the separate GitHub-ready package for the repository."
+logical_id = "b73584eb-079d-41a2-96ab-8fc0dd0311e6"
+content_hash = "sha256:c2cf68925f04b89d0bc347e460952614784ff6b2d2dc9aa00ee9bfd430aeb344"
+size = 88196384
+mtime_ms = 1791846003449
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/b73584eb-079d-41a2-96ab-8fc0dd0311e6/84f1cb83-4882-42bf-be50-c9567749f2b7"
+storage_version_token = "1791846016761328"
+content_type = "application/octet-stream"
