@@ -61,7 +61,7 @@ if (contactForm) {
     const timeoutId = window.setTimeout(() => controller.abort(), 20_000);
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch(window.HadleyBackend.url("/api/contact"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,

@@ -168,7 +168,7 @@ if (backgroundVideo) {
     const source = backgroundVideo.dataset.videoSrc;
     if (!source) return;
     usingWebm = !backgroundVideo.canPlayType('video/mp4; codecs="avc1.640028"') && !!backgroundVideo.dataset.webmSrc;
-    backgroundVideo.src = usingWebm ? backgroundVideo.dataset.webmSrc : source;
+    backgroundVideo.src = window.HadleyBackend.url(usingWebm ? backgroundVideo.dataset.webmSrc : source);
     backgroundVideo.load();
     sourceAttached = true;
   };
@@ -214,7 +214,7 @@ if (backgroundVideo) {
     if (!usingWebm && backgroundVideo.dataset.webmSrc && motionAllowed()) {
       usingWebm = true;
       playable = false;
-      backgroundVideo.src = backgroundVideo.dataset.webmSrc;
+      backgroundVideo.src = window.HadleyBackend.url(backgroundVideo.dataset.webmSrc);
       backgroundVideo.load();
       syncPlayback();
       return;
