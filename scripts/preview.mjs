@@ -4,8 +4,10 @@ import { realpath, stat } from "node:fs/promises";
 import { dirname, extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { getMountainVideo } from "./mountain-media.mjs";
+import { createContactHandler } from "./contact-inquiries.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const contactHandler = createContactHandler();
 const types = {
   ".html": "text/html; charset=utf-8",
   ".png": "image/png",
@@ -33,9 +35,7 @@ createServer(async (req, res) => {
     return;
   }
   if (requestPath === "/api/contact") {
-    res.writeHead(410, { "Content-Type": "application/json; charset=utf-8" });
-    res.end(JSON.stringify({ error: "The contact form has been replaced. Please email info@gethadley.com." }));
-    return;
+    return contactHandler(req, res);
   }
   if (req.method !== "GET" && req.method !== "HEAD") {
     res.writeHead(405, { Allow: "GET, HEAD" });

@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="assets/favicon.png">
     <link rel="stylesheet" href="assets/site.css">
     <script src="assets/site.js" defer></script>
-    <link rel="stylesheet" href="assets/home-contact.css">
+    <script src="assets/contact.js" defer></script>
 </head>
 <body class="contact-page inner-page">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -16,14 +16,38 @@
     <a href="./" class="logo" aria-label="Hadley AI home"><img src="assets/hadley-logo-blue-transparent.webp" alt="Hadley AI"></a>
     <div class="nav-right">
         <a href="careers.html" class="nav-link">Careers</a>
-        <a href="mailto:info@gethadley.com?subject=Info%20about%20Hadley%20AI&amp;body=I%27d%20like%20to%20learn%20more%20about%20Hadley%20AI" class="nav-cta">Contact</a>
+        <a href="contact.html" class="nav-cta" aria-current="page">Contact</a>
     </div>
 </nav>
 
 <main id="main">
     <section class="contact-section" aria-labelledby="contact-title">
         <h1 class="contact-title" id="contact-title">Contact</h1>
-        <a class="contact-email-button" href="mailto:info@gethadley.com?subject=Info%20about%20Hadley%20AI&amp;body=I%27d%20like%20to%20learn%20more%20about%20Hadley%20AI">Contact</a>
+        <form class="contact-form" id="contact-form" novalidate hidden>
+            <div class="contact-fields">
+                <div class="contact-field">
+                    <label for="contact-name">Name</label>
+                    <input id="contact-name" name="name" type="text" autocomplete="name" maxlength="160" required aria-describedby="error-name">
+                    <span class="contact-field-error" id="error-name"></span>
+                </div>
+                <div class="contact-field">
+                    <label for="contact-email">Work Email</label>
+                    <input id="contact-email" name="email" type="email" autocomplete="email" maxlength="254" required aria-describedby="error-email">
+                    <span class="contact-field-error" id="error-email"></span>
+                </div>
+                <div class="contact-field contact-field--interest">
+                    <label for="contact-interest">Area of Interest</label>
+                    <input id="contact-interest" name="interest" type="text" maxlength="500" aria-describedby="error-interest">
+                    <span class="contact-field-error" id="error-interest"></span>
+                </div>
+            </div>
+            <div class="contact-form-footer">
+                <p class="contact-status" id="contact-status" role="alert" aria-live="assertive"></p>
+                <button class="contact-submit" id="contact-submit" type="submit">Send</button>
+            </div>
+        </form>
+        <p class="contact-success" id="contact-success" role="status" tabindex="-1" hidden>Thanks. Your message has been received.</p>
+        <noscript><p class="contact-noscript">This form requires JavaScript to submit.</p></noscript>
     </section>
 </main>
 

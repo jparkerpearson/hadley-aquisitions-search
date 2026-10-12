@@ -1,50 +1,4 @@
-/* Email contact action, continuing the dark offerings section. */
-.contact-email-button {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 52px;
-  min-width: 180px;
-  padding: 16px 32px;
-  border: 1px solid rgba(215, 228, 247, .3);
-  border-radius: 0;
-  background: #1E4B9B;
-  color: #FAFBFD;
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: .075em;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background-color .18s ease, border-color .18s ease;
-}
-.contact-email-button:hover { background: #173E83; border-color: #8AC7F5; }
-.contact-email-button:focus-visible { outline: 3px solid #8AC7F5; outline-offset: 5px; }
-.home-contact .contact-email-button {
-  display: inline-block;
-  width: auto;
-  min-width: 0;
-  min-height: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: none;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: .14em;
-  text-decoration-color: rgba(215, 228, 247, .35);
-}
-.home-contact .contact-email-button:hover {
-  color: #8AC7F5;
-  text-decoration-color: currentColor;
-}
-.home-contact-content { align-self: center; }
-@media (prefers-reduced-motion: reduce) {
-  .contact-email-button { transition: none; }
-}
-
+/* Approved editorial split, continuing the dark offerings section. */
 .home-contact {
   --contact-surface: var(--midnight);
   --contact-border: rgba(215, 228, 247, .34);
@@ -57,7 +11,10 @@
 }
 
 .home-contact-layout {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 440px);
+  align-items: start;
+  gap: clamp(48px, 9vw, 132px);
   width: min(100%, 1120px);
   margin-inline: auto;
 }
@@ -66,7 +23,7 @@
 .home-contact-content { min-width: 0; }
 
 .home-contact .contact-title {
-  max-width: 100%;
+  max-width: 440px;
   margin: 0;
   color: var(--ivory);
   font-family: var(--display);
