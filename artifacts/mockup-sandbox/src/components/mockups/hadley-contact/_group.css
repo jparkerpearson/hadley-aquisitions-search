@@ -1,0 +1,17 @@
+/* Brand tokens and text defaults extracted from assets/site.css.
+   Scoped to this group so unrelated previews are unchanged. */
+.hadley-contact-prototype {
+  --blue:#1E4B9B; --navy:#0F2D64; --sky:#84B6F4;
+  --ivory:#FAFBFD; --gray:#E6EBF3; --charcoal:#2B2F36;
+  --slate:#5A7FBF; --powder:#D7E4F7; --mid:#AAB2BD;
+  --midnight:#0B1F3B; --ink-soft:#596474; --line:rgba(15,45,100,.15);
+  --sans:"Helvetica Neue",Helvetica,Arial,sans-serif; --display:var(--sans);
+  min-height:100vh; margin:0; background:var(--midnight); color:var(--charcoal);
+  font-family:var(--sans); font-size:16px; font-weight:400; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.hadley-contact-prototype,
+.hadley-contact-prototype * { box-sizing:border-box; }
+.hadley-contact-prototype button,
+.hadley-contact-prototype input { font:inherit; }
+.hadley-contact-prototype :focus-visible { outline:3px solid var(--sky); outline-offset:4px; }
