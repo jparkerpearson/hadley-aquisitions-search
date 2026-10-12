@@ -14,8 +14,14 @@ Send contact-form email notifications only to info@gethadley.com; do not send an
 
 **How to apply:** Preserve the existing application behavior when changing branding. Keep the sales form minimal: the user removed phone and firm, retained Name and Work Email, and subsequently asked to add Area of Interest.
 
-Save contact inquiries privately before attempting a notification. Resend acceptance is not proof of inbox delivery; preserve the inquiry and show an honest acknowledgement if email cannot be confirmed.
+Save contact inquiries privately before attempting a notification. Provider acceptance is not proof of inbox delivery; preserve the inquiry and show an honest acknowledgement if email cannot be confirmed.
 
 **Why:** The user requested email notifications after initially using private saves. Notification failures must not lose a lead or encourage duplicate submissions after a successful send.
 
-**How to apply:** Keep inquiry data out of public endpoints, logs, source files, and screenshots. Retry ambiguous email failures with the same idempotency key and distinguish private receipt, provider acceptance and confirmed delivery.
+**How to apply:** Keep inquiry data out of public endpoints, logs, source files, and screenshots. Distinguish private receipt, provider acceptance and confirmed delivery.
+
+Use the connected Google Workspace mailbox for internal notifications, not Resend. Never blindly retry an uncertain Gmail send; read back first and leave the notification unconfirmed if it cannot be found.
+
+**Why:** The user explicitly chose Google Workspace instead of Resend. Gmail does not support the previous provider's idempotency keys, so retrying a lost send response can duplicate notifications.
+
+**How to apply:** Send from the authenticated mailbox to the team inbox, retain submitter reply-to, and keep the inquiry saved even if notification acceptance cannot be confirmed.
