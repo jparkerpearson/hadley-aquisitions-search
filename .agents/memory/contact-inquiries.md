@@ -4,13 +4,13 @@ description: Contact scope, save-before-notification behavior and honest deliver
 ---
 Keep contact inquiries separate from the existing careers application service.
 
-Send contact-form email notifications only to info@gethadley.com; do not send an automatic confirmation email to the submitter.
+Send contact-form email notifications only to the designated team inbox; do not send an automatic confirmation email to the submitter.
 
 **Why:** The user clarified that they only want the email coming to their team and do not want an email sent to the person submitting.
 
 **How to apply:** Treat the submitter's address as reply-to for the internal notification, not as a recipient of an automatic response.
 
-The notification recipient is a Google Group, not a standalone mailbox. The user also wants notifications sent from the group address.
+info@gethadley.com is a Google Group, not a standalone mailbox. The user also requested sending from that group address.
 
 **Why:** The user explicitly identified the recipient as a Google Group and requested that sender address.
 

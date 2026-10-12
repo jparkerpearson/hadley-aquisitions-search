@@ -25,7 +25,7 @@ assert.equal(options.headers.Authorization, undefined, "credentials stay in conn
 const mime = Buffer.from(options.body.raw, "base64url").toString("utf8");
 const [headers, encoded] = mime.split("\r\n\r\n");
 assert.ok(headers.includes("From: Hadley AI <sender@example.invalid>"), "use authenticated sender");
-assert.ok(headers.includes("To: info@gethadley.com"));
+assert.ok(headers.includes("To: info@hadleypartners.org"));
 assert.ok(headers.includes(`Reply-To: ${inquiry.email}`));
 assert.ok(!headers.split("\r\n").includes(`To: ${inquiry.email}`), "no automatic reply to submitter");
 assert.ok(headers.includes("Message-ID: <hadley-contact-test-inquiry@gethadley.com>"));
@@ -64,7 +64,7 @@ for (const failure of ["network", "timeout", "missing-id", 503]) {
         return response(failure === "missing-id" ? 200 : failure, {});
       }
       searches++;
-      assert.ok(decodeURIComponent(path).includes('in:sent to:info@gethadley.com subject:"New Hadley AI website contact" "test-inquiry"'));
+      assert.ok(decodeURIComponent(path).includes('in:sent to:info@hadleypartners.org subject:"New Hadley AI website contact" "test-inquiry"'));
       return response(200, { messages: [{ id: "recovered-message" }] });
     },
   });
