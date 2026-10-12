@@ -71,10 +71,10 @@ export async function sendContactNotification(inquiry, {
     break;
   }
   if (uncertain) {
-    // A lost response may already have sent. Read back by our unique RFC
-    // Message-ID, but never resend if search fails or has not indexed it yet.
+    // Gmail can replace our RFC Message-ID. Search the unique reference in
+    // the body instead; never resend if search fails or has not indexed it yet.
     try {
-      const query = encodeURIComponent(`in:sent rfc822msgid:${messageId}`);
+      const query = encodeURIComponent(`in:sent to:${recipient} subject:"New Hadley AI website contact" "${inquiry.id}"`);
       const result = await request(`/gmail/v1/users/me/messages?q=${query}&maxResults=1`, { method: "GET" });
       const found = result.ok && result.body.messages?.[0]?.id;
       if (typeof found === "string" && found) return { status: "accepted", messageId: found };

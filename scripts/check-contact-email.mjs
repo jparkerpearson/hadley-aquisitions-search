@@ -64,7 +64,7 @@ for (const failure of ["network", "timeout", "missing-id", 503]) {
         return response(failure === "missing-id" ? 200 : failure, {});
       }
       searches++;
-      assert.ok(decodeURIComponent(path).includes("in:sent rfc822msgid:hadley-contact-test-inquiry@gethadley.com"));
+      assert.ok(decodeURIComponent(path).includes('in:sent to:info@gethadley.com subject:"New Hadley AI website contact" "test-inquiry"'));
       return response(200, { messages: [{ id: "recovered-message" }] });
     },
   });
