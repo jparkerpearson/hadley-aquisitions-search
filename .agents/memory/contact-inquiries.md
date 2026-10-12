@@ -10,11 +10,11 @@ Send contact-form email notifications only to the designated team inbox; do not 
 
 **How to apply:** Treat the submitter's address as reply-to for the internal notification, not as a recipient of an automatic response.
 
-info@gethadley.com is a Google Group, not a standalone mailbox. The user also requested sending from that group address.
+The original team inbox is a Google Group, not a standalone mailbox. The user initially requested sending from that group address, but later chose to keep the connected sender and direct delivery to an individual inbox for now.
 
-**Why:** The user explicitly identified the recipient as a Google Group and requested that sender address.
+**Why:** The user confirmed the direct-to-individual-inbox test arrived after not seeing notifications addressed to the groups, and explicitly approved keeping that route for now.
 
-**How to apply:** Use that address as sender only after it is a verified Gmail send-as alias. Gmail suppresses the sender's own inbox copy for messages to a group they belong to, so do not assume missing Inbox labels prove group delivery failed; inspect group conversations or another member's receipt.
+**How to apply:** Preserve the approved direct-inbox route until the user requests otherwise. Do not switch back to a group or group sender automatically. For later group-delivery troubleshooting, verify any send-as alias first; Gmail suppresses the sender's own inbox copy for messages to a group they belong to, so missing Inbox labels do not prove group delivery failed.
 
 **Why:** The user requested a sales contact form, not a change to the job-application workflow. Reusing the application service would mix different submissions and delivery expectations.
 

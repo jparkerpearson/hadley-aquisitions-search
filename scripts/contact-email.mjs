@@ -1,6 +1,6 @@
 import { ReplitConnectors } from "@replit/connectors-sdk";
 
-const recipient = "info@hadleypartners.org";
+const recipient = "maloofdavid@gmail.com";
 
 function deadline(operation, milliseconds) {
   let timer;
