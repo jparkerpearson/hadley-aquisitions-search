@@ -28,3 +28,17 @@ mtime_ms = 1791662694112
 storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/d160e998-abd5-4b72-9fa7-de2ec211d608/6f9be94f-503b-4f4d-a7d7-31514868ad23"
 storage_version_token = "1791662907856516"
 content_type = "video/mp4"
+
+[[outputs]]
+id = "uswLaWcG2BJJjlBlgxdXY"
+uri = "file://generated-artifacts/hadley-video-assets.zip"
+type = "unspecified"
+title = "Hadley video assets"
+description = "MP4 and WebM background videos, organized in a media folder, plus GitHub Pages setup instructions. ZIP download: approximately 27 MB."
+logical_id = "47551f95-e37b-45c0-865d-0172943a3b57"
+content_hash = "sha256:76cf67f744493c02f20eac5ecb75da808cb7bfc16c58835e4d0f2b2d97c50889"
+size = 27510060
+mtime_ms = 1791838880371
+storage_uri = "gcs://replit-rams-assets-janeway/rams/assets/repl:2eb82fc6-d5e1-4d6b-ac68-6bf8e84d2fc9/47551f95-e37b-45c0-865d-0172943a3b57/ef89329c-05ba-42ce-8e32-8eef0266cea4"
+storage_version_token = "1791838886519724"
+content_type = "application/octet-stream"
