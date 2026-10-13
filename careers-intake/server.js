@@ -10,7 +10,9 @@ const COLLECTION = process.env.FIRESTORE_COLLECTION || "job_application_submissi
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "https://gethadley.com,https://www.gethadley.com")
   .split(",").map((o) => o.trim()).filter(Boolean);
 
-const ROLES = ["Origination Lead", "Founding Applied AI Engineer"];
+const ROLES = ["Founding Origination Lead", "Founding Applied AI Engineer"];
+// Earlier names for the same role; pages cached in visitors' browsers may still send them.
+const LEGACY_ROLES = { "Origination Lead": "Founding Origination Lead", "Head of Origination": "Founding Origination Lead" };
 const MAX_WHY_WORDS = 200;
 const MAX_BODY_BYTES = 20_000;
 
@@ -46,7 +48,7 @@ function validate(body) {
   const phone = text(body.phone, 40);
   const linkedin = normalizeLinkedIn(body.linkedin);
   const whyHire = text(body.whyHire, 3000);
-  const role = ROLES.includes(body.role) ? body.role : null;
+  const role = ROLES.includes(body.role) ? body.role : Object.hasOwn(LEGACY_ROLES, body.role) ? LEGACY_ROLES[body.role] : null;
 
   if (!fullName) errors.fullName = "Please enter your name.";
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Please enter a valid email.";
