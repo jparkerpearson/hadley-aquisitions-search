@@ -1,5 +1,5 @@
-// Public intake endpoint for careers applications from gethadley.com/careers.
-// Validates submissions and writes them to Firestore.
+// Public intake endpoints for gethadley.com: careers applications and the
+// contact form. Validates submissions and writes them to Firestore.
 import { createServer } from "node:http";
 import { randomUUID } from "node:crypto";
 import { Firestore } from "@google-cloud/firestore";
@@ -7,6 +7,8 @@ import { Firestore } from "@google-cloud/firestore";
 const PORT = Number(process.env.PORT) || 8080;
 const DATABASE_ID = process.env.FIRESTORE_DATABASE_ID || "hadley-firestore";
 const COLLECTION = process.env.FIRESTORE_COLLECTION || "job_application_submissions";
+// agency-listings polls this collection for notificationStatus == "pending" and emails the team.
+const CONTACT_COLLECTION = process.env.FIRESTORE_CONTACT_COLLECTION || "contact_inquiries";
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || "https://gethadley.com,https://www.gethadley.com")
   .split(",").map((o) => o.trim()).filter(Boolean);
 
@@ -61,6 +63,26 @@ function validate(body) {
   return { errors, submission: { role, fullName, email: email?.toLowerCase() ?? null, phone, linkedin, whyHire } };
 }
 
+function validateContact(body) {
+  const errors = {};
+  const name = text(body.name, 160);
+  const email = text(body.email, 254);
+  const interest = typeof body.interest === "string" ? body.interest.trim() : "";
+
+  // These end up in a notification email, so keep them to a single line.
+  if (!name || /[\r\n\0]/.test(name)) errors.name = "Please enter your name.";
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = "Please enter a valid work email address.";
+  if (/[\r\n\0]/.test(interest)) errors.interest = "Please keep this to a single line.";
+  else if (interest.length > 500) errors.interest = "Please keep this to 500 characters or fewer.";
+
+  return { errors, submission: { name, email: email?.toLowerCase() ?? null, interest: interest || null, notificationStatus: "pending" } };
+}
+
+const ROUTES = {
+  "/applications": { collection: COLLECTION, validate, label: "Application" },
+  "/contact": { collection: CONTACT_COLLECTION, validate: validateContact, label: "Contact inquiry" },
+};
+
 function send(res, status, payload, origin) {
   const headers = { "Content-Type": "application/json" };
   if (origin && ALLOWED_ORIGINS.includes(origin)) {
@@ -107,7 +129,8 @@ createServer(async (req, res) => {
   }
 
   if (req.method === "GET" && path === "/healthz") return send(res, 200, { ok: true }, origin);
-  if (req.method !== "POST" || path !== "/applications") return send(res, 404, { error: "Not found." }, origin);
+  const route = Object.hasOwn(ROUTES, path) ? ROUTES[path] : null;
+  if (req.method !== "POST" || !route) return send(res, 404, { error: "Not found." }, origin);
 
   let body;
   try {
@@ -121,13 +144,13 @@ createServer(async (req, res) => {
   // Honeypot: bots fill hidden fields. Pretend success, store nothing.
   if (typeof body.website === "string" && body.website.trim()) return send(res, 201, { ok: true }, origin);
 
-  const { errors, submission } = validate(body);
+  const { errors, submission } = route.validate(body);
   if (Object.keys(errors).length) return send(res, 422, { error: "Please fix the highlighted fields.", fields: errors }, origin);
 
   const requestId = randomUUID();
   const forwardedFor = req.headers["x-forwarded-for"];
   try {
-    await firestore.collection(COLLECTION).doc(requestId).set({
+    await firestore.collection(route.collection).doc(requestId).set({
       ...submission,
       submittedAt: new Date().toISOString(),
       requestId,
@@ -136,10 +159,10 @@ createServer(async (req, res) => {
       ipAddress: (typeof forwardedFor === "string" ? forwardedFor.split(",")[0].trim() : null) || req.socket.remoteAddress || null,
     });
   } catch (err) {
-    console.error(JSON.stringify({ severity: "ERROR", message: "Failed to save application", requestId, error: String(err) }));
+    console.error(JSON.stringify({ severity: "ERROR", message: `Failed to save ${route.label.toLowerCase()}`, requestId, error: String(err) }));
     return send(res, 500, { error: "Something went wrong. Please try again." }, origin);
   }
 
-  console.log(JSON.stringify({ severity: "INFO", message: "Application saved", requestId, role: submission.role }));
+  console.log(JSON.stringify({ severity: "INFO", message: `${route.label} saved`, requestId, ...(submission.role ? { role: submission.role } : {}) }));
   send(res, 201, { ok: true }, origin);
 }).listen(PORT, () => console.log(`careers-intake listening on ${PORT}`));

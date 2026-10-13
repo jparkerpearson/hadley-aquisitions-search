@@ -1,3 +1,4 @@
+const CONTACT_ENDPOINT = "https://careers-intake-883516381966.us-west1.run.app/contact";
 const contactForm = document.querySelector("#contact-form");
 
 if (contactForm) {
@@ -61,7 +62,7 @@ if (contactForm) {
     const timeoutId = window.setTimeout(() => controller.abort(), 20_000);
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch(CONTACT_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         signal: controller.signal,
@@ -69,21 +70,19 @@ if (contactForm) {
           name: payload.name,
           email: payload.email,
           interest: payload.interest,
+          website: payload.website,
         }),
       });
       const body = await response.json().catch(() => ({}));
 
       if (response.status === 201 && body.ok === true) {
         contactForm.hidden = true;
-        successMessage.textContent = body.notification === "unconfirmed"
-          ? "Your details have been saved, but we couldn't confirm the email notification. You can also reach us at info@gethadley.com."
-          : "Thanks. Your message has been received.";
         successMessage.hidden = false;
         successMessage.focus();
         return;
       }
 
-      if (response.status === 400 && body.fields) showFieldErrors(body.fields);
+      if (response.status === 422 && body.fields) showFieldErrors(body.fields);
       statusMessage.textContent = body.error || "Unable to send your message. Please try again.";
     } catch (error) {
       statusMessage.textContent = error.name === "AbortError"
