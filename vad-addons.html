@@ -1,0 +1,397 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>VAD Add-on Market Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one wide 1200px editorial column; navy hero band, then ruled sections on a 12-col grid, type as the primary visual */
+:root {
+  --navy: #112F66;
+  --navy-deep: #0B2149;
+  --ink: #0F2550;
+  --ink-2: #4A5B7A;
+  --ink-3: #7D8AA3;
+  --ground: #F8F9FB;
+  --paper: #FFFFFF;
+  --rule: #D5DBE5;
+  --rule-strong: #A9B4C7;
+  --on-navy: #FFFFFF;
+  --on-navy-2: rgba(255,255,255,.62);
+  --on-navy-rule: rgba(255,255,255,.16);
+  --accent: #6E8FC9;
+  --display: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+@media (max-width: 520px) { .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
+.label { font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.num { font-variant-numeric: tabular-nums; }
+a { color: inherit; }
+
+/* Nav */
+.top { background: var(--navy-deep); color: var(--on-navy); }
+.top .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 18px; flex-wrap: wrap; }
+.mark { font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; }
+.brand { color: var(--on-navy); text-decoration: none; transition: opacity .2s ease; }
+.brand:hover { opacity: .7; }
+.foot .brand { font-size: 15px; }
+.top nav { display: flex; gap: 28px; flex-wrap: wrap; }
+.top nav a { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; color: var(--on-navy-2); transition: color .2s ease; }
+.top nav a:hover, .top nav a:focus-visible { color: var(--on-navy); }
+a:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+
+/* Hero */
+.hero { background: var(--navy); color: var(--on-navy); position: relative; overflow: hidden; }
+.hero .wrap { position: relative; padding-block: 88px 64px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 24px; }
+.hero .label { color: var(--on-navy-2); grid-column: 1 / -1; margin-bottom: 40px; }
+.hero h1 { grid-column: 1 / span 10; margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(44px, 7.4vw, 104px); line-height: .96; letter-spacing: -.035em; text-wrap: balance; }
+.hero h1 em { font-style: normal; color: var(--on-navy-2); }
+.hero p.lede { grid-column: 1 / span 6; margin: 40px 0 0; font-size: 18px; line-height: 1.55; color: var(--on-navy-2); max-width: 58ch; }
+.field { grid-column: 1 / -1; margin-top: 64px; border-top: 1px solid var(--on-navy-rule); padding-top: 24px; }
+.field canvas { display: block; width: 100%; height: auto; max-width: 100%; }
+.field .cap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-top: 16px; font-size: 12px; color: var(--on-navy-2); }
+.field .cap b { color: var(--on-navy); font-weight: 600; }
+.key { display: inline-flex; align-items: center; gap: 8px; }
+.key i { width: 8px; height: 8px; display: inline-block; }
+
+/* Stats */
+.stats { border-bottom: 1px solid var(--rule); background: var(--paper); }
+.stats .wrap { display: grid; grid-template-columns: repeat(5, 1fr); }
+.stat { padding-block: 40px; padding-right: 24px; border-right: 1px solid var(--rule); padding-left: 24px; }
+.stat:first-child { padding-left: 0; }
+.stat:last-child { border-right: 0; }
+.stat .v { font-family: var(--display); font-weight: 600; font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -.04em; line-height: 1; color: var(--navy); }
+.stat .d { margin-top: 14px; font-size: 13px; color: var(--ink-2); line-height: 1.45; max-width: 24ch; }
+@media (max-width: 900px) { .stats .wrap { grid-template-columns: repeat(2, 1fr); } .stat { padding-left: 0; border-right: 0; border-top: 1px solid var(--rule); } .stat:nth-child(-n+2) { border-top: 0; } }
+
+/* Sections */
+section.s { padding-block: 96px 24px; }
+.s-head { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; align-items: end; padding-bottom: 32px; border-bottom: 1px solid var(--rule-strong); margin-bottom: 0; }
+.s-head .label { grid-column: 1 / span 3; align-self: start; padding-top: 14px; }
+.s-head h2 { grid-column: 4 / span 9; margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.02; letter-spacing: -.03em; color: var(--navy); text-wrap: balance; }
+.s-body { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; padding-top: 40px; }
+.s-body > .aside { grid-column: 1 / span 3; font-size: 14px; color: var(--ink-2); }
+.s-body > .main { grid-column: 4 / span 9; min-width: 0; }
+@media (max-width: 900px) {
+  .s-head, .s-body { grid-template-columns: 1fr; }
+  .s-head .label, .s-head h2, .s-body > .aside, .s-body > .main { grid-column: 1 / -1; }
+  section.s { padding-block: 72px 16px; }
+}
+
+/* Ownership matrix */
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); padding: 0 12px 14px 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.tbl td { padding: 16px 12px 16px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl td.r, .tbl th.r { text-align: right; }
+.tbl tr.inst td:first-child { font-weight: 600; color: var(--navy); }
+.tbl tr.sub td { border-bottom-color: var(--rule-strong); }
+.tbl tfoot td { font-weight: 600; color: var(--navy); border-bottom: 0; }
+.bar { height: 6px; background: var(--rule); position: relative; min-width: 80px; margin-top: 7px; }
+.bar span { position: absolute; inset: 0 auto 0 0; background: var(--navy); }
+.bar.light span { background: var(--accent); }
+.scroll { overflow-x: auto; }
+
+/* Consolidators grid */
+.group { margin-bottom: 56px; }
+.group > .label { display: block; margin-bottom: 0; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); }
+.co { padding: 28px 24px 28px 0; border-bottom: 1px solid var(--rule); min-width: 0; transition: opacity .2s ease; }
+.co + .co { padding-left: 24px; border-left: 1px solid var(--rule); }
+.grid3 .co:nth-child(3n+1) { padding-left: 0; border-left: 0; }
+.co .n { font-family: var(--display); font-weight: 600; font-size: 24px; letter-spacing: -.02em; line-height: 1.1; color: var(--navy); }
+.co .o { margin-top: 6px; font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.co .row { display: flex; align-items: baseline; gap: 10px; margin-top: 22px; }
+.co .row .big { font-family: var(--display); font-weight: 600; font-size: 40px; letter-spacing: -.04em; line-height: 1; color: var(--navy); }
+.co .row .u { font-size: 12px; color: var(--ink-2); }
+.co .b { margin-top: 14px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.grid3:hover .co { opacity: .55; }
+.grid3 .co:hover { opacity: 1; }
+@media (max-width: 900px) { .grid3 { grid-template-columns: 1fr 1fr; } .grid3 .co:nth-child(3n+1) { padding-left: 24px; border-left: 1px solid var(--rule); } .grid3 .co:nth-child(2n+1) { padding-left: 0; border-left: 0; } }
+@media (max-width: 560px) { .grid3 { grid-template-columns: 1fr; } .grid3 .co { padding-left: 0 !important; border-left: 0 !important; } }
+
+/* Timeline */
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 120px 1fr 1.1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.tl .when { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.tl .tgt { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -.015em; color: var(--navy); }
+.tl .tgt small { display: block; font-family: var(--body); font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--ink-2); margin-top: 2px; }
+.tl .buyer { font-size: 14px; color: var(--ink); }
+.tl .buyer small { display: block; color: var(--ink-3); font-size: 12px; margin-top: 2px; }
+@media (max-width: 640px) { .tl li { grid-template-columns: 1fr; gap: 4px; } }
+
+/* Independents */
+.ind td.nm { font-family: var(--display); font-weight: 600; font-size: 16px; letter-spacing: -.01em; color: var(--navy); white-space: nowrap; }
+.ind td { white-space: nowrap; }
+.ind td.own { white-space: normal; color: var(--ink-2); }
+.ind .rank { color: var(--ink-3); font-variant-numeric: tabular-nums; width: 32px; }
+
+/* Regions */
+.regions { display: grid; gap: 0; }
+.reg { display: grid; grid-template-columns: 200px 1fr 72px; gap: 24px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.reg .nm { font-weight: 500; }
+.reg .v { text-align: right; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -.02em; color: var(--navy); font-variant-numeric: tabular-nums; }
+.reg .bar { margin-top: 0; height: 8px; }
+@media (max-width: 560px) { .reg { grid-template-columns: 1fr 64px; } .reg .bar { grid-column: 1 / -1; grid-row: 2; } }
+
+/* Footer */
+.foot { margin-top: 96px; background: var(--navy-deep); color: var(--on-navy-2); font-size: 13px; }
+.foot .wrap { padding-block: 56px; display: flex; align-items: center; }
+.foot .label { color: var(--on-navy-2); grid-column: 1 / span 3; }
+.foot .txt { grid-column: 4 / span 9; display: grid; gap: 14px; max-width: 78ch; line-height: 1.6; }
+.foot .txt a { color: var(--on-navy); text-decoration-color: var(--on-navy-rule); text-underline-offset: 3px; }
+.foot .txt a:hover { text-decoration-color: var(--on-navy); }
+@media (max-width: 900px) { .foot .wrap { grid-template-columns: 1fr; } .foot .label, .foot .txt { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark brand" href="https://gethadley.com" target="_blank" rel="noopener">Hadley</a>
+    <nav aria-label="Sections">
+      <a href="#ownership">Ownership</a>
+      <a href="#consolidators">Consolidators</a>
+      <a href="#activity">Activity</a>
+      <a href="#independents">Independents</a>
+      <a href="#regions">Regions</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="label">Market Map for Rotunda Capital · Value Added Distributors Add-ons · Wisconsin, Michigan, Indiana · October 2026</div>
+    <h1>168 distributors. <em>37 with an institutional owner.</em></h1>
+    <p class="lede">Every distributor of hose, fittings, seals and couplings found in Wisconsin, Michigan and Indiana, grouped by owner. Applied, Motion and a handful of private equity platforms hold the multi-branch networks; 63 companies are still run by families, founders or employees, and most of the market is single-branch shops that build their own hose assemblies.</p>
+    <div class="field">
+      <canvas id="field" width="1152" height="120" aria-label="Each mark is one hose, fittings, seals or couplings distributor in Wisconsin, Michigan or Indiana; 37 highlighted marks are owned by a public company, a private equity sponsor or another private company."></canvas>
+      <div class="cap">
+        <span>Each mark is one distributor, ordered by owner type.</span>
+        <span style="display:flex;gap:20px;flex-wrap:wrap">
+          <span class="key"><i style="background:var(--on-navy)"></i><b>37</b>&nbsp;strategic or PE-owned</span>
+          <span class="key"><i style="background:rgba(255,255,255,.34)"></i><b>63</b>&nbsp;family, founder or employee-owned</span>
+          <span class="key"><i style="background:rgba(255,255,255,.12)"></i><b>68</b>&nbsp;franchise or unverified</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="v num">168</div><div class="d">Distributors of hose, fittings, seals or couplings across WI, MI and IN</div></div>
+    <div class="stat"><div class="v num">81%</div><div class="d">Run from a single location in the three states</div></div>
+    <div class="stat"><div class="v num">74%</div><div class="d">Build custom hose assemblies in-house</div></div>
+    <div class="stat"><div class="v num">13</div><div class="d">Large operators: 5+ locations or 100+ employees</div></div>
+    <div class="stat"><div class="v num">1979</div><div class="d">Median founding year of the independents with a known date</div></div>
+  </div>
+</div>
+
+<main>
+<section class="s" id="ownership">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">01 · Ownership</div>
+      <h2>Consolidators hold the largest networks. The long tail is still independent.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Company counts by owner type and size. Large: 5+ locations in the three states or 100+ employees. Mid: 2–4 locations or 25+ employees.</div>
+      <div class="main scroll">
+        <table class="tbl num">
+          <thead><tr><th>Owner type</th><th class="r">Large</th><th class="r">Mid</th><th class="r">Small</th><th class="r">Total</th><th style="width:28%">Share of large</th></tr></thead>
+          <tbody>
+            <tr class="inst"><td>Public strategic</td><td class="r">3</td><td class="r">1</td><td class="r">4</td><td class="r">8</td><td><div class="bar"><span style="width:23.1%"></span></div></td></tr>
+            <tr class="inst"><td>Private equity-backed</td><td class="r">5</td><td class="r">2</td><td class="r">10</td><td class="r">17</td><td><div class="bar"><span style="width:38.5%"></span></div></td></tr>
+            <tr class="inst sub"><td>Owned by another private company</td><td class="r">0</td><td class="r">2</td><td class="r">10</td><td class="r">12</td><td><div class="bar"><span style="width:0%"></span></div></td></tr>
+            <tr><td>Family-owned</td><td class="r">1</td><td class="r">7</td><td class="r">17</td><td class="r">25</td><td><div class="bar light"><span style="width:7.7%"></span></div></td></tr>
+            <tr><td>Founder / owner-operated</td><td class="r">0</td><td class="r">4</td><td class="r">16</td><td class="r">20</td><td><div class="bar light"><span style="width:0%"></span></div></td></tr>
+            <tr><td>Employee-owned (ESOP)</td><td class="r">2</td><td class="r">1</td><td class="r">6</td><td class="r">9</td><td><div class="bar light"><span style="width:15.4%"></span></div></td></tr>
+            <tr><td>Independent, family vs. founder unclear</td><td class="r">0</td><td class="r">1</td><td class="r">8</td><td class="r">9</td><td><div class="bar light"><span style="width:0%"></span></div></td></tr>
+            <tr><td>Franchise</td><td class="r">1</td><td class="r">0</td><td class="r">0</td><td class="r">1</td><td><div class="bar light"><span style="width:7.7%"></span></div></td></tr>
+            <tr><td>Unverified</td><td class="r">1</td><td class="r">9</td><td class="r">57</td><td class="r">67</td><td><div class="bar light"><span style="width:7.7%"></span></div></td></tr>
+          </tbody>
+          <tfoot><tr><td>Total</td><td class="r">13</td><td class="r">27</td><td class="r">128</td><td class="r">168</td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="consolidators">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">02 · Consolidators</div>
+      <h2>Who already owns hose and fluid power distribution here.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Figures are Google listings in Wisconsin, Michigan and Indiana under each group's brands, a proxy for branch count. Acquired businesses often keep their own names.</div>
+      <div class="main">
+        <div class="group">
+          <span class="label">Public strategics</span>
+          <div class="grid3">
+            <div class="co"><div class="n">Applied Industrial</div><div class="o">NYSE: AIT</div><div class="row"><span class="big num">31</span><span class="u">locations</span></div><div class="b">Applied branches and hose shops; HyQuip of Waukesha, acquired 2012</div></div>
+            <div class="co"><div class="n">Motion</div><div class="o">Genuine Parts · NYSE: GPC</div><div class="row"><span class="big num">21</span><span class="u">locations</span></div><div class="b">Motion branches, Mi Fluid Power Solutions, Motion Conveyance Solutions</div></div>
+            <div class="co"><div class="n">DXP Enterprises</div><div class="o">NASDAQ: DXPE</div><div class="row"><span class="big num">2</span><span class="u">locations</span></div><div class="b">Pro-Seal of Pontiac, a pump and sealing distributor, bought March 2024</div></div>
+          </div>
+        </div>
+        <div class="group">
+          <span class="label">Private equity platforms</span>
+          <div class="grid3">
+            <div class="co"><div class="n">Value Added Distributors</div><div class="o">Rotunda Capital</div><div class="row"><span class="big num">28</span><span class="u">locations</span></div><div class="b">VAD of Shawano, Transmotion, Exotic Automation and West Michigan Rubber; L.T.L. Supply</div></div>
+            <div class="co"><div class="n">American Motion Group</div><div class="o">Kanbrick · minority</div><div class="row"><span class="big num">12</span><span class="u">locations</span></div><div class="b">Depatie ParkerStores, Great Lakes Fluid Power, Great Lakes Hydraulics, West Michigan Hydraulic Hose</div></div>
+            <div class="co"><div class="n">Motion &amp; Control Enterprises</div><div class="o">Frontenac</div><div class="row"><span class="big num">11</span><span class="u">locations</span></div><div class="b">RitterTech ParkerStores across Wisconsin; Nova Hydraulics of Indianapolis</div></div>
+            <div class="co"><div class="n">SunSource</div><div class="o">Clayton, Dubilier &amp; Rice</div><div class="row"><span class="big num">5</span><span class="u">locations</span></div><div class="b">SunSource branches, Price Engineering of Hartland, K+S Services</div></div>
+            <div class="co"><div class="n">Triad Technologies</div><div class="o">Shorehill Capital</div><div class="row"><span class="big num">3</span><span class="u">locations</span></div><div class="b">ParkerStores in southern Michigan; Shorehill partner since 2019</div></div>
+            <div class="co"><div class="n">OTC Industrial Technologies</div><div class="o">Genstar Capital</div><div class="row"><span class="big num">3</span><span class="u">locations</span></div><div class="b">OTC Detroit, OTP Industrial Solutions, Midway Industrial Supply</div></div>
+          </div>
+        </div>
+        <div class="group" style="margin-bottom:0">
+          <span class="label">Franchise systems and other buyers</span>
+          <div class="grid3">
+            <div class="co"><div class="n">Pirtek</div><div class="o">Franchise system</div><div class="row"><span class="big num">14</span><span class="u">locations</span></div><div class="b">Franchised mobile hose replacement and service centers</div></div>
+            <div class="co"><div class="n">Transmission &amp; Fluid Equipment</div><div class="o">Family-owned · Fort Wayne</div><div class="row"><span class="big num">3</span><span class="u">locations</span></div><div class="b">An independent that buys: added State Supply of Grand Rapids in 2025</div></div>
+            <div class="co"><div class="n">Geib Industries</div><div class="o">Private · Bensenville, IL</div><div class="row"><span class="big num">2</span><span class="u">locations</span></div><div class="b">Hose Connections of Hammond, Indiana</div></div>
+            <div class="co"><div class="n">Galco</div><div class="o">Freeman Spogli</div><div class="row"><span class="big num">1</span><span class="u">location</span></div><div class="b">D.F. Burnham of Sterling Heights, bought October 2024</div></div>
+            <div class="co"><div class="n">Milton Industries</div><div class="o">Levine Leichtman</div><div class="row"><span class="big num">1</span><span class="u">location</span></div><div class="b">Thunder Technologies of Rochester Hills, bought May 2022</div></div>
+            <div class="co"><div class="n">Hydrotech</div><div class="o">FSC group</div><div class="row"><span class="big num">1</span><span class="u">location</span></div><div class="b">Isaacs Fluid Power, with Indiana and Michigan branches, bought May 2023</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="activity">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">03 · Activity</div>
+      <h2>Ten of the twelve announced deals came in 2022 or later.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Publicly announced acquisitions of, or investments in, distributors operating in the three states. Purchase prices were not disclosed on any of them.</div>
+      <div class="main">
+        <ol class="tl">
+          <li><span class="when">Jul 2026</span><span class="tgt">Exotic Automation &amp; Supply<small>New Hudson, MI · 20 locations</small></span><span class="buyer">Value Added Distributors<small>Merger · Rotunda Capital</small></span></li>
+          <li><span class="when">Feb 2026</span><span class="tgt">Depatie Fluid Power<small>Portage, MI · ParkerStores</small></span><span class="buyer">Kanbrick<small>Minority investment · American Motion Group</small></span></li>
+          <li><span class="when">Dec 2025</span><span class="tgt">L.T.L. Supply<small>Green Bay, WI · wire harnesses</small></span><span class="buyer">Value Added Distributors<small>First add-on under Rotunda</small></span></li>
+          <li><span class="when">Jul 2025</span><span class="tgt">State Supply Company<small>Grand Rapids, MI · founded c. 1945</small></span><span class="buyer">Transmission &amp; Fluid Equipment<small>Family-owned · Fort Wayne</small></span></li>
+          <li><span class="when">Jan 2025</span><span class="tgt">Value Added Distributors<small>Shawano, WI · founded 1995</small></span><span class="buyer">Rotunda Capital<small>Platform investment · Twin Brook financing</small></span></li>
+          <li><span class="when">Oct 2024</span><span class="tgt">D.F. Burnham &amp; Co.<small>Sterling Heights, MI</small></span><span class="buyer">Galco<small>Freeman Spogli</small></span></li>
+          <li><span class="when">Mar 2024</span><span class="tgt">Pro-Seal<small>Pontiac, MI · ~$20M sales</small></span><span class="buyer">DXP Enterprises<small>NASDAQ: DXPE</small></span></li>
+          <li><span class="when">Oct 2023</span><span class="tgt">Nova Hydraulics<small>Indianapolis, IN</small></span><span class="buyer">Motion &amp; Control Enterprises<small>Frontenac · fifth deal of 2023</small></span></li>
+          <li><span class="when">May 2023</span><span class="tgt">Isaacs Fluid Power<small>Mason, OH · Indiana and Michigan branches</small></span><span class="buyer">Hydrotech<small>FSC group</small></span></li>
+          <li><span class="when">May 2022</span><span class="tgt">Thunder Technologies<small>Rochester Hills, MI · industrial hose</small></span><span class="buyer">Milton Industries<small>Levine Leichtman</small></span></li>
+          <li><span class="when">Nov 2019</span><span class="tgt">Triad Technologies<small>Ohio and southern Michigan ParkerStores</small></span><span class="buyer">Shorehill Capital<small>Alongside the Wissman family</small></span></li>
+          <li><span class="when">Nov 2012</span><span class="tgt">HyQuip<small>Waukesha, WI · hose and tubing</small></span><span class="buyer">Applied Industrial<small>NYSE: AIT</small></span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="independents">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">04 · Independents</div>
+      <h2>The largest distributors still held by families, founders and employees.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Ranked by locations in the three states, then estimated headcount. Revenue is not public. Ownership is from web research and should be confirmed before outreach.</div>
+      <div class="main scroll">
+        <table class="tbl ind num">
+          <thead><tr><th></th><th>Company</th><th>Base</th><th class="r">Locations</th><th class="r">Founded</th><th>Ownership</th></tr></thead>
+          <tbody>
+            <tr><td class="rank">1</td><td class="nm">Zatkoff Company</td><td>Farmington Hills · Grand Rapids · Saginaw</td><td class="r">5</td><td class="r">1959</td><td class="own">Family-owned · seals</td></tr>
+            <tr><td class="rank">2</td><td class="nm">Air Hydro Power</td><td>Louisville, KY · Evansville · Jeffersonville</td><td class="r">3</td><td class="r">—</td><td class="own">Employee-owned (ESOP)</td></tr>
+            <tr><td class="rank">3</td><td class="nm">Kundinger</td><td>Sheboygan · Neenah · Green Bay</td><td class="r">3</td><td class="r">1961</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">4</td><td class="nm">Transmission &amp; Fluid Equipment</td><td>Fort Wayne · Indianapolis</td><td class="r">3</td><td class="r">1964</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">5</td><td class="nm">Hoses Unlimited</td><td>Milwaukee · Pewaukee · Racine</td><td class="r">3</td><td class="r">—</td><td class="own">Founder-led · mobile hose service</td></tr>
+            <tr><td class="rank">6</td><td class="nm">Flodraulic</td><td>Westland · Grand Rapids · Greenfield, IN</td><td class="r">3</td><td class="r">1980</td><td class="own">Founder-led</td></tr>
+            <tr><td class="rank">7</td><td class="nm">J&amp;F Distributing</td><td>Indianapolis · Columbus</td><td class="r">2</td><td class="r">1957</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">8</td><td class="nm">Kent Rubber Supply</td><td>Wyoming · Norton Shores</td><td class="r">2</td><td class="r">1946</td><td class="own">Owner-operated</td></tr>
+            <tr><td class="rank">9</td><td class="nm">RGA</td><td>Indianapolis · Fort Wayne</td><td class="r">2</td><td class="r">1994</td><td class="own">Employee-owned (ESOP)</td></tr>
+            <tr><td class="rank">10</td><td class="nm">Mid-States Equipment</td><td>Medford · Appleton</td><td class="r">2</td><td class="r">1960</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">11</td><td class="nm">Donald Engineering</td><td>Grand Rapids · Grand Haven</td><td class="r">2</td><td class="r">1963</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">12</td><td class="nm">Price Hose Center</td><td>Hartland · Appleton</td><td class="r">2</td><td class="r">1953</td><td class="own">Independent</td></tr>
+            <tr><td class="rank">13</td><td class="nm">FORCE America</td><td>Savage, MN · Brookfield, WI</td><td class="r">1</td><td class="r">1953</td><td class="own">Employee-owned (ESOP)</td></tr>
+            <tr><td class="rank">14</td><td class="nm">MFP Automation Engineering</td><td>Hudsonville</td><td class="r">1</td><td class="r">1991</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">15</td><td class="nm">Menominee Industrial Supply</td><td>Menominee</td><td class="r">1</td><td class="r">1980</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">16</td><td class="nm">IFP Automation</td><td>Fishers · Fort Wayne</td><td class="r">1</td><td class="r">1976</td><td class="own">Founder-led</td></tr>
+            <tr><td class="rank">17</td><td class="nm">Cathey Company</td><td>Lansing</td><td class="r">1</td><td class="r">1948</td><td class="own">Family-owned</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="regions">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">05 · Regions</div>
+      <h2>Southeast Michigan alone holds almost a quarter of them.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Distributors by the ZIP code of their main location, grouped into metro areas. Michigan 77, Wisconsin 49, Indiana 42.</div>
+      <div class="main">
+        <div class="regions">
+          <div class="reg"><span class="nm">Detroit &amp; SE Michigan</span><div class="bar"><span style="width:100%"></span></div><span class="v">40</span></div>
+          <div class="reg"><span class="nm">Milwaukee &amp; SE Wisconsin</span><div class="bar"><span style="width:57.5%"></span></div><span class="v">23</span></div>
+          <div class="reg"><span class="nm">West Michigan</span><div class="bar"><span style="width:52.5%"></span></div><span class="v">21</span></div>
+          <div class="reg"><span class="nm">Indianapolis &amp; Central Indiana</span><div class="bar"><span style="width:37.5%"></span></div><span class="v">15</span></div>
+          <div class="reg"><span class="nm">Fort Wayne, South Bend &amp; Elkhart</span><div class="bar"><span style="width:32.5%"></span></div><span class="v">13</span></div>
+          <div class="reg"><span class="nm">Green Bay &amp; Fox Valley</span><div class="bar"><span style="width:32.5%"></span></div><span class="v">13</span></div>
+          <div class="reg"><span class="nm">Lansing, Flint &amp; Saginaw</span><div class="bar"><span style="width:27.5%"></span></div><span class="v">11</span></div>
+          <div class="reg"><span class="nm">Central &amp; Northern Wisconsin</span><div class="bar"><span style="width:25%"></span></div><span class="v">10</span></div>
+          <div class="reg"><span class="nm">Northwest Indiana</span><div class="bar"><span style="width:20%"></span></div><span class="v">8</span></div>
+          <div class="reg"><span class="nm">Rest of the three states</span><div class="bar light"><span style="width:35%"></span></div><span class="v">14</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="mark brand" href="https://gethadley.com" target="_blank" rel="noopener">Hadley</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var cv = document.getElementById('field');
+  if (!cv || !cv.getContext) return;
+  // 37 strategic/PE/other-private owned, 63 family/founder/ESOP, 68 franchise/unverified
+  var groups = [[37, 'rgba(255,255,255,1)'], [63, 'rgba(255,255,255,.34)'], [68, 'rgba(255,255,255,.12)']];
+  function draw() {
+    var w = cv.parentElement.clientWidth;
+    var cols = w < 560 ? 21 : w < 900 ? 28 : 42;
+    var gap = w < 560 ? 4 : 6;
+    var cell = (w - gap * (cols - 1)) / cols;
+    var total = 168, rows = Math.ceil(total / cols);
+    var h = rows * cell + (rows - 1) * gap;
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    cv.style.height = h + 'px';
+    var ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    var i = 0;
+    groups.forEach(function (g) {
+      ctx.fillStyle = g[1];
+      for (var k = 0; k < g[0]; k++, i++) {
+        var c = i % cols, r = Math.floor(i / cols);
+        ctx.fillRect(c * (cell + gap), r * (cell + gap), cell, cell);
+      }
+    });
+  }
+  draw();
+  var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(draw, 120); });
+})();
+</script>
+
+</body></html>

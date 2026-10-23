@@ -82,7 +82,7 @@ try {
   let mockedStatus = 422;
   let intercepted = 0;
   let contactRequests = 0;
-  let contactReply = { status: 400, body: { error: "Check your email.", fields: { email: "Test email error" } } };
+  let contactReply = { status: 422, body: { error: "Check your email.", fields: { email: "Test email error" } } };
   let lastContactPayload;
   function send(method, params = {}) {
     return new Promise((resolve, reject) => {
@@ -101,7 +101,7 @@ try {
       exceptions.push(message.params.exceptionDetails.text);
     } else if (message.method === "Fetch.requestPaused") {
       const event = message.params;
-      if (event.request.url.includes("careers-intake-")) {
+      if (new URL(event.request.url).pathname === "/applications") {
         if (event.request.method === "POST") intercepted++;
         const preflight = event.request.method === "OPTIONS";
         const body = mockedStatus === 201 ? { ok: true } : { error: "Test validation response", fields: { email: "Test email error" } };
@@ -115,14 +115,22 @@ try {
           ],
           body: Buffer.from(preflight ? "" : JSON.stringify(body)).toString("base64"),
         });
-      } else if (new URL(event.request.url).pathname === "/api/contact") {
-        contactRequests++;
-        lastContactPayload = JSON.parse(event.request.postData);
+      } else if (["/api/contact", "/contact"].includes(new URL(event.request.url).pathname)) {
+        const preflight = event.request.method === "OPTIONS";
+        if (!preflight) {
+          contactRequests++;
+          lastContactPayload = JSON.parse(event.request.postData);
+        }
         await pause(150);
         await send("Fetch.fulfillRequest", {
-          requestId: event.requestId, responseCode: contactReply.status,
-          responseHeaders: [{ name: "Content-Type", value: "application/json" }],
-          body: Buffer.from(JSON.stringify(contactReply.body)).toString("base64"),
+          requestId: event.requestId, responseCode: preflight ? 204 : contactReply.status,
+          responseHeaders: [
+            { name: "Content-Type", value: "application/json" },
+            { name: "Access-Control-Allow-Origin", value: new URL(base).origin },
+            { name: "Access-Control-Allow-Methods", value: "POST, OPTIONS" },
+            { name: "Access-Control-Allow-Headers", value: "Content-Type" },
+          ],
+          body: Buffer.from(preflight ? "" : JSON.stringify(contactReply.body)).toString("base64"),
         });
       }
     }
@@ -343,7 +351,7 @@ try {
         assert.equal(await evaluate("document.querySelector('.contact-cta-button')"), null, "standalone contact button is removed");
         assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "#get-in-touch", "homepage Contact scrolls to the inline form");
         assert.equal(await evaluate("getComputedStyle(document.querySelector('#get-in-touch')).backgroundColor"), "rgb(11, 31, 59)", "contact continues the dark offerings background");
-        assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"),
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].filter(field=>!field.closest('.hp')).map(field=>[field.name,field.required])"),
           [["name",true],["email",true],["interest",false]], "inline form has name, work email and area of interest");
         assert.equal(await evaluate("document.querySelector('label[for=\"contact-email\"]').textContent"), "Work Email");
         assert.equal(await evaluate("document.querySelector('label[for=\"contact-interest\"]').textContent"), "Area of Interest");
@@ -356,7 +364,7 @@ try {
         await evaluate("document.getElementById('get-in-touch').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#get-in-touch");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
-        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth && [...document.querySelectorAll('#contact-form input, #contact-form textarea, #contact-submit')].every(field=>{const r=field.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})"), `${value}px inline form fits`);
+        assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth && [...document.querySelectorAll('#contact-form input, #contact-form textarea, #contact-submit')].filter(field=>!field.closest('.hp')).every(field=>{const r=field.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})"), `${value}px inline form fits`);
         assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
         assert.equal(await evaluate("document.querySelector('main > section:last-child').id"), "get-in-touch", "contact CTA finishes the page");
         await evaluate("scrollTo({top:0,behavior:'instant'})");
@@ -411,7 +419,7 @@ try {
         await navigate("/contact.html");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px contact has no overflow`);
         assert.equal(await evaluate("document.querySelector('#contact-form').hidden"), false);
-        assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].map(field=>[field.name,field.required])"), [
+        assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].filter(field=>!field.closest('.hp')).map(field=>[field.name,field.required])"), [
           ["name", true], ["email", true], ["interest", false],
         ], "contact fields and required/optional states match the request");
         assert.equal(await evaluate("document.querySelector('label[for=\"contact-email\"]').textContent"), "Work Email");
@@ -574,7 +582,7 @@ try {
 
   for (const contactRoute of ["/#get-in-touch", "/contact.html"]) {
     contactRequests = 0;
-    contactReply = { status: 400, body: { error: "Check your email.", fields: { email: "Test email error" } } };
+    contactReply = { status: 422, body: { error: "Check your email.", fields: { email: "Test email error" } } };
     await navigate(contactRoute);
     await evaluate("document.querySelector('#contact-form').requestSubmit()");
     assert.equal(contactRequests, 0, "invalid contact form is not submitted");
@@ -582,7 +590,8 @@ try {
     await evaluate("(()=>{const f=document.querySelector('#contact-form');f.elements.name.value='Test Contact';f.elements.email.value='test@example.invalid';f.elements.interest.value='Expert sourcing';f.requestSubmit()})()");
     await pause(500);
     assert.equal(contactRequests, 1);
-    assert.deepEqual(Object.keys(lastContactPayload).sort(), ["email", "interest", "name"], "only the three visible fields are submitted");
+    assert.deepEqual(Object.keys(lastContactPayload).sort(), ["email", "interest", "name", "website"], "the three visible fields and spam honeypot are submitted");
+    assert.equal(lastContactPayload.website, "", "the hidden spam honeypot is empty");
     assert.equal(lastContactPayload.interest, "Expert sourcing");
     assert.equal(await evaluate("document.activeElement.name"), "email", "server field error receives focus");
     assert.equal(await evaluate("document.querySelector('#contact-email').getAttribute('aria-invalid')"), "true");

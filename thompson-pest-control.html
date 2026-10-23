@@ -1,0 +1,394 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Texas Pest Control Market Map</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* Layout: one wide 1200px editorial column; navy hero band, then ruled sections on a 12-col grid, type as the primary visual */
+:root {
+  --navy: #112F66;
+  --navy-deep: #0B2149;
+  --ink: #0F2550;
+  --ink-2: #4A5B7A;
+  --ink-3: #7D8AA3;
+  --ground: #F8F9FB;
+  --paper: #FFFFFF;
+  --rule: #D5DBE5;
+  --rule-strong: #A9B4C7;
+  --on-navy: #FFFFFF;
+  --on-navy-2: rgba(255,255,255,.62);
+  --on-navy-rule: rgba(255,255,255,.16);
+  --accent: #6E8FC9;
+  --display: "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --body: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+body { background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(24px, env(safe-area-inset-left, 0px)); padding-right: max(24px, env(safe-area-inset-right, 0px)); }
+@media (max-width: 520px) { .wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); } }
+.label { font-family: var(--body); font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); }
+.num { font-variant-numeric: tabular-nums; }
+a { color: inherit; }
+
+/* Nav */
+.top { background: var(--navy-deep); color: var(--on-navy); }
+.top .wrap { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-block: 18px; flex-wrap: wrap; }
+.mark { font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; }
+.brand { color: var(--on-navy); text-decoration: none; transition: opacity .2s ease; }
+.brand:hover { opacity: .7; }
+.foot .brand { font-size: 15px; }
+.top nav { display: flex; gap: 28px; flex-wrap: wrap; }
+.top nav a { font-size: 11px; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; text-decoration: none; color: var(--on-navy-2); transition: color .2s ease; }
+.top nav a:hover, .top nav a:focus-visible { color: var(--on-navy); }
+a:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+
+/* Hero */
+.hero { background: var(--navy); color: var(--on-navy); position: relative; overflow: hidden; }
+.hero .wrap { position: relative; padding-block: 88px 64px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 0 24px; }
+.hero .label { color: var(--on-navy-2); grid-column: 1 / -1; margin-bottom: 40px; }
+.hero h1 { grid-column: 1 / span 10; margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(44px, 7.4vw, 104px); line-height: .96; letter-spacing: -.035em; text-wrap: balance; }
+.hero h1 em { font-style: normal; color: var(--on-navy-2); }
+.hero p.lede { grid-column: 1 / span 6; margin: 40px 0 0; font-size: 18px; line-height: 1.55; color: var(--on-navy-2); max-width: 58ch; }
+.field { grid-column: 1 / -1; margin-top: 64px; border-top: 1px solid var(--on-navy-rule); padding-top: 24px; }
+.field canvas { display: block; width: 100%; height: auto; max-width: 100%; }
+.field .cap { display: flex; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-top: 16px; font-size: 12px; color: var(--on-navy-2); }
+.field .cap b { color: var(--on-navy); font-weight: 600; }
+.key { display: inline-flex; align-items: center; gap: 8px; }
+.key i { width: 8px; height: 8px; display: inline-block; }
+
+/* Stats */
+.stats { border-bottom: 1px solid var(--rule); background: var(--paper); }
+.stats .wrap { display: grid; grid-template-columns: repeat(5, 1fr); }
+.stat { padding-block: 40px; padding-right: 24px; border-right: 1px solid var(--rule); padding-left: 24px; }
+.stat:first-child { padding-left: 0; }
+.stat:last-child { border-right: 0; }
+.stat .v { font-family: var(--display); font-weight: 600; font-size: clamp(36px, 4.4vw, 56px); letter-spacing: -.04em; line-height: 1; color: var(--navy); }
+.stat .d { margin-top: 14px; font-size: 13px; color: var(--ink-2); line-height: 1.45; max-width: 24ch; }
+@media (max-width: 900px) { .stats .wrap { grid-template-columns: repeat(2, 1fr); } .stat { padding-left: 0; border-right: 0; border-top: 1px solid var(--rule); } .stat:nth-child(-n+2) { border-top: 0; } }
+
+/* Sections */
+section.s { padding-block: 96px 24px; }
+.s-head { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; align-items: end; padding-bottom: 32px; border-bottom: 1px solid var(--rule-strong); margin-bottom: 0; }
+.s-head .label { grid-column: 1 / span 3; align-self: start; padding-top: 14px; }
+.s-head h2 { grid-column: 4 / span 9; margin: 0; font-family: var(--display); font-weight: 600; font-size: clamp(32px, 4.2vw, 56px); line-height: 1.02; letter-spacing: -.03em; color: var(--navy); text-wrap: balance; }
+.s-body { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; padding-top: 40px; }
+.s-body > .aside { grid-column: 1 / span 3; font-size: 14px; color: var(--ink-2); }
+.s-body > .main { grid-column: 4 / span 9; min-width: 0; }
+@media (max-width: 900px) {
+  .s-head, .s-body { grid-template-columns: 1fr; }
+  .s-head .label, .s-head h2, .s-body > .aside, .s-body > .main { grid-column: 1 / -1; }
+  section.s { padding-block: 72px 16px; }
+}
+
+/* Ownership matrix */
+.tbl { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tbl th { text-align: left; font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); padding: 0 12px 14px 0; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.tbl td { padding: 16px 12px 16px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+.tbl td.r, .tbl th.r { text-align: right; }
+.tbl tr.inst td:first-child { font-weight: 600; color: var(--navy); }
+.tbl tr.sub td { border-bottom-color: var(--rule-strong); }
+.tbl tfoot td { font-weight: 600; color: var(--navy); border-bottom: 0; }
+.bar { height: 6px; background: var(--rule); position: relative; min-width: 80px; margin-top: 7px; }
+.bar span { position: absolute; inset: 0 auto 0 0; background: var(--navy); }
+.bar.light span { background: var(--accent); }
+.scroll { overflow-x: auto; }
+
+/* Consolidators grid */
+.group { margin-bottom: 56px; }
+.group > .label { display: block; margin-bottom: 0; padding-bottom: 14px; border-bottom: 1px solid var(--rule); }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); }
+.co { padding: 28px 24px 28px 0; border-bottom: 1px solid var(--rule); min-width: 0; transition: opacity .2s ease; }
+.co + .co { padding-left: 24px; border-left: 1px solid var(--rule); }
+.grid3 .co:nth-child(3n+1) { padding-left: 0; border-left: 0; }
+.co .n { font-family: var(--display); font-weight: 600; font-size: 24px; letter-spacing: -.02em; line-height: 1.1; color: var(--navy); }
+.co .o { margin-top: 6px; font-size: 12px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+.co .row { display: flex; align-items: baseline; gap: 10px; margin-top: 22px; }
+.co .row .big { font-family: var(--display); font-weight: 600; font-size: 40px; letter-spacing: -.04em; line-height: 1; color: var(--navy); }
+.co .row .u { font-size: 12px; color: var(--ink-2); }
+.co .b { margin-top: 14px; font-size: 13px; color: var(--ink-2); line-height: 1.5; }
+.grid3:hover .co { opacity: .55; }
+.grid3 .co:hover { opacity: 1; }
+@media (max-width: 900px) { .grid3 { grid-template-columns: 1fr 1fr; } .grid3 .co:nth-child(3n+1) { padding-left: 24px; border-left: 1px solid var(--rule); } .grid3 .co:nth-child(2n+1) { padding-left: 0; border-left: 0; } }
+@media (max-width: 560px) { .grid3 { grid-template-columns: 1fr; } .grid3 .co { padding-left: 0 !important; border-left: 0 !important; } }
+
+/* Timeline */
+.tl { list-style: none; margin: 0; padding: 0; }
+.tl li { display: grid; grid-template-columns: 120px 1fr 1.1fr; gap: 24px; padding: 18px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+.tl .when { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.tl .tgt { font-family: var(--display); font-size: 19px; font-weight: 600; letter-spacing: -.015em; color: var(--navy); }
+.tl .tgt small { display: block; font-family: var(--body); font-size: 13px; font-weight: 400; letter-spacing: 0; color: var(--ink-2); margin-top: 2px; }
+.tl .buyer { font-size: 14px; color: var(--ink); }
+.tl .buyer small { display: block; color: var(--ink-3); font-size: 12px; margin-top: 2px; }
+@media (max-width: 640px) { .tl li { grid-template-columns: 1fr; gap: 4px; } }
+
+/* Independents */
+.ind td.nm { font-family: var(--display); font-weight: 600; font-size: 16px; letter-spacing: -.01em; color: var(--navy); white-space: nowrap; }
+.ind td { white-space: nowrap; }
+.ind td.own { white-space: normal; color: var(--ink-2); }
+.ind .rank { color: var(--ink-3); font-variant-numeric: tabular-nums; width: 32px; }
+
+/* Regions */
+.regions { display: grid; gap: 0; }
+.reg { display: grid; grid-template-columns: 200px 1fr 72px; gap: 24px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.reg .nm { font-weight: 500; }
+.reg .v { text-align: right; font-family: var(--display); font-weight: 600; font-size: 20px; letter-spacing: -.02em; color: var(--navy); font-variant-numeric: tabular-nums; }
+.reg .bar { margin-top: 0; height: 8px; }
+@media (max-width: 560px) { .reg { grid-template-columns: 1fr 64px; } .reg .bar { grid-column: 1 / -1; grid-row: 2; } }
+
+/* Footer */
+.foot { margin-top: 96px; background: var(--navy-deep); color: var(--on-navy-2); font-size: 13px; }
+.foot .wrap { padding-block: 56px; display: flex; align-items: center; }
+.foot .label { color: var(--on-navy-2); grid-column: 1 / span 3; }
+.foot .txt { grid-column: 4 / span 9; display: grid; gap: 14px; max-width: 78ch; line-height: 1.6; }
+.foot .txt a { color: var(--on-navy); text-decoration-color: var(--on-navy-rule); text-underline-offset: 3px; }
+.foot .txt a:hover { text-decoration-color: var(--on-navy); }
+@media (max-width: 900px) { .foot .wrap { grid-template-columns: 1fr; } .foot .label, .foot .txt { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark brand" href="https://gethadley.com" target="_blank" rel="noopener">Hadley</a>
+    <nav aria-label="Sections">
+      <a href="#ownership">Ownership</a>
+      <a href="#consolidators">Consolidators</a>
+      <a href="#activity">Activity</a>
+      <a href="#independents">Independents</a>
+      <a href="#regions">Regions</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="label">Market Map for Thompson Street Capital · Texas Pest Control · October 2026</div>
+    <h1>3,270 operators. <em>33 with an institutional owner.</em></h1>
+    <p class="lede">Every commercial pest licensee in Texas, grouped by owner. Rollins and Rentokil hold the most licenses, private equity platforms have only begun to arrive, and 59 of the 88 largest operators are still family or founder-owned.</p>
+    <div class="field">
+      <canvas id="field" width="1152" height="200" aria-label="Each mark is one pest-control operator licensed in Texas; 33 highlighted marks are owned by a public strategic, a family-owned national strategic or a private equity sponsor."></canvas>
+      <div class="cap">
+        <span>Each mark is one licensed operator, ordered by size.</span>
+        <span style="display:flex;gap:20px;flex-wrap:wrap">
+          <span class="key"><i style="background:var(--on-navy)"></i><b>33</b>&nbsp;strategic or PE-owned</span>
+          <span class="key"><i style="background:rgba(255,255,255,.34)"></i><b>3,030</b>&nbsp;family or founder-owned</span>
+          <span class="key"><i style="background:rgba(255,255,255,.12)"></i><b>207</b>&nbsp;franchise, other or unverified</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="wrap">
+    <div class="stat"><div class="v num">3,270</div><div class="d">Pest-control companies holding a TDA commercial license</div></div>
+    <div class="stat"><div class="v num">97%</div><div class="d">Run from a single licensed location</div></div>
+    <div class="stat"><div class="v num">88</div><div class="d">Large operators: 5+ licenses or 1,000+ Google reviews</div></div>
+    <div class="stat"><div class="v num">59</div><div class="d">Of those 88 are still family or founder-owned</div></div>
+    <div class="stat"><div class="v num">39%</div><div class="d">First licensed in 2020 or later</div></div>
+  </div>
+</div>
+
+<main>
+<section class="s" id="ownership">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">01 · Ownership</div>
+      <h2>Consolidation is concentrated at the top. The middle market is untouched.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Company counts by owner type and size. Large: 5+ licenses or 1,000+ Google reviews. Mid: 2–4 licenses or 200+ reviews.</div>
+      <div class="main scroll">
+        <table class="tbl num">
+          <thead><tr><th>Owner type</th><th class="r">Large</th><th class="r">Mid</th><th class="r">Small</th><th class="r">Total</th><th style="width:28%">Share of large</th></tr></thead>
+          <tbody>
+            <tr class="inst"><td>Public strategic</td><td class="r">8</td><td class="r">3</td><td class="r">3</td><td class="r">14</td><td><div class="bar"><span style="width:9.1%"></span></div></td></tr>
+            <tr class="inst"><td>Family-owned national strategic</td><td class="r">4</td><td class="r">0</td><td class="r">0</td><td class="r">4</td><td><div class="bar"><span style="width:4.5%"></span></div></td></tr>
+            <tr class="inst sub"><td>Private equity-backed</td><td class="r">7</td><td class="r">5</td><td class="r">3</td><td class="r">15</td><td><div class="bar"><span style="width:8%"></span></div></td></tr>
+            <tr><td>Family-owned</td><td class="r">32</td><td class="r">135</td><td class="r">495</td><td class="r">662</td><td><div class="bar light"><span style="width:36.4%"></span></div></td></tr>
+            <tr><td>Founder / owner-operated</td><td class="r">27</td><td class="r">66</td><td class="r">2,275</td><td class="r">2,368</td><td><div class="bar light"><span style="width:30.7%"></span></div></td></tr>
+            <tr><td>Franchise location</td><td class="r">1</td><td class="r">12</td><td class="r">18</td><td class="r">31</td><td><div class="bar light"><span style="width:1.1%"></span></div></td></tr>
+            <tr><td>Owned by another private company</td><td class="r">0</td><td class="r">7</td><td class="r">6</td><td class="r">13</td><td><div class="bar light"><span style="width:0%"></span></div></td></tr>
+            <tr><td>Unverified</td><td class="r">9</td><td class="r">18</td><td class="r">136</td><td class="r">163</td><td><div class="bar light"><span style="width:10.2%"></span></div></td></tr>
+          </tbody>
+          <tfoot><tr><td>Total</td><td class="r">88</td><td class="r">246</td><td class="r">2,936</td><td class="r">3,270</td><td></td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="consolidators">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">02 · Consolidators</div>
+      <h2>Who already owns Texas pest control.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Figures are Texas commercial pest licenses held under each group's legal entities, a proxy for branch count. Acquired brands often move onto the buyer's license.</div>
+      <div class="main">
+        <div class="group">
+          <span class="label">Public strategics</span>
+          <div class="grid3">
+            <div class="co"><div class="n">Rollins</div><div class="o">NYSE: ROL</div><div class="row"><span class="big num">68</span><span class="u">TX licenses</span></div><div class="b">Orkin, HomeTeam, Industrial Fumigant Co., Critter Control, Trutech, Fox Pest</div></div>
+            <div class="co"><div class="n">Rentokil Initial</div><div class="o">NYSE: RTO</div><div class="row"><span class="big num">43</span><span class="u">TX licenses</span></div><div class="b">Terminix, Presto-X, Holder's, Bug Express, Copesan, Vector Disease Control</div></div>
+            <div class="co"><div class="n">Ecolab</div><div class="o">NYSE: ECL</div><div class="row"><span class="big num">10</span><span class="u">TX licenses</span></div><div class="b">Commercial pest elimination for food service and hospitality</div></div>
+          </div>
+        </div>
+        <div class="group">
+          <span class="label">Private strategics</span>
+          <div class="grid3">
+            <div class="co"><div class="n">Massey Services</div><div class="o">Massey family · Orlando</div><div class="row"><span class="big num">15</span><span class="u">TX licenses</span></div><div class="b">Bought Insight Pest Solutions of San Antonio in April 2025</div></div>
+            <div class="co"><div class="n">Arrow Exterminators</div><div class="o">Thomas family · Atlanta</div><div class="row"><span class="big num">15</span><span class="u">TX licenses</span></div><div class="b">Branch licenses across Texas</div></div>
+            <div class="co"><div class="n">ABC Home &amp; Commercial</div><div class="o">Bowles family · Austin</div><div class="row"><span class="big num">10</span><span class="u">TX licenses</span></div><div class="b">Pest, lawn, HVAC and plumbing under one Austin-based brand</div></div>
+            <div class="co"><div class="n">Truly Nolen</div><div class="o">Nolen family · Tucson</div><div class="row"><span class="big num">7</span><span class="u">TX licenses</span></div><div class="b">Anticimex holds a minority stake; some Texas locations are franchised</div></div>
+            <div class="co"><div class="n">Termite Watkins</div><div class="o">Family-owned · Houston</div><div class="row"><span class="big num">4</span><span class="u">TX licenses</span></div><div class="b">Local acquirer; added Protex Pest Control and Coastal Fumigators</div></div>
+            <div class="co"><div class="n">Tyro Group</div><div class="o">Norway</div><div class="row"><span class="big num">2</span><span class="u">TX companies</span></div><div class="b">EnviroSMART (Houston, 2025) and Dowell (2026), its first U.S. deals</div></div>
+          </div>
+        </div>
+        <div class="group" style="margin-bottom:0">
+          <span class="label">Private equity platforms</span>
+          <div class="grid3">
+            <div class="co"><div class="n">Anticimex</div><div class="o">EQT</div><div class="row"><span class="big num">17</span><span class="u">TX licenses</span></div><div class="b">Metro Guard, BugCo, SafeHaven, Abby's, McGrath, Gillen, Lake Conroe</div></div>
+            <div class="co"><div class="n">PestCo Holdings</div><div class="o">Thompson Street Capital</div><div class="row"><span class="big num">13</span><span class="u">TX licenses</span></div><div class="b">Ecoteam, Envirotrol, Romney, Bio-Tech, Innovative, Live Oak, Southwest Exterminating</div></div>
+            <div class="co"><div class="n">Barefoot</div><div class="o">Incline Equity</div><div class="row"><span class="big num">6</span><span class="u">TX licenses</span></div><div class="b">Dallas-based; added Termio, Evolve and All Seasons in 2024</div></div>
+            <div class="co"><div class="n">Aptive</div><div class="o">Goldman Sachs AM</div><div class="row"><span class="big num">6</span><span class="u">TX licenses</span></div><div class="b">Door-to-door residential</div></div>
+            <div class="co"><div class="n">Hawx</div><div class="o">PE-backed</div><div class="row"><span class="big num">3</span><span class="u">TX licenses</span></div><div class="b">Door-to-door residential</div></div>
+            <div class="co"><div class="n">Greenix</div><div class="o">Gridiron Capital</div><div class="row"><span class="big num">2</span><span class="u">TX licenses</span></div><div class="b">Acquired from Riata Capital in July 2025</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="activity">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">03 · Activity</div>
+      <h2>Announced Texas deals have accelerated since 2024.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Publicly announced acquisitions of Texas-based operators. Terms were not disclosed on any of them.</div>
+      <div class="main">
+        <ol class="tl">
+          <li><span class="when">Aug 2026</span><span class="tgt">Dowell Pest Control<small>Calhoun County</small></span><span class="buyer">Tyro Group<small>Third U.S. acquisition</small></span></li>
+          <li><span class="when">May 2026</span><span class="tgt">McGrath Pest Control<small>Now licensed under Metro Guard</small></span><span class="buyer">BugCo / Anticimex<small>Sixth Texas add-on · EQT</small></span></li>
+          <li><span class="when">Feb 2026</span><span class="tgt">Protex Pest Control<small>Spring · founded 1978</small></span><span class="buyer">Termite Watkins Services<small>Family-owned · Houston</small></span></li>
+          <li><span class="when">Jan 2026</span><span class="tgt">Bio-Tech Pest Control<small>Spring</small></span><span class="buyer">PestCo Holdings<small>Thompson Street Capital</small></span></li>
+          <li><span class="when">Dec 2025</span><span class="tgt">Southwest Exterminating<small>Houston · founded 1969</small></span><span class="buyer">PestCo Holdings<small>Thompson Street Capital</small></span></li>
+          <li><span class="when">Nov 2025</span><span class="tgt">EnviroSMART<small>Houston · multifamily</small></span><span class="buyer">Tyro Group<small>First deal outside Europe</small></span></li>
+          <li><span class="when">Jun 2025</span><span class="tgt">SafeHaven, Abby's, Metro Guard<small>Garland, Cleburne, Hurst</small></span><span class="buyer">Anticimex<small>Texas market entry · EQT</small></span></li>
+          <li><span class="when">Apr 2025</span><span class="tgt">Insight Pest Solutions<small>San Antonio · 16,000+ customers</small></span><span class="buyer">Massey Services<small>Family-owned strategic</small></span></li>
+          <li><span class="when">Dec 2024</span><span class="tgt">All Seasons Pest Control<small>Euless</small></span><span class="buyer">Barefoot<small>Incline Equity</small></span></li>
+          <li><span class="when">Jul 2024</span><span class="tgt">Evolve Pest Control<small>Dallas</small></span><span class="buyer">Barefoot<small>Incline Equity</small></span></li>
+          <li><span class="when">Jan 2024</span><span class="tgt">Termio<small>Dallas and Houston branches</small></span><span class="buyer">Barefoot<small>Incline Equity</small></span></li>
+          <li><span class="when">Oct 2023</span><span class="tgt">Live Oak Pest Control, PestBan+<small>San Antonio, Dallas</small></span><span class="buyer">PestCo Holdings<small>Thompson Street Capital</small></span></li>
+          <li><span class="when">2021</span><span class="tgt">Ecoteam, Envirotrol<small>Houston, DFW, Austin, San Antonio</small></span><span class="buyer">PestCo Holdings<small>Platform entry into Texas</small></span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="independents">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">04 · Independents</div>
+      <h2>The largest operators still held by families and founders.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Ranked by Google review volume, the best available size proxy. Revenue is not public. Ownership is from web research and should be confirmed before outreach.</div>
+      <div class="main scroll">
+        <table class="tbl ind num">
+          <thead><tr><th></th><th>Company</th><th>Base</th><th class="r">TX licenses</th><th class="r">Reviews</th><th>Ownership</th></tr></thead>
+          <tbody>
+            <tr><td class="rank">1</td><td class="nm">Kindred Pest Control</td><td>Houston</td><td class="r">1</td><td class="r">11,390</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">2</td><td class="nm">Berrett Home Services</td><td>Garland</td><td class="r">3</td><td class="r">8,960</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">3</td><td class="nm">Urbanex Pest Control</td><td>Farmers Branch</td><td class="r">3</td><td class="r">7,021</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">4</td><td class="nm">EcoShield Pest Solutions</td><td>Plano · Houston · Austin</td><td class="r">6</td><td class="r">6,416</td><td class="own">Founder-led, multi-state</td></tr>
+            <tr><td class="rank">5</td><td class="nm">EnviroGuard Pest Control</td><td>Lubbock · Amarillo · Arlington</td><td class="r">6</td><td class="r">5,986</td><td class="own">Local owner-partners</td></tr>
+            <tr><td class="rank">6</td><td class="nm">All-Safe Pest &amp; Termite</td><td>Plano</td><td class="r">4</td><td class="r">5,676</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">7</td><td class="nm">White Knight Pest Control</td><td>Temple</td><td class="r">9</td><td class="r">3,860</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">8</td><td class="nm">Moxie Pest Control</td><td>Farmers Branch · Austin · Houston</td><td class="r">6</td><td class="r">3,353</td><td class="own">Founder-led</td></tr>
+            <tr><td class="rank">9</td><td class="nm">Bill Clark Pest Control</td><td>Beaumont</td><td class="r">2</td><td class="r">3,209</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">10</td><td class="nm">Safe Pro Pest Control</td><td>Frisco</td><td class="r">1</td><td class="r">2,922</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">11</td><td class="nm">Alamo Termite &amp; Pest</td><td>Fort Worth</td><td class="r">1</td><td class="r">2,467</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">12</td><td class="nm">BRD Pest Solutions</td><td>Selma</td><td class="r">4</td><td class="r">2,301</td><td class="own">Founder-led</td></tr>
+            <tr><td class="rank">13</td><td class="nm">Reliant Pest Management</td><td>Tomball · Austin</td><td class="r">3</td><td class="r">2,099</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">14</td><td class="nm">Adams Exterminating</td><td>Denton</td><td class="r">1</td><td class="r">2,078</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">15</td><td class="nm">Killum Pest Control</td><td>Pearland</td><td class="r">1</td><td class="r">1,890</td><td class="own">Family-owned since 1973</td></tr>
+            <tr><td class="rank">16</td><td class="nm">Sureguard Lawn &amp; Pest</td><td>Dallas</td><td class="r">6</td><td class="r">1,866</td><td class="own">Family-owned</td></tr>
+            <tr><td class="rank">17</td><td class="nm">Brooks Pest Solutions</td><td>San Antonio</td><td class="r">6</td><td class="r">1,778</td><td class="own">Family-owned</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="s" id="regions">
+  <div class="wrap">
+    <div class="s-head">
+      <div class="label">05 · Regions</div>
+      <h2>Two metros hold almost half the operators.</h2>
+    </div>
+    <div class="s-body">
+      <div class="aside">Pest-control companies by the county of their first Texas license, grouped into metro areas.</div>
+      <div class="main">
+        <div class="regions">
+          <div class="reg"><span class="nm">Dallas–Fort Worth</span><div class="bar"><span style="width:75.1%"></span></div><span class="v">767</span></div>
+          <div class="reg"><span class="nm">Houston</span><div class="bar"><span style="width:68.5%"></span></div><span class="v">699</span></div>
+          <div class="reg"><span class="nm">San Antonio</span><div class="bar"><span style="width:32.6%"></span></div><span class="v">333</span></div>
+          <div class="reg"><span class="nm">Austin</span><div class="bar"><span style="width:18.4%"></span></div><span class="v">188</span></div>
+          <div class="reg"><span class="nm">Rio Grande Valley</span><div class="bar"><span style="width:16%"></span></div><span class="v">163</span></div>
+          <div class="reg"><span class="nm">El Paso</span><div class="bar"><span style="width:9.7%"></span></div><span class="v">99</span></div>
+          <div class="reg"><span class="nm">Rest of Texas</span><div class="bar light"><span style="width:100%"></span></div><span class="v">1,021</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="mark brand" href="https://gethadley.com" target="_blank" rel="noopener">Hadley</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var cv = document.getElementById('field');
+  if (!cv || !cv.getContext) return;
+  // 33 institutional, 3,030 family/founder (incl. unclear), 207 franchise/other/unverified: institutional first, then independents, then the rest
+  var groups = [[33, 'rgba(255,255,255,1)'], [3030, 'rgba(255,255,255,.34)'], [207, 'rgba(255,255,255,.12)']];
+  function draw() {
+    var w = cv.parentElement.clientWidth;
+    var cols = w < 560 ? 82 : w < 900 ? 136 : 182;
+    var gap = w < 560 ? 1.5 : 2;
+    var cell = (w - gap * (cols - 1)) / cols;
+    var total = 3270, rows = Math.ceil(total / cols);
+    var h = rows * cell + (rows - 1) * gap;
+    var dpr = window.devicePixelRatio || 1;
+    cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
+    cv.style.height = h + 'px';
+    var ctx = cv.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, w, h);
+    var i = 0;
+    groups.forEach(function (g) {
+      ctx.fillStyle = g[1];
+      for (var k = 0; k < g[0]; k++, i++) {
+        var c = i % cols, r = Math.floor(i / cols);
+        ctx.fillRect(c * (cell + gap), r * (cell + gap), cell, cell);
+      }
+    });
+  }
+  draw();
+  var t; window.addEventListener('resize', function () { clearTimeout(t); t = setTimeout(draw, 120); });
+})();
+</script>
+
+</body></html>
