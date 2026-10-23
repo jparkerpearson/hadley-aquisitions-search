@@ -150,6 +150,11 @@ body.home-page > nav.home-nav.is-scrolled .nav-cta:hover { color:var(--slate); }
 }
 .identity-mark--featured { padding-block:16px; }
 .identity-mark--wide { padding-inline:var(--logo-padding-inline,6px); }
+@media (min-width:801px) {
+  .identity-grid { grid-template-columns:repeat(8,minmax(0,1fr)); }
+  .identity-mark { grid-column:span 2; }
+  .identity-mark:nth-child(5) { grid-column:2 / span 2; }
+}
 .stats-section { padding:70px clamp(24px,8vw,128px) 20px; background:var(--ivory); }
 .stats-list {
   max-width:1300px; margin:0 auto; padding:0; list-style:none;
