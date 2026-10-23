@@ -235,8 +235,8 @@ try {
         assert.equal(await evaluate("getComputedStyle(document.documentElement).scrollSnapType"), "none", "ordinary scrolling is not snapped");
         assert.equal(await evaluate("getComputedStyle(document.querySelector('.identity-section')).animationName"), "none", "large proof section is not animated as a whole");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.identity-grid img')].map(image=>image.alt)"),
-          ["J.P. Morgan", "Blackstone", "Flybridge", "RBC", "Citadel", "Goldman Sachs", "Morgan Stanley", "Galaxy Service Partners"],
-          "only the eight requested logos appear, in order");
+          ["J.P. Morgan", "Blackstone", "Flybridge", "RBC", "Citadel", "Goldman Sachs", "Morgan Stanley"],
+          "only the seven requested logos appear, in order");
         assert.equal(await evaluate("document.querySelector('.identity-grid img[alt=\"Y Combinator\"]')"), null, "Y Combinator logo removed");
         assert.ok(await evaluate("[...document.querySelectorAll('.identity-grid img')].every(i=>i.complete && i.naturalWidth>0 && i.alt.trim())"), "identity logos load with accessible names");
         assert.ok(await evaluate("[...document.querySelectorAll('.identity-mark')].every(mark=>getComputedStyle(mark).backgroundColor==='rgba(0, 0, 0, 0)')"), "logos have no colored background cards");
