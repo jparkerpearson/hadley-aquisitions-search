@@ -199,6 +199,12 @@ try {
       assert.equal(await evaluate("getComputedStyle(document.body).fontFamily.includes('Helvetica')"), true);
       assert.equal(await evaluate("getComputedStyle(document.body).backgroundColor"), "rgb(250, 251, 253)");
       if (path === "/") {
+        assert.equal(await evaluate("document.querySelector('.hero-lookup-button').href"), "https://lookup.hadleypartners.org/");
+        assert.equal(await evaluate("document.querySelector('.hero-lookup-button').childNodes[0].textContent.trim()"), "Try contact lookup");
+        const lookupLayout = await evaluate("(()=>{const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}};return {button:rect('.hero-lookup-button'),hero:rect('.hero'),heading:rect('.hero h1'),width:innerWidth};})()");
+        const { button: lookupButton, hero: lookupHero, heading: lookupHeading } = lookupLayout;
+        assert.ok(lookupButton.left>=lookupHero.left && lookupButton.right<=lookupHero.right && lookupButton.top>lookupHeading.bottom && lookupButton.bottom<lookupHero.bottom && Math.abs((lookupButton.left+lookupButton.right)/2-(lookupHero.left+lookupHero.right)/2)<2,
+          `lookup button is centered near the video bottom, below the headline: ${JSON.stringify(lookupLayout)}`);
         const navAppearance = "()=>{const nav=document.querySelector('.home-nav');const styles=['color','backgroundColor','fontSize','fontWeight','letterSpacing','textTransform','paddingLeft','paddingRight'];const read=(selector)=>{const computed=getComputedStyle(nav.querySelector(selector));return Object.fromEntries(styles.map(key=>[key,computed[key]]))};return {careers:read('.nav-link'),contact:read('.nav-cta')}}";
         await evaluate("scrollTo({top:0,behavior:'instant'})");
         await pause(250);

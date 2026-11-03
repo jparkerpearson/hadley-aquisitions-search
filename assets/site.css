@@ -89,7 +89,7 @@ body.home-page > nav.home-nav.is-scrolled .nav-link:hover,
 body.home-page > nav.home-nav.is-scrolled .nav-cta:hover { color:var(--slate); }
 
 .hero {
-  min-height:100vh; min-height:100dvh; padding:132px clamp(24px,8vw,128px) 64px;
+  min-height:100vh; min-height:100dvh; padding:132px clamp(24px,8vw,128px) 136px;
   position:relative; display:flex; align-items:center; background:var(--midnight) url("mountain-poster.webp") center 48% / cover no-repeat; overflow:hidden;
 }
 .hero::before {
@@ -103,6 +103,17 @@ body.home-page > nav.home-nav.is-scrolled .nav-cta:hover { color:var(--slate); }
 .hero h1 {
   margin:0; max-width:1000px; color:var(--ivory); font-size:clamp(42px,6.2vw,84px);
   font-weight:300; line-height:1.04; letter-spacing:-.045em;
+}
+.hero-lookup-button {
+  position:absolute; z-index:2; left:50%; bottom:40px; transform:translateX(-50%);
+  display:inline-flex; align-items:center; justify-content:center; gap:22px;
+  min-height:52px; padding:12px 24px; border:1px solid rgba(250,251,253,.55); border-radius:4px;
+  background:rgba(11,31,59,.65); color:var(--ivory); text-decoration:none;
+  font-size:14px; font-weight:500; white-space:nowrap;
+  transition:background-color .2s,color .2s,border-color .2s;
+}
+.hero-lookup-button:hover,.hero-lookup-button:focus-visible {
+  background:var(--ivory); color:var(--navy); border-color:var(--ivory);
 }
 .hero-video-toggle {
   position:absolute; z-index:3; right:clamp(20px,4vw,56px); bottom:22px;
@@ -349,7 +360,7 @@ form[hidden] { display:none !important; }
   .logo img { width:131px; }
   body.home-page > nav.home-nav .logo img { width:131px; }
   .inner-page > nav.site-nav .logo img { width:131px; }
-  .hero { padding-top:126px; padding-bottom:58px; }
+  .hero { padding-top:126px; padding-bottom:128px; }
   .identity-section { padding:58px 24px 62px; }
   .identity-grid { grid-template-columns:repeat(3,minmax(0,1fr)); column-gap:10px; }
   .identity-mark { min-height:120px; padding:20px 12px; }
@@ -371,7 +382,7 @@ form[hidden] { display:none !important; }
   .inner-page > nav.site-nav .logo img { width:115px; }
   .nav-right { gap:14px; }
   .nav-link,.nav-cta { font-size:9px; letter-spacing:.08em; }
-  .hero { padding:112px 22px 48px; }
+  .hero { padding:112px 22px 128px; }
   .hero h1 { font-size:clamp(42px,11vw,60px); }
   .identity-section { padding:48px 18px 52px; }
   .identity-title { font-size:32px; }
