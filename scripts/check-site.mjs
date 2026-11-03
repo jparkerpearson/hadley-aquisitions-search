@@ -278,13 +278,15 @@ try {
         assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
         assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "What we do");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
-          "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
-        ], "all five offerings appear in the requested order");
+          "Contact info lookup", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
+        ], "all six offerings appear in the requested order");
         await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#product-offerings");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings reveal on scroll");
-        assert.equal(await evaluate("document.querySelectorAll('.offering-page p, .offering-page details, .offering-page a, .offering-page button, .product-card-icon').length"), 0, "covers have no descriptions, Learn more buttons or generic product icons");
-        assert.equal(await evaluate("document.querySelectorAll('.offering-page').length"), 5);
+        assert.equal(await evaluate("document.querySelectorAll('.offering-page p, .offering-page details, .offering-page a:not(.product-card-link), .offering-page button, .product-card-icon').length"), 0, "covers have no descriptions, Learn more buttons or generic product icons");
+        assert.equal(await evaluate("document.querySelectorAll('.offering-page').length"), 6);
+        assert.equal(await evaluate("document.querySelector('.offering-page:first-child .product-card-link').href"), "https://lookup.hadleypartners.org/");
+        assert.ok(await evaluate("(()=>{const card=document.querySelector('.offering-page:first-child'),link=card.querySelector('.product-card-link'),r=card.getBoundingClientRect();return document.elementFromPoint(r.left+r.width/2,r.top+r.height/4)?.closest('a')===link;})()"), "lookup card artwork and empty space activate its link, not just its title");
         assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=>card.children.length===2 && card.querySelector('[aria-hidden=\"true\"].offering-art') && card.querySelector('h3'))"), "covers contain only decorative artwork and offering names");
         await waitForOffering(0);
         assert.equal(await evaluate("document.querySelector('.offering-previous').disabled"), true);
@@ -299,10 +301,10 @@ try {
         await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
         await send("Input.dispatchKeyEvent", { type:"keyDown", key:"End", code:"End" });
         await send("Input.dispatchKeyEvent", { type:"keyUp", key:"End", code:"End" });
-        await waitForOffering(4);
+        await waitForOffering(5);
         assert.equal(await evaluate("document.querySelector('.offering-next').disabled"), true);
         await evaluate("document.querySelector('.offering-previous').click()");
-        await waitForOffering(3);
+        await waitForOffering(4);
         await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
         await send("Input.dispatchKeyEvent", { type:"keyDown", key:"Home", code:"Home" });
         await send("Input.dispatchKeyEvent", { type:"keyUp", key:"Home", code:"Home" });
@@ -655,7 +657,7 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
-  assert.equal(await evaluate("document.querySelectorAll('.offerings-rail > li').length"), 5, "all offerings remain available without JavaScript");
+  assert.equal(await evaluate("document.querySelectorAll('.offerings-rail > li').length"), 6, "all offerings remain available without JavaScript");
   assert.equal(await evaluate("document.querySelector('.offerings-controls').hidden"), true, "inactive carousel buttons are hidden without JavaScript");
   assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(page=>getComputedStyle(page).opacity==='1')"), "all covers are readable without JavaScript");
   assert.equal(await evaluate("document.querySelectorAll('.who-we-work-with-list > li').length"), 4, "all customer groups remain available without JavaScript");
