@@ -538,7 +538,7 @@ try {
   await pause(300);
   assert.equal(await evaluate("document.querySelector('.hero-video').paused"), false, "visible video resumes");
   await evaluate("document.querySelector('[data-test-spacer]').remove()");
-  assert.equal(await evaluate("document.querySelector('h1').textContent"), "The next generation of buyside M&A advisory is here");
+  assert.equal(await evaluate("document.querySelector('h1').textContent"), "The next generation of deal origination is here");
   assert.equal(await evaluate("document.querySelector('.hero-positioning')"), null);
   assert.equal(await evaluate("document.querySelector('audio, .audio-section, #voicemail-heading')"), null, "voicemail listening section was removed");
   assert.equal(await evaluate("document.body.textContent.includes('Voicemail sample coming soon.')"), false, "no voicemail placeholder remains");
