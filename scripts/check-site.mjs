@@ -375,7 +375,11 @@ try {
         assert.equal(await evaluate("getComputedStyle(document.getElementById('get-in-touch')).opacity"), "1", "contact CTA is visible on scroll");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth && [...document.querySelectorAll('#contact-form input, #contact-form textarea, #contact-submit')].filter(field=>!field.closest('.hp')).every(field=>{const r=field.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})"), `${value}px inline form fits`);
         assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
-        assert.equal(await evaluate("document.querySelector('main > section:last-child').id"), "get-in-touch", "contact CTA finishes the page");
+        assert.equal(await evaluate("document.querySelector('main > section:last-of-type').id"), "get-in-touch", "contact remains the final content section");
+        assert.equal(await evaluate("document.getElementById('get-in-touch').nextElementSibling.id"), "lookup-bottom", "lookup button follows Get in touch");
+        assert.equal(await evaluate("document.querySelector('.lookup-bottom-button .hero-lookup-label').textContent"), "Find any business owner's cell phone number");
+        assert.equal(await evaluate("document.querySelector('.lookup-bottom-button').href"), "https://lookup.hadleypartners.org/");
+        assert.ok(await evaluate("(()=>{const button=document.querySelector('.lookup-bottom-button').getBoundingClientRect(),contact=document.getElementById('get-in-touch').getBoundingClientRect(),container=document.getElementById('lookup-bottom').getBoundingClientRect();return button.left>=0 && button.right<=innerWidth && button.top>=contact.bottom && Math.abs((button.left+button.right-container.left-container.right)/2)<2;})()"), "bottom lookup button fits and is centered below contact");
         await evaluate("scrollTo({top:0,behavior:'instant'})");
         await pause(250);
         assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "header restores on scrolling up");
