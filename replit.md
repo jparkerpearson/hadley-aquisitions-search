@@ -1,4 +1,4 @@
-# Hadley AI website
+# Hadley website
 
 ## Run and edit
 - Click **Run** to start the `Website preview` workflow.

@@ -51,7 +51,7 @@ export function Current() {
       ref={bookRef}
     >
       <h2 id="product-offerings-title">Product offerings</h2>
-      <ol className="product-book-pages" aria-label="Hadley AI product offerings">
+      <ol className="product-book-pages" aria-label="Hadley product offerings">
         {offerings.map((offering, index) => (
           <li className="product-book-page" key={offering}>
             <article className="product-book-sheet">

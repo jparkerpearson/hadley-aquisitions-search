@@ -3,9 +3,15 @@ name: Hadley positioning
 description: User-defined business positioning and brand direction for the website.
 ---
 
-Hadley AI's website hero headline is "The next generation of buyside M&A advisory is here", without a separate "Hadley AI" heading or audience subtitle. The user's "Product offerings" are buyside advisory, market mapping, expert sourcing, agentic sales, and sourcing software, in that order.
+The user wants the brand called "Hadley", not "Hadley AI", across the app.
 
-**Why:** The user explicitly chose this hero sentence and requested a Product offerings section with these five names. They subsequently asked to remove the descriptions and Learn more controls, then suggested a dark blue section with lighter blue cards using investment-site references.
+**Why:** The user explicitly asked to switch the name across the app.
+
+**How to apply:** Use Hadley in visible branding, logos, metadata, accessible labels, and notification copy. Do not restore the AI suffix from older supplied brand assets.
+
+The user's offerings are buyside advisory, market mapping, expert sourcing, agentic sales, and sourcing software, in that order.
+
+**Why:** The user requested an offerings section with these five names. They subsequently asked to remove the descriptions and Learn more controls, then suggested a dark blue section with lighter blue cards using investment-site references.
 
 **How to apply:** Keep future website copy aligned with these five offerings unless the user changes the business direction. Use the approved advisory-first direction with offering names, without generic icons, descriptions or Learn more controls, on a dark blue section with lighter blue cards. Keep Hadley's blue branding rather than adopting the earlier reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a Hadley AI logo and flyer as brand/content sources.
 

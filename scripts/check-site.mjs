@@ -53,7 +53,8 @@ try {
   const original = execFileSync("git", ["show", "HEAD:careers.html"], { encoding: "utf8" });
   for (const route of ["/", "/careers.html", "/contact.html"]) {
     const html = await (await fetch(base + route)).text();
-    assert.doesNotMatch(html, /<footer\b|footer-copy|© 2026 Hadley AI/, `${route} has no copyright footer`);
+    assert.doesNotMatch(html, /<footer\b|footer-copy|© 2026 Hadley/, `${route} has no copyright footer`);
+    assert.doesNotMatch(html, /Hadley AI/i, `${route} uses the Hadley brand name`);
     const nav = html.match(/<nav\b[\s\S]*?<\/nav>/)?.[0] ?? "";
     assert.match(nav, /class="logo"/, `${route} keeps the header logo`);
     if (route === "/careers.html") {

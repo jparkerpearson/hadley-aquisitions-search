@@ -38,10 +38,10 @@ export async function sendContactNotification(inquiry, {
   const text = `New website contact\n\nName: ${inquiry.name}\nWork Email: ${inquiry.email}\nArea of Interest: ${inquiry.interest || "Not provided"}\n\nSubmitted: ${inquiry.createdAt}\nReference: ${inquiry.id}`;
   const encodedText = Buffer.from(text, "utf8").toString("base64").match(/.{1,76}/g).join("\r\n");
   const mime = [
-    `From: Hadley AI <${profile.body.emailAddress}>`,
+    `From: Hadley <${profile.body.emailAddress}>`,
     `To: ${recipient}`,
     `Reply-To: ${inquiry.email}`,
-    "Subject: New Hadley AI website contact",
+    "Subject: New Hadley website contact",
     `Message-ID: <${messageId}>`,
     "MIME-Version: 1.0",
     "Content-Type: text/plain; charset=UTF-8",
@@ -74,7 +74,7 @@ export async function sendContactNotification(inquiry, {
     // Gmail can replace our RFC Message-ID. Search the unique reference in
     // the body instead; never resend if search fails or has not indexed it yet.
     try {
-      const query = encodeURIComponent(`in:sent to:${recipient} subject:"New Hadley AI website contact" "${inquiry.id}"`);
+      const query = encodeURIComponent(`in:sent to:${recipient} subject:"New Hadley website contact" "${inquiry.id}"`);
       const result = await request(`/gmail/v1/users/me/messages?q=${query}&maxResults=1`, { method: "GET" });
       const found = result.ok && result.body.messages?.[0]?.id;
       if (typeof found === "string" && found) return { status: "accepted", messageId: found };
