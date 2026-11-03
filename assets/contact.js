@@ -37,6 +37,19 @@ if (contactForm) {
     fieldFor(name)?.addEventListener("input", () => clearFieldError(name));
   });
 
+  document.querySelectorAll("a[data-contact-interest]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || submitting) return;
+      const interest = fieldFor("interest");
+      if (!interest) return;
+      interest.value = link.dataset.contactInterest;
+      interest.dispatchEvent(new Event("input", { bubbles: true }));
+      contactForm.hidden = false;
+      successMessage.hidden = true;
+      statusMessage.textContent = "";
+    });
+  });
+
   contactForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (submitting) return;

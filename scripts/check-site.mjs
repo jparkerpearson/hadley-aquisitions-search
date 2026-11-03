@@ -278,7 +278,7 @@ try {
         assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
         assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "What we do");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
-          "Contact info lookup", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
+          "Contact info lookup", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Software for sourcing teams",
         ], "all six offerings appear in the requested order");
         await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#product-offerings");
@@ -358,6 +358,10 @@ try {
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
         assert.equal(await evaluate("document.querySelector('#get-in-touch h2').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button')"), null, "standalone contact button is removed");
+        const selectedServices = await evaluate("(()=>{const form=document.getElementById('contact-form');form.elements.name.value='Draft Contact';form.elements.email.value='draft@example.invalid';const selections=[...document.querySelectorAll('[data-contact-interest]')].map(link=>{link.click();return {interest:form.elements.interest.value,hash:location.hash,name:form.elements.name.value,email:form.elements.email.value,visible:!form.hidden}});form.reset();history.replaceState(history.state,'',location.pathname+location.search);return selections;})()");
+        assert.deepEqual(selectedServices, ["Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Software for sourcing teams"].map(interest => ({
+          interest, hash:"#get-in-touch", name:"Draft Contact", email:"draft@example.invalid", visible:true,
+        })), "all five service cards open contact and prefill interest without changing name or email");
         assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "#get-in-touch", "homepage Contact scrolls to the inline form");
         assert.equal(await evaluate("getComputedStyle(document.querySelector('#get-in-touch')).backgroundColor"), "rgb(11, 31, 59)", "contact continues the dark offerings background");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('#contact-form input, #contact-form textarea')].filter(field=>!field.closest('.hp')).map(field=>[field.name,field.required])"),
