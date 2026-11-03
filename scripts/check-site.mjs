@@ -200,7 +200,7 @@ try {
       assert.equal(await evaluate("getComputedStyle(document.body).backgroundColor"), "rgb(250, 251, 253)");
       if (path === "/") {
         assert.equal(await evaluate("document.querySelector('.hero-lookup-button').href"), "https://lookup.hadleypartners.org/");
-        assert.equal(await evaluate("document.querySelector('.hero-lookup-button').childNodes[0].textContent.trim()"), "Try contact lookup");
+        assert.equal(await evaluate("document.querySelector('.hero-lookup-label').textContent"), "Try our free business owner contact lookup");
         const lookupLayout = await evaluate("(()=>{const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}};return {button:rect('.hero-lookup-button'),hero:rect('.hero'),heading:rect('.hero h1'),width:innerWidth};})()");
         const { button: lookupButton, hero: lookupHero, heading: lookupHeading } = lookupLayout;
         assert.ok(lookupButton.left>=lookupHero.left && lookupButton.right<=lookupHero.right && lookupButton.top>lookupHeading.bottom && lookupButton.bottom<lookupHero.bottom && Math.abs((lookupButton.left+lookupButton.right)/2-(lookupHero.left+lookupHero.right)/2)<2,

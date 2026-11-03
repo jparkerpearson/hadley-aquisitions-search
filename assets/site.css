@@ -106,12 +106,15 @@ body.home-page > nav.home-nav.is-scrolled .nav-cta:hover { color:var(--slate); }
 }
 .hero-lookup-button {
   position:absolute; z-index:2; left:50%; bottom:40px; transform:translateX(-50%);
-  display:inline-flex; align-items:center; justify-content:center; gap:22px;
+  display:inline-flex; align-items:center; justify-content:center; gap:14px;
+  width:max-content; max-width:calc(100% - 128px);
   min-height:52px; padding:12px 24px; border:1px solid rgba(250,251,253,.55); border-radius:4px;
   background:rgba(11,31,59,.65); color:var(--ivory); text-decoration:none;
-  font-size:14px; font-weight:500; white-space:nowrap;
+  font-size:14px; font-weight:500; line-height:1.45; text-align:center;
   transition:background-color .2s,color .2s,border-color .2s;
 }
+.hero-lookup-label { min-width:0; }
+.hero-lookup-button > [aria-hidden] { flex-shrink:0; }
 .hero-lookup-button:hover,.hero-lookup-button:focus-visible {
   background:var(--ivory); color:var(--navy); border-color:var(--ivory);
 }
