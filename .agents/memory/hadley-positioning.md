@@ -9,9 +9,9 @@ The user wants the brand called "Hadley", not "Hadley AI", across the app.
 
 **How to apply:** Use Hadley in visible branding, logos, metadata, accessible labels, and notification copy. Do not restore the AI suffix from older supplied brand assets.
 
-The user's offerings are contact info lookup, buyside advisory, market mapping, expert sourcing, agentic sales, and Software for sourcing teams, in that order.
+The user's offerings are contact info lookup, buyside advisory, market mapping, expert sourcing, agentic sales, and Sourcing software, in that order.
 
-**Why:** The user requested the original five offerings, subsequently asked to add Contact info lookup as the first card, and renamed Sourcing software to Software for sourcing teams. They also asked to remove the descriptions and Learn more controls, then suggested a dark blue section with lighter blue cards using investment-site references.
+**Why:** The user requested the original five offerings, subsequently asked to add Contact info lookup as the first card, and chose Sourcing software as the final card's name. They also asked to remove the descriptions and Learn more controls, then suggested a dark blue section with lighter blue cards using investment-site references.
 
 **How to apply:** Keep future website copy aligned with these six offerings unless the user changes the business direction. Preserve the approved scrolling card style with offering names, without generic icons, descriptions or Learn more controls, on a dark blue section with lighter blue cards. Keep Hadley's blue branding rather than adopting the earlier reference's green/serif styling. The user selected 48northpartners.com as design inspiration and supplied a logo and flyer as brand/content sources.
 

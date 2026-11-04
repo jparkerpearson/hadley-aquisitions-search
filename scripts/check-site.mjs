@@ -278,7 +278,7 @@ try {
         assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
         assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "What we do");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
-          "Contact info lookup", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Software for sourcing teams",
+          "Contact info lookup", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
         ], "all six offerings appear in the requested order");
         await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#product-offerings");
@@ -359,7 +359,7 @@ try {
         assert.equal(await evaluate("document.querySelector('#get-in-touch h2').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button')"), null, "standalone contact button is removed");
         const selectedServices = await evaluate("(()=>{const form=document.getElementById('contact-form');form.elements.name.value='Draft Contact';form.elements.email.value='draft@example.invalid';const selections=[...document.querySelectorAll('[data-contact-interest]')].map(link=>{link.click();return {interest:form.elements.interest.value,hash:location.hash,name:form.elements.name.value,email:form.elements.email.value,visible:!form.hidden}});form.reset();history.replaceState(history.state,'',location.pathname+location.search);return selections;})()");
-        assert.deepEqual(selectedServices, ["Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Software for sourcing teams"].map(interest => ({
+        assert.deepEqual(selectedServices, ["Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software"].map(interest => ({
           interest, hash:"#get-in-touch", name:"Draft Contact", email:"draft@example.invalid", visible:true,
         })), "all five service cards open contact and prefill interest without changing name or email");
         assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "#get-in-touch", "homepage Contact scrolls to the inline form");
