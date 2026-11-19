@@ -613,3 +613,7 @@ html.motion-settled .reveal-item.is-revealed {
     animation:none;
   }
 }
+
+.site-footer { padding:24px 16px 32px; text-align:center; font-size:13px; }
+.site-footer a { color:var(--ink-soft); text-decoration:none; }
+.site-footer a:hover { text-decoration:underline; }
