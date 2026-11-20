@@ -199,12 +199,8 @@ try {
       assert.equal(await evaluate("getComputedStyle(document.body).fontFamily.includes('Helvetica')"), true);
       assert.equal(await evaluate("getComputedStyle(document.body).backgroundColor"), "rgb(250, 251, 253)");
       if (path === "/") {
-        assert.equal(await evaluate("document.querySelector('.hero-lookup-button').href"), "https://lookup.hadleypartners.org/");
-        assert.equal(await evaluate("document.querySelector('.hero-lookup-label').textContent"), "Find any business owner's cell phone number");
-        const lookupLayout = await evaluate("(()=>{const rect=s=>{const r=document.querySelector(s).getBoundingClientRect();return {left:r.left,right:r.right,top:r.top,bottom:r.bottom}};return {button:rect('.hero-lookup-button'),hero:rect('.hero'),heading:rect('.hero h1'),width:innerWidth};})()");
-        const { button: lookupButton, hero: lookupHero, heading: lookupHeading } = lookupLayout;
-        assert.ok(lookupButton.left>=lookupHero.left && lookupButton.right<=lookupHero.right && lookupButton.top>lookupHeading.bottom && lookupButton.bottom<lookupHero.bottom && Math.abs((lookupButton.left+lookupButton.right)/2-(lookupHero.left+lookupHero.right)/2)<2,
-          `lookup button is centered near the video bottom, below the headline: ${JSON.stringify(lookupLayout)}`);
+        assert.equal(await evaluate("document.querySelector('.hero-lookup-button, .lookup-bottom, a[href*=\"lookup.hadleypartners.org\"]')"), null, "phone lookup links are removed");
+        assert.doesNotMatch(await evaluate("document.body.textContent"), /cell phone|contact info lookup/i, "phone lookup copy is removed");
         const navAppearance = "()=>{const nav=document.querySelector('.home-nav');const styles=['color','backgroundColor','fontSize','fontWeight','letterSpacing','textTransform','paddingLeft','paddingRight'];const read=(selector)=>{const computed=getComputedStyle(nav.querySelector(selector));return Object.fromEntries(styles.map(key=>[key,computed[key]]))};return {careers:read('.nav-link'),contact:read('.nav-cta')}}";
         await evaluate("scrollTo({top:0,behavior:'instant'})");
         await pause(250);
@@ -278,15 +274,15 @@ try {
         assert.equal(await evaluate("document.getElementById('product-offerings').nextElementSibling.id"), "get-in-touch", "contact follows the offerings");
         assert.equal(await evaluate("document.getElementById('product-offerings-title').textContent"), "What we do");
         assert.deepEqual(await evaluate("[...document.querySelectorAll('.product-card-title')].map(item=>item.textContent.trim())"), [
-          "Contact info lookup", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software",
+          "Deal sourcing software", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales",
         ], "all six offerings appear in the requested order");
         await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#product-offerings");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings reveal on scroll");
         assert.equal(await evaluate("document.querySelectorAll('.offering-page p, .offering-page details, .offering-page a:not(.product-card-link), .offering-page button, .product-card-icon').length"), 0, "covers have no descriptions, Learn more buttons or generic product icons");
-        assert.equal(await evaluate("document.querySelectorAll('.offering-page').length"), 6);
-        assert.equal(await evaluate("document.querySelector('.offering-page:first-child .product-card-link').href"), "https://lookup.hadleypartners.org/");
-        assert.ok(await evaluate("(()=>{const card=document.querySelector('.offering-page:first-child'),link=card.querySelector('.product-card-link'),r=card.getBoundingClientRect();return document.elementFromPoint(r.left+r.width/2,r.top+r.height/4)?.closest('a')===link;})()"), "lookup card artwork and empty space activate its link, not just its title");
+        assert.equal(await evaluate("document.querySelectorAll('.offering-page').length"), 5);
+        assert.equal(await evaluate("document.querySelector('.offering-page:first-child .product-card-link').getAttribute('href')"), "#get-in-touch");
+        assert.ok(await evaluate("(()=>{const card=document.querySelector('.offering-page:first-child'),link=card.querySelector('.product-card-link'),r=card.getBoundingClientRect();return document.elementFromPoint(r.left+r.width/2,r.top+r.height/4)?.closest('a')===link;})()"), "software card artwork and empty space activate its contact link, not just its title");
         assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=>card.children.length===2 && card.querySelector('[aria-hidden=\"true\"].offering-art') && card.querySelector('h3'))"), "covers contain only decorative artwork and offering names");
         await waitForOffering(0);
         assert.equal(await evaluate("document.querySelector('.offering-previous').disabled"), true);
@@ -301,10 +297,10 @@ try {
         await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
         await send("Input.dispatchKeyEvent", { type:"keyDown", key:"End", code:"End" });
         await send("Input.dispatchKeyEvent", { type:"keyUp", key:"End", code:"End" });
-        await waitForOffering(5);
+        await waitForOffering(4);
         assert.equal(await evaluate("document.querySelector('.offering-next').disabled"), true);
         await evaluate("document.querySelector('.offering-previous').click()");
-        await waitForOffering(4);
+        await waitForOffering(3);
         await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
         await send("Input.dispatchKeyEvent", { type:"keyDown", key:"Home", code:"Home" });
         await send("Input.dispatchKeyEvent", { type:"keyUp", key:"Home", code:"Home" });
@@ -359,7 +355,7 @@ try {
         assert.equal(await evaluate("document.querySelector('#get-in-touch h2').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button')"), null, "standalone contact button is removed");
         const selectedServices = await evaluate("(()=>{const form=document.getElementById('contact-form');form.elements.name.value='Draft Contact';form.elements.email.value='draft@example.invalid';const selections=[...document.querySelectorAll('[data-contact-interest]')].map(link=>{link.click();return {interest:form.elements.interest.value,hash:location.hash,name:form.elements.name.value,email:form.elements.email.value,visible:!form.hidden}});form.reset();history.replaceState(history.state,'',location.pathname+location.search);return selections;})()");
-        assert.deepEqual(selectedServices, ["Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales", "Sourcing software"].map(interest => ({
+        assert.deepEqual(selectedServices, ["Deal sourcing software", "Buyside advisory", "Market mapping", "Expert sourcing", "Agentic sales"].map(interest => ({
           interest, hash:"#get-in-touch", name:"Draft Contact", email:"draft@example.invalid", visible:true,
         })), "all five service cards open contact and prefill interest without changing name or email");
         assert.equal(await evaluate("document.querySelector('body > nav .nav-cta').getAttribute('href')"), "#get-in-touch", "homepage Contact scrolls to the inline form");
@@ -380,10 +376,7 @@ try {
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth && [...document.querySelectorAll('#contact-form input, #contact-form textarea, #contact-submit')].filter(field=>!field.closest('.hp')).every(field=>{const r=field.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})"), `${value}px inline form fits`);
         assert.equal(await evaluate("document.querySelector('#how-it-works, #offerings, .offer-card')"), null, "process section and service cards are removed");
         assert.equal(await evaluate("document.querySelector('main > section:last-of-type').id"), "get-in-touch", "contact remains the final content section");
-        assert.equal(await evaluate("document.getElementById('get-in-touch').nextElementSibling.id"), "lookup-bottom", "lookup button follows Get in touch");
-        assert.equal(await evaluate("document.querySelector('.lookup-bottom-button .hero-lookup-label').textContent"), "Find any business owner's cell phone number");
-        assert.equal(await evaluate("document.querySelector('.lookup-bottom-button').href"), "https://lookup.hadleypartners.org/");
-        assert.ok(await evaluate("(()=>{const button=document.querySelector('.lookup-bottom-button').getBoundingClientRect(),contact=document.getElementById('get-in-touch').getBoundingClientRect(),container=document.getElementById('lookup-bottom').getBoundingClientRect();return button.left>=0 && button.right<=innerWidth && button.top>=contact.bottom && Math.abs((button.left+button.right-container.left-container.right)/2)<2;})()"), "bottom lookup button fits and is centered below contact");
+        assert.equal(await evaluate("document.getElementById('get-in-touch').nextElementSibling"), null, "Get in touch finishes the page without a lookup promotion");
         await evaluate("scrollTo({top:0,behavior:'instant'})");
         await pause(250);
         assert.equal(await evaluate("document.querySelector('.home-nav').classList.contains('is-scrolled')"), false, "header restores on scrolling up");
@@ -665,7 +658,7 @@ try {
   assert.equal(await evaluate("getComputedStyle(document.querySelector('.hero-content')).animationDuration"), "1e-05s");
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
-  assert.equal(await evaluate("document.querySelectorAll('.offerings-rail > li').length"), 6, "all offerings remain available without JavaScript");
+  assert.equal(await evaluate("document.querySelectorAll('.offerings-rail > li').length"), 5, "all offerings remain available without JavaScript");
   assert.equal(await evaluate("document.querySelector('.offerings-controls').hidden"), true, "inactive carousel buttons are hidden without JavaScript");
   assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(page=>getComputedStyle(page).opacity==='1')"), "all covers are readable without JavaScript");
   assert.equal(await evaluate("document.querySelectorAll('.who-we-work-with-list > li').length"), 4, "all customer groups remain available without JavaScript");
