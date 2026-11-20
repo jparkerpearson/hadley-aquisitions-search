@@ -3,11 +3,11 @@ name: Hadley positioning
 description: User-defined business positioning and brand direction for the website.
 ---
 
-The user wants the brand called "Hadley", not "Hadley AI", across the app.
+Use "Hadley" for app wording and browser tab titles, but show the original "Hadley AI" logo.
 
-**Why:** The user explicitly asked to switch the name across the app.
+**Why:** The user first switched the name across the app to Hadley, then specifically asked to restore Hadley AI in the logo.
 
-**How to apply:** Use Hadley in visible branding, logos, metadata, accessible labels, and notification copy. Do not restore the AI suffix from older supplied brand assets.
+**How to apply:** Keep Hadley in metadata, tab titles, and notification copy. Use Hadley AI logo artwork and matching accessible labels on the logo links.
 
 The user's offerings start with Deal sourcing software, Buyside advisory, and Market mapping, followed by Expert sourcing and Agentic sales. Do not promote owner cell phone lookup or link to the lookup site.
 
