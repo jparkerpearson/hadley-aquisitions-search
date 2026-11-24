@@ -30,7 +30,7 @@ try {
   for (let n = 0; n < 8000; n++) wav.writeInt16LE(Math.sin(n * .15) * 1000, 44 + n * 2);
   await writeFile(fixture, wav);
 
-  for (const path of ["/", "/careers.html", "/assets/site.css", "/assets/site.js", "/assets/offerings.css", "/assets/offerings.js", "/assets/hadley-logo-blue.webp", "/assets/hadley-logo-white.webp", "/assets/market-map.webp"]) {
+  for (const path of ["/", "/careers.html", "/assets/site.css", "/assets/site.js", "/assets/offerings.css", "/assets/hadley-logo-blue.webp", "/assets/hadley-logo-white.webp", "/assets/market-map.webp"]) {
     const response = await fetch(base + path);
     assert.equal(response.status, 200, path);
     assert.equal(response.headers.get("cache-control"), "no-store");
@@ -170,26 +170,6 @@ try {
     await send("Emulation.setDeviceMetricsOverride", { width: value, height: 900, deviceScaleFactor: 1, mobile: value < 600 });
     await send("Emulation.setTouchEmulationEnabled", { enabled:value < 600, maxTouchPoints:1 });
   }
-  async function waitForOffering(index) {
-    let stableFrames = 0;
-    for (let attempt = 0; attempt < 100; attempt++) {
-      if (await evaluate(`(() => {
-        const rail = document.querySelector('.offerings-rail').getBoundingClientRect();
-        const page = document.querySelectorAll('.offering-page')[${index}];
-        const bounds = page.getBoundingClientRect();
-        return page.dataset.active === 'true'
-          && page.getAttribute('aria-current') === 'true'
-          && Math.abs(bounds.left + bounds.width / 2 - rail.left - rail.width / 2) < 2;
-      })()`)) {
-        // A swipe can briefly pass through a centered slide while momentum is
-        // still running. Wait for stable geometry before the next interaction.
-        if (++stableFrames >= 5) return;
-      } else stableFrames = 0;
-      await pause(40);
-    }
-    const state = await evaluate("(()=>{const rail=document.querySelector('.offerings-rail');return {width:innerWidth,left:rail.scrollLeft,max:rail.scrollWidth-rail.clientWidth,active:[...rail.children].map(page=>page.dataset.active)}})()");
-    throw new Error(`Offering ${index + 1} did not settle in the center: ${JSON.stringify(state)}`);
-  }
   for (const value of [1280, 768, 390, 320]) {
     await width(value);
     for (const path of ["/", "/careers.html"]) {
@@ -279,50 +259,17 @@ try {
         await evaluate("document.getElementById('product-offerings').scrollIntoView({behavior:'instant'})");
         await waitForReveal("#product-offerings");
         assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).opacity"), "1", "offerings reveal on scroll");
-        assert.equal(await evaluate("document.querySelectorAll('.offering-page p, .offering-page details, .offering-page a:not(.product-card-link), .offering-page button, .product-card-icon').length"), 0, "covers have no descriptions, Learn more buttons or generic product icons");
+        assert.equal(await evaluate("document.querySelectorAll('.offering-page details, .offering-page a:not(.product-card-link), .offering-page button, .product-card-icon').length"), 0, "cards have no Learn more buttons, extra links or generic product icons");
         assert.equal(await evaluate("document.querySelectorAll('.offering-page').length"), 5);
         assert.equal(await evaluate("document.querySelector('.offering-page:first-child .product-card-link').getAttribute('href')"), "#get-in-touch");
         assert.ok(await evaluate("(()=>{const card=document.querySelector('.offering-page:first-child'),link=card.querySelector('.product-card-link'),r=card.getBoundingClientRect();return document.elementFromPoint(r.left+r.width/2,r.top+r.height/4)?.closest('a')===link;})()"), "software card artwork and empty space activate its contact link, not just its title");
-        assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=>card.children.length===2 && card.querySelector('[aria-hidden=\"true\"].offering-art') && card.querySelector('h3'))"), "covers contain only decorative artwork and offering names");
-        await waitForOffering(0);
-        assert.equal(await evaluate("document.querySelector('.offering-previous').disabled"), true);
-        assert.equal(await evaluate("document.querySelector('.offering-next').disabled"), false);
-        assert.equal(await evaluate("document.querySelectorAll('.offerings-controls button').length"), 2, "only the two side arrows remain");
-        assert.equal(await evaluate("document.querySelector('.offering-pagination, [data-offering-index]')"), null, "numbered navigation is removed");
-        assert.ok(await evaluate("(()=>{const status=document.querySelector('.offering-status'),s=getComputedStyle(status);return status.getAttribute('aria-live')==='polite' && s.position==='absolute' && s.clipPath==='inset(50%)' && s.width==='1px' && s.height==='1px';})()"), "current offering is announced without adding visible copy");
-        assert.ok(await evaluate("[...document.querySelectorAll('.offerings-controls button')].every(button=>{const r=button.getBoundingClientRect();return r.width>=44 && r.height>=44 && r.left>=0 && r.right<=innerWidth;})"), `${value}px offering controls are usable and unclipped`);
-        assert.ok(await evaluate("(()=>{const rail=document.querySelector('.offerings-rail').getBoundingClientRect(),center=rail.top+rail.height/2;return [...document.querySelectorAll('.offerings-controls button')].every(button=>{const r=button.getBoundingClientRect();return Math.abs(r.top+r.height/2-center)<2;});})()"), `${value}px arrows are vertically centered beside the cards`);
-        await evaluate("document.querySelector('.offering-next').click()");
-        await waitForOffering(1);
-        await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
-        await send("Input.dispatchKeyEvent", { type:"keyDown", key:"End", code:"End" });
-        await send("Input.dispatchKeyEvent", { type:"keyUp", key:"End", code:"End" });
-        await waitForOffering(4);
-        assert.equal(await evaluate("document.querySelector('.offering-next').disabled"), true);
-        await evaluate("document.querySelector('.offering-previous').click()");
-        await waitForOffering(3);
-        await evaluate("document.querySelector('.offerings-rail').focus({preventScroll:true})");
-        await send("Input.dispatchKeyEvent", { type:"keyDown", key:"Home", code:"Home" });
-        await send("Input.dispatchKeyEvent", { type:"keyUp", key:"Home", code:"Home" });
-        await waitForOffering(0);
-        await send("Input.dispatchKeyEvent", { type:"keyDown", key:"ArrowRight", code:"ArrowRight" });
-        await send("Input.dispatchKeyEvent", { type:"keyUp", key:"ArrowRight", code:"ArrowRight" });
-        await waitForOffering(1);
-        await evaluate("document.querySelector('.offering-next').click()");
-        await waitForOffering(2);
-        await evaluate("document.querySelector('.offerings-rail').scrollTo({left:0,behavior:'instant'})");
-        await waitForOffering(0);
-        if (value < 600) {
-          const start = await evaluate("(()=>{const r=document.querySelector('.offerings-rail').getBoundingClientRect();return {x:r.left+r.width/2,y:r.top+100}})()");
-          await send("Input.dispatchTouchEvent", { type:"touchStart", touchPoints:[start] });
-          for (let step = 1; step <= 5; step++) {
-            await send("Input.dispatchTouchEvent", { type:"touchMove", touchPoints:[{x:start.x-step*30,y:start.y}] });
-            await pause(50);
-          }
-          await send("Input.dispatchTouchEvent", { type:"touchEnd", touchPoints:[] });
-          await waitForOffering(1);
-          await evaluate("document.querySelector('.offering-previous').click()");
-          await waitForOffering(0);
+        assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=>card.children.length===3 && card.querySelector('[aria-hidden=\"true\"].offering-art') && card.querySelector('h3') && card.querySelector('p.product-card-desc')?.textContent.trim().length > 20)"), "cards contain decorative artwork, the offering name and a one-sentence description");
+        assert.ok(await evaluate("[...document.querySelectorAll('.product-card-desc')].every(desc=>parseFloat(getComputedStyle(desc).fontSize)>=15)"), `${value}px card descriptions are comfortably readable`);
+        assert.equal(await evaluate("document.querySelector('.offerings-controls, .offering-next, .offering-previous, .offering-pagination, [data-offering-index]')"), null, "offerings are a static grid with no carousel controls or numbered navigation");
+        assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=>{const r=card.getBoundingClientRect();return r.left>=0 && r.right<=innerWidth;})"), `${value}px every offering card is fully visible`);
+        assert.ok(await evaluate("(()=>{const heading=document.getElementById('product-offerings-title').getBoundingClientRect(),card=document.querySelector('.offering-page').getBoundingClientRect();return Math.abs(heading.left-card.left)<2;})()"), `${value}px section heading aligns with the first card`);
+        if (value >= 1280) {
+          assert.ok(await evaluate("(()=>{const tops=[...document.querySelectorAll('.offering-page')].map(card=>Math.round(card.getBoundingClientRect().top));return tops.every(top=>top===tops[0]);})()"), "all five offerings sit in a single row on desktop");
         }
         assert.equal(await evaluate("getComputedStyle(document.getElementById('product-offerings')).backgroundColor"), "rgb(11, 31, 59)", "offerings use the Hadley midnight background");
         assert.ok(await evaluate(`(() => {
@@ -342,15 +289,6 @@ try {
           });
         })()`), "lighter blue cards retain accessible title contrast");
         assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(card=> {const title=card.querySelector('h3'); const t=title.getBoundingClientRect(),r=card.getBoundingClientRect(); return title.scrollWidth<=title.clientWidth+1 && t.left>=r.left-1 && t.right<=r.right+1 && t.bottom<=r.bottom+1;})"), `${value}px titles fit inside every cover`);
-        // Give the page room to scroll even when the entire compact section
-        // already fits near the bottom of a tall, narrow test viewport.
-        await evaluate("document.body.insertAdjacentHTML('beforeend','<div data-wheel-spacer aria-hidden=\"true\" style=\"height:300px\"></div>')");
-        const wheelPosition = await evaluate("(()=>{const rail=document.querySelector('.offerings-rail'),r=rail.getBoundingClientRect();return {x:Math.round(r.left+r.width/2),y:Math.round(r.top+100),scroll:scrollY,left:rail.scrollLeft}})()");
-        await send("Input.dispatchMouseEvent", { type:"mouseWheel", x:wheelPosition.x, y:wheelPosition.y, deltaX:0, deltaY:160 });
-        await pause(200);
-        assert.ok(await evaluate(`scrollY > ${wheelPosition.scroll} + 20`), "vertical wheel continues down the page rather than cycling cards");
-        assert.ok(await evaluate(`Math.abs(document.querySelector('.offerings-rail').scrollLeft - ${wheelPosition.left}) < 2`), "vertical wheel does not move the horizontal rail");
-        await evaluate("document.querySelector('[data-wheel-spacer]').remove()");
         assert.ok(await evaluate("document.documentElement.scrollWidth <= innerWidth"), `${value}px offerings fit without overflow`);
         assert.equal(await evaluate("document.querySelector('#get-in-touch h2').textContent"), "Get in touch");
         assert.equal(await evaluate("document.querySelector('.contact-cta-button')"), null, "standalone contact button is removed");
@@ -659,7 +597,7 @@ try {
   await send("Emulation.setScriptExecutionDisabled", { value: true });
   await navigate("/");
   assert.equal(await evaluate("document.querySelectorAll('.offerings-rail > li').length"), 5, "all offerings remain available without JavaScript");
-  assert.equal(await evaluate("document.querySelector('.offerings-controls').hidden"), true, "inactive carousel buttons are hidden without JavaScript");
+  assert.equal(await evaluate("document.querySelector('.offerings-controls')"), null, "no carousel controls without JavaScript");
   assert.ok(await evaluate("[...document.querySelectorAll('.offering-page')].every(page=>getComputedStyle(page).opacity==='1')"), "all covers are readable without JavaScript");
   assert.equal(await evaluate("document.querySelectorAll('.who-we-work-with-list > li').length"), 4, "all customer groups remain available without JavaScript");
   assert.equal(await evaluate("getComputedStyle(document.getElementById('who-we-work-with')).opacity"), "1", "audiences remain visible without JavaScript");

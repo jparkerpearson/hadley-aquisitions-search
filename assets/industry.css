@@ -220,6 +220,8 @@
 .ind-team .ind-label { margin: clamp(32px, 3.6vw, 48px) 0 0; color: var(--slate); opacity: 1; letter-spacing: .14em; }
 .ind-logos { margin: 18px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 22px clamp(36px, 5vw, 72px); }
 .ind-logos img { display: block; width: auto; max-width: 200px; object-fit: contain; }
+/* The J.P. Morgan wordmark's descender pulls its box center below the lettering; nudge it so both wordmarks share an optical center. */
+.ind-logos .ind-logo-jpm { transform: translateY(11.5%); }
 
 /* FAQ: separated from the team section by a rule */
 .ind-section--faq { padding-top: 0; }
